@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 SimpleTire.com Web Scraper
-Uses Selenium with webdriver-manager for automatic driver handling
+Uses Microsoft Edge (built into Windows) for better compatibility
 """
 
 import csv
@@ -14,23 +14,23 @@ from datetime import datetime
 # Install dependencies if needed
 try:
     from selenium import webdriver
-    from selenium.webdriver.chrome.service import Service
-    from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.edge.service import Service
+    from selenium.webdriver.edge.options import Options
     from selenium.webdriver.common.by import By
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
-    from webdriver_manager.chrome import ChromeDriverManager
+    from webdriver_manager.microsoft import EdgeChromiumDriverManager
 except ImportError:
     print("Installing required packages...")
     import subprocess
     subprocess.check_call([sys.executable, "-m", "pip", "install", "selenium", "webdriver-manager"])
     from selenium import webdriver
-    from selenium.webdriver.chrome.service import Service
-    from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.edge.service import Service
+    from selenium.webdriver.edge.options import Options
     from selenium.webdriver.common.by import By
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
-    from webdriver_manager.chrome import ChromeDriverManager
+    from webdriver_manager.microsoft import EdgeChromiumDriverManager
 
 try:
     import pandas as pd
@@ -47,8 +47,8 @@ class SimpleTireScraper:
         self.results = []
 
     def setup(self):
-        """Initialize Chrome browser."""
-        print("Starting browser...")
+        """Initialize Edge browser."""
+        print("Starting Edge browser...")
 
         options = Options()
 
@@ -60,15 +60,15 @@ class SimpleTireScraper:
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--disable-blink-features=AutomationControlled')
         options.add_argument('--window-size=1920,1080')
-        options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36')
+        options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0')
 
         # Disable automation flags
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option('useAutomationExtension', False)
 
-        # Auto-download and setup ChromeDriver
-        service = Service(ChromeDriverManager().install())
-        self.driver = webdriver.Chrome(service=service, options=options)
+        # Auto-download and setup EdgeDriver
+        service = Service(EdgeChromiumDriverManager().install())
+        self.driver = webdriver.Edge(service=service, options=options)
 
         # Remove webdriver flag
         self.driver.execute_cdp_cmd('Page.addScriptToEvaluateOnNewDocument', {
@@ -109,6 +109,7 @@ class SimpleTireScraper:
 
         try:
             self.driver.get(url)
+            print("Page loading...")
             self.random_delay(5, 8)
 
             # Check if we're blocked
@@ -222,7 +223,6 @@ class SimpleTireScraper:
                     let price = '';
                     const priceMatches = text.match(/\\$([\\d,]+\\.?\\d*)/g);
                     if (priceMatches && priceMatches.length > 0) {
-                        // Get the first/lowest price
                         price = priceMatches[0].replace('$', '').replace(',', '');
                     }
 
@@ -260,15 +260,13 @@ class SimpleTireScraper:
                 # Parse brand/model from URL slug
                 slug = item.get('url_slug', '')
                 if slug:
-                    # URL format is usually: brand-model-name-size-specs
                     parts = slug.replace('-', ' ').split()
                     if parts:
                         product['brand'] = parts[0].title()
                         if len(parts) > 1:
-                            # Model is everything else before size numbers
                             model_parts = []
                             for p in parts[1:]:
-                                if re.match(r'^\d{3}$', p):  # Hit the size (e.g., 275)
+                                if re.match(r'^\d{3}$', p):
                                     break
                                 model_parts.append(p)
                             product['model'] = ' '.join(model_parts).title()
@@ -287,7 +285,6 @@ class SimpleTireScraper:
                     product['load_index'] = load_speed.group(1)
                     product['speed_rating'] = load_speed.group(2)
 
-                # Try to get a cleaner price from text if not found
                 if not product['price']:
                     price_match = re.search(r'\$(\d+\.?\d*)', text)
                     if price_match:
@@ -303,7 +300,6 @@ class SimpleTireScraper:
     def go_to_next_page(self):
         """Try to navigate to the next page."""
         try:
-            # Look for next page button
             next_selectors = [
                 "a[aria-label='Next']",
                 "button[aria-label='Next']",
@@ -385,7 +381,7 @@ def main():
                         help='Max pages per size (default: 10)')
     parser.add_argument('--output', '-o', help='Output filename')
     parser.add_argument('--headless', action='store_true',
-                        help='Run browser in headless mode (not recommended for this site)')
+                        help='Run browser in headless mode')
 
     args = parser.parse_args()
 
@@ -395,7 +391,6 @@ def main():
         scraper.setup()
 
         for size in args.sizes:
-            # Parse size: 275/45R20 or 275-45-20
             match = re.match(r'(\d+)[/\-](\d+)[Rr\-]?(\d+)', size)
             if match:
                 width, aspect, rim = match.groups()

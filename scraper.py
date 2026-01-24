@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 SimpleTire.com Web Scraper
-Uses Selenium 4's built-in driver manager (no external downloads)
+Uses Selenium with warmup to bypass bot detection
 """
 
 import csv
@@ -15,6 +15,8 @@ try:
     from selenium import webdriver
     from selenium.webdriver.edge.options import Options
     from selenium.webdriver.common.by import By
+    from selenium.webdriver.common.keys import Keys
+    from selenium.webdriver.common.action_chains import ActionChains
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
 except ImportError:
@@ -24,6 +26,8 @@ except ImportError:
     from selenium import webdriver
     from selenium.webdriver.edge.options import Options
     from selenium.webdriver.common.by import By
+    from selenium.webdriver.common.keys import Keys
+    from selenium.webdriver.common.action_chains import ActionChains
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
 
@@ -42,18 +46,13 @@ class SimpleTireScraper:
         self.results = []
 
     def setup(self):
-        """Initialize Edge browser using Selenium's built-in driver manager."""
+        """Initialize browser."""
         print("Starting Edge browser...")
-
         options = Options()
-
         if self.headless:
             options.add_argument('--headless=new')
-
-        # Minimal options - avoid crashes
         options.add_argument('--start-maximized')
 
-        # Use Selenium 4's built-in driver manager
         self.driver = webdriver.Edge(options=options)
         self.driver.set_page_load_timeout(120)
         print("Browser started!")
@@ -65,187 +64,266 @@ class SimpleTireScraper:
     def random_delay(self, min_sec=2, max_sec=5):
         time.sleep(random.uniform(min_sec, max_sec))
 
-    def scroll_page(self):
-        """Scroll down the page to load more content."""
-        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight/3);")
+    def human_like_mouse_move(self):
+        """Move mouse around randomly to seem human."""
+        try:
+            actions = ActionChains(self.driver)
+            for _ in range(3):
+                x = random.randint(100, 800)
+                y = random.randint(100, 600)
+                actions.move_by_offset(x, y).perform()
+                actions.reset_actions()
+                time.sleep(0.5)
+        except:
+            pass
+
+    def scroll_slowly(self):
+        """Scroll down slowly like a human."""
+        total_height = self.driver.execute_script("return document.body.scrollHeight")
+        current = 0
+        step = 300
+
+        while current < total_height:
+            self.driver.execute_script(f"window.scrollTo(0, {current});")
+            current += step
+            time.sleep(random.uniform(0.3, 0.7))
+
+        # Scroll back up a bit
+        self.driver.execute_script("window.scrollTo(0, 500);")
         time.sleep(1)
-        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
-        time.sleep(1)
-        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(2)
+
+    def warmup(self):
+        """Visit homepage first to get cookies and seem human."""
+        print("\nWarming up - visiting homepage first...")
+
+        self.driver.get(self.BASE_URL)
+        self.random_delay(3, 5)
+
+        # Move mouse around
+        self.human_like_mouse_move()
+
+        # Scroll a bit
+        self.driver.execute_script("window.scrollTo(0, 500);")
+        self.random_delay(2, 3)
+
+        self.driver.execute_script("window.scrollTo(0, 0);")
+        self.random_delay(1, 2)
+
+        print("Warmup complete!")
+
+    def search_for_size(self, width, aspect, rim):
+        """Use the search box to search for a tire size."""
+        size_str = f"{width}/{aspect}R{rim}"
+        print(f"\nSearching for: {size_str}")
+
+        try:
+            # Look for search input
+            search_selectors = [
+                "input[type='search']",
+                "input[placeholder*='search']",
+                "input[placeholder*='Search']",
+                "input[name='search']",
+                "input[name='q']",
+                "#search",
+                ".search-input"
+            ]
+
+            search_box = None
+            for sel in search_selectors:
+                try:
+                    elements = self.driver.find_elements(By.CSS_SELECTOR, sel)
+                    for el in elements:
+                        if el.is_displayed():
+                            search_box = el
+                            break
+                    if search_box:
+                        break
+                except:
+                    continue
+
+            if search_box:
+                search_box.clear()
+                # Type slowly like a human
+                for char in f"{width}/{aspect}R{rim}":
+                    search_box.send_keys(char)
+                    time.sleep(random.uniform(0.05, 0.15))
+
+                self.random_delay(1, 2)
+                search_box.send_keys(Keys.RETURN)
+                self.random_delay(5, 8)
+                return True
+            else:
+                print("Search box not found, using direct URL")
+                return False
+
+        except Exception as e:
+            print(f"Search error: {e}")
+            return False
 
     def scrape_size(self, width, aspect, rim, max_pages=10):
         """Scrape all tires for a given size."""
         size_str = f"{width}/{aspect}R{rim}"
-        url = f"{self.BASE_URL}/tire-sizes/{width}-{aspect}r{rim}-tires"
 
         print(f"\n{'='*60}")
         print(f"Scraping: {size_str}")
-        print(f"URL: {url}")
         print(f"{'='*60}")
 
-        try:
+        # Try search first
+        if not self.search_for_size(width, aspect, rim):
+            # Fall back to direct URL
+            url = f"{self.BASE_URL}/tire-sizes/{width}-{aspect}r{rim}-tires"
+            print(f"Using direct URL: {url}")
             self.driver.get(url)
-            print("Page loading...")
             self.random_delay(5, 8)
 
-            page_source = self.driver.page_source.lower()
-            if 'access denied' in page_source or 'blocked' in page_source:
-                print("ACCESS BLOCKED - waiting and retrying...")
-                time.sleep(15)
-                self.driver.refresh()
-                self.random_delay(5, 8)
+        # Scroll to load content
+        self.scroll_slowly()
+        self.random_delay(2, 3)
 
-            if 'checking your browser' in page_source or 'challenge' in page_source:
-                print("Cloudflare challenge detected - waiting...")
-                time.sleep(15)
+        # Take screenshot
+        self.driver.save_screenshot('debug_screenshot.png')
+        print(f"Screenshot saved. Page title: {self.driver.title}")
 
-            self.scroll_page()
+        # Check page source for products
+        page_source = self.driver.page_source
 
-            self.driver.save_screenshot('debug_screenshot.png')
-            print("Screenshot saved to debug_screenshot.png")
-            print(f"Page title: {self.driver.title}")
+        # Debug: print some page info
+        if 'no results' in page_source.lower() or 'no tires found' in page_source.lower():
+            print("Page says no results found")
+        elif 'product' in page_source.lower():
+            print("Page contains 'product' text - good sign!")
 
-            page_num = 1
-            while page_num <= max_pages:
-                print(f"\nPage {page_num}...")
+        page_num = 1
+        while page_num <= max_pages:
+            print(f"\nPage {page_num}...")
 
-                products = self.extract_products_from_page(size_str)
+            products = self.extract_products_from_page(size_str)
 
-                if products:
-                    print(f"Found {len(products)} products")
-                    self.results.extend(products)
+            if products:
+                print(f"Found {len(products)} products")
+                self.results.extend(products)
+            else:
+                print("No products found on this page")
+
+                # Try waiting more and scrolling again
+                if page_num == 1:
+                    print("Waiting longer and trying again...")
+                    self.random_delay(5, 8)
+                    self.scroll_slowly()
+                    products = self.extract_products_from_page(size_str)
+                    if products:
+                        print(f"Found {len(products)} products after waiting")
+                        self.results.extend(products)
+                    else:
+                        break
                 else:
-                    print("No products found on this page")
                     break
 
-                if not self.go_to_next_page():
-                    break
+            if not self.go_to_next_page():
+                break
 
-                page_num += 1
-                self.random_delay(3, 5)
-
-        except Exception as e:
-            print(f"Error scraping {size_str}: {e}")
-            try:
-                self.driver.save_screenshot('error_screenshot.png')
-                print("Error screenshot saved")
-            except:
-                pass
+            page_num += 1
+            self.random_delay(3, 5)
 
     def extract_products_from_page(self, size_str):
         """Extract product data from the current page."""
         products = []
 
         try:
-            WebDriverWait(self.driver, 20).until(
-                EC.presence_of_element_located((By.TAG_NAME, "body"))
-            )
+            # Wait a bit for dynamic content
             time.sleep(3)
-        except:
-            pass
 
-        try:
+            # Try to find product data using JavaScript
             product_data = self.driver.execute_script("""
                 const products = [];
-                const selectors = [
-                    'a[href*="/tires/"]',
-                    'a[href*="/tire/"]',
-                    '[class*="product"] a',
-                    '[class*="Product"] a',
-                    '[class*="card"] a[href*="tire"]'
-                ];
 
-                const allLinks = new Set();
-                selectors.forEach(sel => {
-                    document.querySelectorAll(sel).forEach(el => allLinks.add(el));
-                });
+                // Look for any links that might be product links
+                const allLinks = document.querySelectorAll('a');
 
                 const seen = new Set();
 
                 allLinks.forEach(link => {
                     const href = link.href || '';
-                    if (!href || seen.has(href)) return;
-                    if (!href.includes('simpletire.com')) return;
-                    if (href.includes('/tire-sizes/')) return;
+                    if (!href) return;
+                    if (seen.has(href)) return;
 
-                    seen.add(href);
+                    // Look for tire product URLs
+                    // SimpleTire URLs look like: /brand-model-p-275-45r20-specs
+                    if (href.includes('-p-') && href.includes('simpletire.com')) {
+                        seen.add(href);
 
-                    let card = link.closest('[class*="product"]') ||
-                               link.closest('[class*="Product"]') ||
-                               link.closest('[class*="card"]') ||
-                               link.closest('[class*="Card"]') ||
-                               link.closest('article') ||
-                               link.closest('li') ||
-                               link.parentElement?.parentElement;
+                        // Get parent container for price/text
+                        let card = link.closest('[class*="product"]') ||
+                                   link.closest('[class*="Product"]') ||
+                                   link.closest('[class*="card"]') ||
+                                   link.closest('[class*="Card"]') ||
+                                   link.closest('[class*="tile"]') ||
+                                   link.closest('[class*="Tile"]') ||
+                                   link.closest('[class*="item"]') ||
+                                   link.closest('article') ||
+                                   link.closest('li') ||
+                                   link.parentElement;
 
-                    if (!card) card = link;
+                        const text = card ? (card.innerText || '') : '';
 
-                    const text = card.innerText || card.textContent || '';
+                        let price = '';
+                        const priceMatch = text.match(/\\$([\\d,]+\\.?\\d*)/);
+                        if (priceMatch) {
+                            price = priceMatch[1].replace(',', '');
+                        }
 
-                    let price = '';
-                    const priceMatches = text.match(/\\$([\\d,]+\\.?\\d*)/g);
-                    if (priceMatches && priceMatches.length > 0) {
-                        price = priceMatches[0].replace('$', '').replace(',', '');
+                        products.push({
+                            url: href,
+                            raw_text: text.substring(0, 500),
+                            price: price
+                        });
                     }
-
-                    const urlParts = href.split('/').pop() || '';
-                    const slug = urlParts.split('-p-')[0] || urlParts;
-
-                    products.push({
-                        url: href,
-                        raw_text: text.substring(0, 800),
-                        price: price,
-                        url_slug: slug
-                    });
                 });
 
                 return products;
             """)
 
-            print(f"Raw data found: {len(product_data)} links")
+            print(f"Found {len(product_data)} product links")
 
             for item in product_data:
+                url = item['url']
+
+                # Parse info from URL
+                # Example: /goodyear-eagle-sport-p-275-45r20-110w-xl
+                url_path = url.split('/')[-1] if url else ''
+                parts = url_path.replace('-p-', ' ').replace('-', ' ').split()
+
+                brand = parts[0].title() if parts else ''
+
+                # Find model (everything between brand and size)
+                model_parts = []
+                for i, p in enumerate(parts[1:], 1):
+                    if re.match(r'^\d{3}$', p):  # Hit the width (e.g., 275)
+                        break
+                    model_parts.append(p)
+                model = ' '.join(model_parts).title()
+
+                # Parse size from URL
+                size_match = re.search(r'(\d{3})[/-]?(\d{2,3})r(\d{2})', url, re.I)
+                size = f"{size_match.group(1)}/{size_match.group(2)}R{size_match.group(3)}" if size_match else ''
+
+                # Parse load/speed from URL (e.g., 110w)
+                load_speed_match = re.search(r'(\d{2,3})([a-z])(?:-|$)', url, re.I)
+                load_index = load_speed_match.group(1) if load_speed_match else ''
+                speed_rating = load_speed_match.group(2).upper() if load_speed_match else ''
+
                 product = {
                     'selected_size': size_str,
-                    'url': item['url'],
+                    'brand': brand,
+                    'model': model,
+                    'size': size,
                     'price': item['price'],
-                    'brand': '',
-                    'model': '',
+                    'load_index': load_index,
+                    'speed_rating': speed_rating,
                     'sku': '',
-                    'size': '',
-                    'load_index': '',
-                    'speed_rating': '',
+                    'url': url,
                     'scraped_at': datetime.now().isoformat()
                 }
-
-                slug = item.get('url_slug', '')
-                if slug:
-                    parts = slug.replace('-', ' ').split()
-                    if parts:
-                        product['brand'] = parts[0].title()
-                        if len(parts) > 1:
-                            model_parts = []
-                            for p in parts[1:]:
-                                if re.match(r'^\d{3}$', p):
-                                    break
-                                model_parts.append(p)
-                            product['model'] = ' '.join(model_parts).title()
-
-                size_match = re.search(r'(\d{3})[/-](\d{2,3})r(\d{2})', item['url'], re.I)
-                if size_match:
-                    product['size'] = f"{size_match.group(1)}/{size_match.group(2)}R{size_match.group(3)}"
-
-                text = item.get('raw_text', '')
-                load_speed = re.search(r'\b(\d{2,3})([A-Z])\b', text)
-                if load_speed:
-                    product['load_index'] = load_speed.group(1)
-                    product['speed_rating'] = load_speed.group(2)
-
-                if not product['price']:
-                    price_match = re.search(r'\$(\d+\.?\d*)', text)
-                    if price_match:
-                        product['price'] = price_match.group(1)
 
                 products.append(product)
 
@@ -260,8 +338,7 @@ class SimpleTireScraper:
             next_selectors = [
                 "a[aria-label='Next']",
                 "button[aria-label='Next']",
-                "[class*='next']",
-                "[class*='Next']",
+                "[class*='next']:not([class*='disabled'])",
                 "a[rel='next']"
             ]
 
@@ -272,7 +349,7 @@ class SimpleTireScraper:
                         if btn.is_displayed() and btn.is_enabled():
                             btn.click()
                             self.random_delay(3, 5)
-                            self.scroll_page()
+                            self.scroll_slowly()
                             return True
                 except:
                     continue
@@ -294,6 +371,7 @@ class SimpleTireScraper:
         columns = ['selected_size', 'brand', 'model', 'size', 'price',
                    'load_index', 'speed_rating', 'sku', 'url', 'scraped_at']
 
+        # Remove duplicates
         seen_urls = set()
         unique_results = []
         for r in self.results:
@@ -343,6 +421,9 @@ def main():
 
     try:
         scraper.setup()
+
+        # Warmup first
+        scraper.warmup()
 
         for size in args.sizes:
             match = re.match(r'(\d+)[/\-](\d+)[Rr\-]?(\d+)', size)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 SimpleTire.com Web Scraper
-Uses undetected-chromedriver to bypass Cloudflare protection
+Uses Selenium with webdriver-manager for automatic driver handling
 """
 
 import csv
@@ -11,19 +11,26 @@ import re
 import sys
 from datetime import datetime
 
+# Install dependencies if needed
 try:
-    import undetected_chromedriver as uc
+    from selenium import webdriver
+    from selenium.webdriver.chrome.service import Service
+    from selenium.webdriver.chrome.options import Options
     from selenium.webdriver.common.by import By
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
+    from webdriver_manager.chrome import ChromeDriverManager
 except ImportError:
     print("Installing required packages...")
     import subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "undetected-chromedriver", "selenium"])
-    import undetected_chromedriver as uc
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "selenium", "webdriver-manager"])
+    from selenium import webdriver
+    from selenium.webdriver.chrome.service import Service
+    from selenium.webdriver.chrome.options import Options
     from selenium.webdriver.common.by import By
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
+    from webdriver_manager.chrome import ChromeDriverManager
 
 try:
     import pandas as pd
@@ -40,18 +47,37 @@ class SimpleTireScraper:
         self.results = []
 
     def setup(self):
-        """Initialize undetected Chrome browser."""
+        """Initialize Chrome browser."""
         print("Starting browser...")
 
-        options = uc.ChromeOptions()
-        if self.headless:
-            options.add_argument('--headless')
+        options = Options()
 
+        if self.headless:
+            options.add_argument('--headless=new')
+
+        # Anti-detection options
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--disable-blink-features=AutomationControlled')
         options.add_argument('--window-size=1920,1080')
+        options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36')
 
-        self.driver = uc.Chrome(options=options)
+        # Disable automation flags
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option('useAutomationExtension', False)
+
+        # Auto-download and setup ChromeDriver
+        service = Service(ChromeDriverManager().install())
+        self.driver = webdriver.Chrome(service=service, options=options)
+
+        # Remove webdriver flag
+        self.driver.execute_cdp_cmd('Page.addScriptToEvaluateOnNewDocument', {
+            'source': '''
+                Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+                window.chrome = { runtime: {} };
+            '''
+        })
+
         self.driver.set_page_load_timeout(120)
         print("Browser started!")
 
@@ -88,10 +114,15 @@ class SimpleTireScraper:
             # Check if we're blocked
             page_source = self.driver.page_source.lower()
             if 'access denied' in page_source or 'blocked' in page_source:
-                print("ACCESS BLOCKED - trying to wait it out...")
-                time.sleep(10)
+                print("ACCESS BLOCKED - waiting and retrying...")
+                time.sleep(15)
                 self.driver.refresh()
                 self.random_delay(5, 8)
+
+            # Check for Cloudflare challenge
+            if 'checking your browser' in page_source or 'challenge' in page_source:
+                print("Cloudflare challenge detected - waiting...")
+                time.sleep(15)
 
             # Scroll to load content
             self.scroll_page()
@@ -99,6 +130,7 @@ class SimpleTireScraper:
             # Take screenshot for debugging
             self.driver.save_screenshot('debug_screenshot.png')
             print("Screenshot saved to debug_screenshot.png")
+            print(f"Page title: {self.driver.title}")
 
             page_num = 1
             while page_num <= max_pages:
@@ -112,8 +144,6 @@ class SimpleTireScraper:
                     self.results.extend(products)
                 else:
                     print("No products found on this page")
-                    # Print page title for debugging
-                    print(f"Page title: {self.driver.title}")
                     break
 
                 # Try to go to next page
@@ -125,20 +155,24 @@ class SimpleTireScraper:
 
         except Exception as e:
             print(f"Error scraping {size_str}: {e}")
-            self.driver.save_screenshot('error_screenshot.png')
+            try:
+                self.driver.save_screenshot('error_screenshot.png')
+                print("Error screenshot saved")
+            except:
+                pass
 
     def extract_products_from_page(self, size_str):
         """Extract product data from the current page."""
         products = []
 
         try:
-            # Wait for products to load
-            WebDriverWait(self.driver, 15).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "a[href*='/tires/']"))
+            # Wait for page to have some content
+            WebDriverWait(self.driver, 20).until(
+                EC.presence_of_element_located((By.TAG_NAME, "body"))
             )
+            time.sleep(3)
         except:
-            print("Timeout waiting for products")
-            return products
+            pass
 
         # Try to get product data from the page
         try:
@@ -146,45 +180,68 @@ class SimpleTireScraper:
             product_data = self.driver.execute_script("""
                 const products = [];
 
-                // Find all product links/cards
-                const links = document.querySelectorAll('a[href*="/tires/"]');
+                // Find all product links/cards - multiple strategies
+                const selectors = [
+                    'a[href*="/tires/"]',
+                    'a[href*="/tire/"]',
+                    '[class*="product"] a',
+                    '[class*="Product"] a',
+                    '[class*="card"] a[href*="tire"]'
+                ];
+
+                const allLinks = new Set();
+                selectors.forEach(sel => {
+                    document.querySelectorAll(sel).forEach(el => allLinks.add(el));
+                });
+
                 const seen = new Set();
 
-                links.forEach(link => {
-                    const href = link.href;
-                    if (seen.has(href) || !href.includes('-p-')) return;
+                allLinks.forEach(link => {
+                    const href = link.href || '';
+                    if (!href || seen.has(href)) return;
+                    if (!href.includes('simpletire.com')) return;
+                    if (href.includes('/tire-sizes/')) return;  // Skip category links
+
                     seen.add(href);
 
                     // Try to find the product card container
                     let card = link.closest('[class*="product"]') ||
+                               link.closest('[class*="Product"]') ||
                                link.closest('[class*="card"]') ||
+                               link.closest('[class*="Card"]') ||
                                link.closest('article') ||
+                               link.closest('li') ||
                                link.parentElement?.parentElement;
 
                     if (!card) card = link;
 
                     // Extract text content
-                    const text = card.innerText || '';
+                    const text = card.innerText || card.textContent || '';
 
                     // Try to find price
                     let price = '';
-                    const priceMatch = text.match(/\\$([\\d,]+\\.?\\d*)/);
-                    if (priceMatch) price = priceMatch[1].replace(',', '');
+                    const priceMatches = text.match(/\\$([\\d,]+\\.?\\d*)/g);
+                    if (priceMatches && priceMatches.length > 0) {
+                        // Get the first/lowest price
+                        price = priceMatches[0].replace('$', '').replace(',', '');
+                    }
 
-                    // Try to parse brand/model from URL
-                    // URL format: /brand-model-size-p-specs
-                    const urlParts = href.split('/').pop().split('-p-')[0];
+                    // Get URL slug for parsing
+                    const urlParts = href.split('/').pop() || '';
+                    const slug = urlParts.split('-p-')[0] || urlParts;
 
                     products.push({
                         url: href,
-                        raw_text: text.substring(0, 500),
+                        raw_text: text.substring(0, 800),
                         price: price,
-                        url_slug: urlParts
+                        url_slug: slug
                     });
                 });
 
                 return products;
             """)
+
+            print(f"Raw data found: {len(product_data)} links")
 
             for item in product_data:
                 product = {
@@ -203,15 +260,15 @@ class SimpleTireScraper:
                 # Parse brand/model from URL slug
                 slug = item.get('url_slug', '')
                 if slug:
-                    # Try to extract brand (usually first word)
+                    # URL format is usually: brand-model-name-size-specs
                     parts = slug.replace('-', ' ').split()
                     if parts:
                         product['brand'] = parts[0].title()
                         if len(parts) > 1:
-                            # Model is everything else before size
+                            # Model is everything else before size numbers
                             model_parts = []
                             for p in parts[1:]:
-                                if re.match(r'^\d{3}$', p):  # Hit the size
+                                if re.match(r'^\d{3}$', p):  # Hit the size (e.g., 275)
                                     break
                                 model_parts.append(p)
                             product['model'] = ' '.join(model_parts).title()
@@ -224,11 +281,17 @@ class SimpleTireScraper:
                 # Try to extract more from raw text
                 text = item.get('raw_text', '')
 
-                # Look for load/speed (e.g., "110H", "106V")
+                # Look for load/speed rating (e.g., "110H", "106V")
                 load_speed = re.search(r'\b(\d{2,3})([A-Z])\b', text)
                 if load_speed:
                     product['load_index'] = load_speed.group(1)
                     product['speed_rating'] = load_speed.group(2)
+
+                # Try to get a cleaner price from text if not found
+                if not product['price']:
+                    price_match = re.search(r'\$(\d+\.?\d*)', text)
+                    if price_match:
+                        product['price'] = price_match.group(1)
 
                 products.append(product)
 
@@ -241,18 +304,25 @@ class SimpleTireScraper:
         """Try to navigate to the next page."""
         try:
             # Look for next page button
-            next_buttons = self.driver.find_elements(By.CSS_SELECTOR,
-                "a[aria-label='Next'], button[aria-label='Next'], [class*='next']")
+            next_selectors = [
+                "a[aria-label='Next']",
+                "button[aria-label='Next']",
+                "[class*='next']",
+                "[class*='Next']",
+                "a[rel='next']"
+            ]
 
-            for btn in next_buttons:
-                if btn.is_displayed() and btn.is_enabled():
-                    try:
-                        btn.click()
-                        self.random_delay(3, 5)
-                        self.scroll_page()
-                        return True
-                    except:
-                        continue
+            for selector in next_selectors:
+                try:
+                    buttons = self.driver.find_elements(By.CSS_SELECTOR, selector)
+                    for btn in buttons:
+                        if btn.is_displayed() and btn.is_enabled():
+                            btn.click()
+                            self.random_delay(3, 5)
+                            self.scroll_page()
+                            return True
+                except:
+                    continue
 
             return False
         except:
@@ -275,8 +345,9 @@ class SimpleTireScraper:
         seen_urls = set()
         unique_results = []
         for r in self.results:
-            if r['url'] not in seen_urls:
-                seen_urls.add(r['url'])
+            url = r.get('url', '')
+            if url and url not in seen_urls:
+                seen_urls.add(url)
                 unique_results.append(r)
 
         self.results = unique_results
@@ -314,7 +385,7 @@ def main():
                         help='Max pages per size (default: 10)')
     parser.add_argument('--output', '-o', help='Output filename')
     parser.add_argument('--headless', action='store_true',
-                        help='Run browser in headless mode (not recommended)')
+                        help='Run browser in headless mode (not recommended for this site)')
 
     args = parser.parse_args()
 

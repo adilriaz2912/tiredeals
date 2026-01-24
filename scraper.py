@@ -50,26 +50,11 @@ class SimpleTireScraper:
         if self.headless:
             options.add_argument('--headless=new')
 
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument('--disable-blink-features=AutomationControlled')
-        options.add_argument('--window-size=1920,1080')
-        options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0')
+        # Minimal options - avoid crashes
+        options.add_argument('--start-maximized')
 
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options.add_experimental_option('useAutomationExtension', False)
-
-        # Use Selenium 4's built-in driver manager - no Service needed
+        # Use Selenium 4's built-in driver manager
         self.driver = webdriver.Edge(options=options)
-
-        # Remove webdriver flag
-        self.driver.execute_cdp_cmd('Page.addScriptToEvaluateOnNewDocument', {
-            'source': '''
-                Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
-                window.chrome = { runtime: {} };
-            '''
-        })
-
         self.driver.set_page_load_timeout(120)
         print("Browser started!")
 

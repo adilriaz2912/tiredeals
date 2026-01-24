@@ -43,19 +43,23 @@ class SimpleTireScraper:
         # Launch browser with stealth settings
         self.browser = await self.playwright.chromium.launch(
             headless=self.headless,
+            slow_mo=50,  # Slow down actions to appear more human
             args=[
                 '--disable-blink-features=AutomationControlled',
                 '--disable-dev-shm-usage',
                 '--no-sandbox',
+                '--disable-web-security',
+                '--disable-features=IsolateOrigins,site-per-process',
             ]
         )
 
         # Create context with realistic browser fingerprint
         self.context = await self.browser.new_context(
             viewport={'width': 1920, 'height': 1080},
-            user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
             locale='en-US',
             timezone_id='America/New_York',
+            java_script_enabled=True,
         )
 
         # Add stealth scripts to avoid detection
@@ -75,6 +79,14 @@ class SimpleTireScraper:
 
             // Mock chrome
             window.chrome = { runtime: {} };
+
+            // Mock permissions
+            const originalQuery = window.navigator.permissions.query;
+            window.navigator.permissions.query = (parameters) => (
+                parameters.name === 'notifications' ?
+                    Promise.resolve({ state: Notification.permission }) :
+                    originalQuery(parameters)
+            );
         """)
 
         self.page = await self.context.new_page()
@@ -87,7 +99,14 @@ class SimpleTireScraper:
             'DNT': '1',
             'Connection': 'keep-alive',
             'Upgrade-Insecure-Requests': '1',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'none',
+            'Sec-Fetch-User': '?1',
         })
+
+        # Warm up - visit homepage first to get cookies
+        await self.warmup()
 
     async def close(self):
         """Clean up browser resources."""
@@ -99,6 +118,43 @@ class SimpleTireScraper:
     async def random_delay(self, min_sec: float = 1, max_sec: float = 3):
         """Add random delay to mimic human behavior."""
         await asyncio.sleep(random.uniform(min_sec, max_sec))
+
+    async def warmup(self):
+        """Visit homepage first to get cookies and pass bot checks."""
+        print("Warming up browser (visiting homepage)...")
+        try:
+            await self.page.goto(self.BASE_URL, wait_until='domcontentloaded', timeout=90000)
+
+            # Wait for potential Cloudflare challenge
+            await asyncio.sleep(5)
+
+            # Check if we hit a challenge page
+            content = await self.page.content()
+            if 'challenge' in content.lower() or 'checking your browser' in content.lower():
+                print("Cloudflare challenge detected, waiting for it to complete...")
+                # Wait longer for challenge to complete
+                await asyncio.sleep(10)
+
+                # Try to wait for the page to change
+                try:
+                    await self.page.wait_for_url(f"{self.BASE_URL}/**", timeout=30000)
+                except:
+                    pass
+
+            # Simulate some human-like behavior
+            await self.random_delay(2, 4)
+
+            # Scroll down a bit
+            await self.page.evaluate("window.scrollTo(0, 300)")
+            await self.random_delay(1, 2)
+
+            # Move mouse randomly
+            await self.page.mouse.move(random.randint(100, 800), random.randint(100, 600))
+
+            print("Warmup complete!")
+
+        except Exception as e:
+            print(f"Warmup warning: {e}")
 
     async def scrape_by_size(self, width: str, aspect_ratio: str, rim: str, max_pages: int = 5):
         """
@@ -120,24 +176,43 @@ class SimpleTireScraper:
 
         try:
             print(f"Navigating to: {search_url}")
-            await self.page.goto(search_url, wait_until='networkidle', timeout=60000)
+            await self.page.goto(search_url, wait_until='domcontentloaded', timeout=90000)
+
+            # Wait for page to fully render
+            await asyncio.sleep(5)
             await self.random_delay(2, 4)
 
-            # Check if we got blocked
+            # Check if we got blocked or hit challenge
             content = await self.page.content()
             if 'Access Denied' in content or 'blocked' in content.lower():
                 print("WARNING: Access may be blocked. Try running with headless=False")
                 return
 
+            if 'challenge' in content.lower() or 'checking your browser' in content.lower():
+                print("Cloudflare challenge detected, waiting...")
+                await asyncio.sleep(10)
+
+            # Take a screenshot for debugging
+            await self.page.screenshot(path='debug_screenshot.png')
+            print("Debug screenshot saved to debug_screenshot.png")
+
             page_num = 1
             while page_num <= max_pages:
                 print(f"\nProcessing page {page_num}...")
 
-                # Wait for product grid to load
+                # Wait for product grid to load - try multiple selectors
                 try:
-                    await self.page.wait_for_selector('[data-testid="product-card"], .product-card, .tire-card, article', timeout=15000)
+                    await self.page.wait_for_selector(
+                        '[data-testid="product-card"], .product-card, .tire-card, article, '
+                        '[class*="ProductCard"], [class*="TireCard"], [class*="product-list"], '
+                        '.search-results, [class*="SearchResults"]',
+                        timeout=20000
+                    )
                 except PlaywrightTimeout:
-                    print("No products found on this page")
+                    print("No products found with standard selectors, checking page content...")
+                    # Print page title for debugging
+                    title = await self.page.title()
+                    print(f"Page title: {title}")
                     break
 
                 # Extract product data from current page

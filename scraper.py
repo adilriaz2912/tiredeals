@@ -1,23 +1,29 @@
 #!/usr/bin/env python3
 """
 SimpleTire.com Web Scraper
-Scrapes tire data by product URL or SKU
-Outputs to CSV/Excel format
+Uses undetected-chromedriver to bypass Cloudflare protection
 """
 
-import asyncio
 import csv
+import time
 import random
 import re
 import sys
 from datetime import datetime
-from pathlib import Path
 
 try:
-    from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeout
+    import undetected_chromedriver as uc
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
 except ImportError:
-    print("Please install playwright: pip install playwright && playwright install chromium")
-    sys.exit(1)
+    print("Installing required packages...")
+    import subprocess
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "undetected-chromedriver", "selenium"])
+    import undetected_chromedriver as uc
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
 
 try:
     import pandas as pd
@@ -28,347 +34,254 @@ except ImportError:
 class SimpleTireScraper:
     BASE_URL = "https://www.simpletire.com"
 
-    def __init__(self, headless: bool = True):
+    def __init__(self, headless=False):
         self.headless = headless
-        self.browser = None
-        self.context = None
-        self.page = None
+        self.driver = None
         self.results = []
 
-    async def setup(self):
-        """Initialize browser with stealth settings."""
-        self.playwright = await async_playwright().start()
+    def setup(self):
+        """Initialize undetected Chrome browser."""
+        print("Starting browser...")
 
-        self.browser = await self.playwright.chromium.launch(
-            headless=self.headless,
-            slow_mo=50,
-            args=[
-                '--disable-blink-features=AutomationControlled',
-                '--disable-dev-shm-usage',
-                '--no-sandbox',
-            ]
-        )
+        options = uc.ChromeOptions()
+        if self.headless:
+            options.add_argument('--headless')
 
-        self.context = await self.browser.new_context(
-            viewport={'width': 1920, 'height': 1080},
-            user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-            locale='en-US',
-            timezone_id='America/New_York',
-        )
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--window-size=1920,1080')
 
-        await self.context.add_init_script("""
-            Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
-            Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});
-            Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']});
-            window.chrome = { runtime: {} };
-        """)
+        self.driver = uc.Chrome(options=options)
+        self.driver.set_page_load_timeout(120)
+        print("Browser started!")
 
-        self.page = await self.context.new_page()
-        await self.warmup()
+    def close(self):
+        if self.driver:
+            self.driver.quit()
 
-    async def close(self):
-        if self.browser:
-            await self.browser.close()
-        if self.playwright:
-            await self.playwright.stop()
+    def random_delay(self, min_sec=2, max_sec=5):
+        time.sleep(random.uniform(min_sec, max_sec))
 
-    async def random_delay(self, min_sec: float = 1, max_sec: float = 3):
-        await asyncio.sleep(random.uniform(min_sec, max_sec))
+    def scroll_page(self):
+        """Scroll down the page to load more content."""
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight/3);")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
+        time.sleep(1)
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(2)
 
-    async def warmup(self):
-        """Visit homepage first to get cookies."""
-        print("Warming up browser...")
-        try:
-            await self.page.goto(self.BASE_URL, wait_until='domcontentloaded', timeout=90000)
-            await asyncio.sleep(5)
-
-            # Check for Cloudflare
-            content = await self.page.content()
-            if 'challenge' in content.lower() or 'checking your browser' in content.lower():
-                print("Waiting for Cloudflare challenge...")
-                await asyncio.sleep(15)
-
-            await self.page.mouse.move(random.randint(100, 800), random.randint(100, 600))
-            print("Warmup complete!")
-        except Exception as e:
-            print(f"Warmup warning: {e}")
-
-    async def scrape_product_url(self, url: str) -> dict:
-        """Scrape a single product page by URL."""
-        print(f"\nScraping: {url}")
-
-        try:
-            await self.page.goto(url, wait_until='domcontentloaded', timeout=60000)
-            await asyncio.sleep(3)
-            await self.random_delay(1, 2)
-
-            # Extract product data from the page
-            data = await self.page.evaluate("""
-                () => {
-                    const result = {
-                        sku: '',
-                        brand: '',
-                        model: '',
-                        size: '',
-                        price: '',
-                        original_price: '',
-                        load_index: '',
-                        speed_rating: '',
-                        tire_type: '',
-                        warranty: '',
-                        url: window.location.href
-                    };
-
-                    // Try JSON-LD first (most reliable)
-                    const jsonLd = document.querySelector('script[type="application/ld+json"]');
-                    if (jsonLd) {
-                        try {
-                            const data = JSON.parse(jsonLd.textContent);
-                            if (data['@type'] === 'Product') {
-                                result.sku = data.sku || data.productID || '';
-                                result.brand = data.brand?.name || '';
-                                result.model = data.name || '';
-                                result.price = data.offers?.price || '';
-                            }
-                        } catch (e) {}
-                    }
-
-                    // Extract from page elements
-                    // Brand
-                    const brandEl = document.querySelector('[data-testid="brand"], .brand-name, [class*="Brand"], h1 span, .manufacturer');
-                    if (brandEl && !result.brand) result.brand = brandEl.textContent.trim();
-
-                    // Model
-                    const modelEl = document.querySelector('[data-testid="model"], .product-name, [class*="ProductName"], h1');
-                    if (modelEl && !result.model) {
-                        let modelText = modelEl.textContent.trim();
-                        // Clean up model name (remove brand if present at start)
-                        if (result.brand && modelText.startsWith(result.brand)) {
-                            modelText = modelText.substring(result.brand.length).trim();
-                        }
-                        result.model = modelText;
-                    }
-
-                    // Price - look for the main price
-                    const priceSelectors = [
-                        '[data-testid="price"]',
-                        '.price-value',
-                        '[class*="price"]:not([class*="original"])',
-                        '[class*="Price"]:not([class*="Original"])',
-                        '.current-price',
-                        'span[class*="amount"]'
-                    ];
-                    for (const sel of priceSelectors) {
-                        const el = document.querySelector(sel);
-                        if (el && !result.price) {
-                            const match = el.textContent.match(/\\$?([\\d,]+\\.?\\d*)/);
-                            if (match) {
-                                result.price = match[1].replace(',', '');
-                                break;
-                            }
-                        }
-                    }
-
-                    // Size - from URL or page
-                    const sizeMatch = window.location.href.match(/(\\d{3})[-/](\\d{2,3})[rR](\\d{2})/);
-                    if (sizeMatch) {
-                        result.size = `${sizeMatch[1]}/${sizeMatch[2]}R${sizeMatch[3]}`;
-                    }
-
-                    // Try to get size from page elements
-                    const sizeEl = document.querySelector('[class*="size"], [class*="Size"], .tire-size');
-                    if (sizeEl && !result.size) {
-                        const sizeText = sizeEl.textContent;
-                        const match = sizeText.match(/(\\d{3})\\/(\\d{2,3})[rR](\\d{2})/);
-                        if (match) result.size = match[0];
-                    }
-
-                    // SKU from URL or page
-                    const skuMatch = window.location.href.match(/[\\-_]([A-Z0-9]{5,})/i);
-                    if (skuMatch && !result.sku) result.sku = skuMatch[1];
-
-                    // Specs table
-                    const specRows = document.querySelectorAll('tr, [class*="spec-row"], [class*="SpecRow"]');
-                    specRows.forEach(row => {
-                        const text = row.textContent.toLowerCase();
-                        const value = row.querySelector('td:last-child, [class*="value"]')?.textContent.trim() || '';
-
-                        if (text.includes('load index') || text.includes('load range')) {
-                            result.load_index = value;
-                        }
-                        if (text.includes('speed rating')) {
-                            result.speed_rating = value;
-                        }
-                        if (text.includes('tire type') || text.includes('category')) {
-                            result.tire_type = value;
-                        }
-                        if (text.includes('warranty') || text.includes('mileage')) {
-                            result.warranty = value;
-                        }
-                    });
-
-                    return result;
-                }
-            """)
-
-            data['scraped_at'] = datetime.now().isoformat()
-            print(f"  -> {data['brand']} {data['model']} - ${data['price']}")
-            return data
-
-        except PlaywrightTimeout:
-            print(f"  -> Timeout loading {url}")
-            return {'url': url, 'error': 'timeout', 'scraped_at': datetime.now().isoformat()}
-        except Exception as e:
-            print(f"  -> Error: {e}")
-            return {'url': url, 'error': str(e), 'scraped_at': datetime.now().isoformat()}
-
-    async def scrape_urls(self, urls: list):
-        """Scrape multiple product URLs."""
-        print(f"\nScraping {len(urls)} products...")
-
-        for i, url in enumerate(urls, 1):
-            print(f"\n[{i}/{len(urls)}]", end="")
-
-            # Make sure URL is complete
-            if not url.startswith('http'):
-                url = f"{self.BASE_URL}{url}" if url.startswith('/') else f"{self.BASE_URL}/{url}"
-
-            data = await self.scrape_product_url(url)
-            self.results.append(data)
-
-            # Random delay between requests
-            if i < len(urls):
-                await self.random_delay(2, 5)
-
-    async def scrape_search(self, query: str, max_results: int = 50):
-        """Search for tires and scrape results."""
-        print(f"\nSearching for: {query}")
-
-        search_url = f"{self.BASE_URL}/search?q={query.replace(' ', '+')}"
-
-        try:
-            await self.page.goto(search_url, wait_until='domcontentloaded', timeout=60000)
-            await asyncio.sleep(5)
-
-            # Get product URLs from search results
-            urls = await self.page.evaluate("""
-                () => {
-                    const links = document.querySelectorAll('a[href*="/tire/"], a[href*="/product/"]');
-                    return [...new Set([...links].map(a => a.href))];
-                }
-            """)
-
-            print(f"Found {len(urls)} products")
-            urls = urls[:max_results]
-
-            # Now scrape each product page
-            await self.scrape_urls(urls)
-
-        except Exception as e:
-            print(f"Search error: {e}")
-
-    async def scrape_by_size(self, size: str, brands: list = None, max_results: int = 100):
-        """Scrape all tires for a given size, optionally filtered by brands."""
-        # Parse size: 275/45R20 -> 275-45r20
-        match = re.match(r'(\d+)[/\-](\d+)[Rr\-]?(\d+)', size)
-        if not match:
-            print(f"Invalid size format: {size}")
-            return
-
-        width, aspect, rim = match.groups()
+    def scrape_size(self, width, aspect, rim, max_pages=10):
+        """Scrape all tires for a given size."""
         size_str = f"{width}/{aspect}R{rim}"
-        url_size = f"{width}-{aspect}r{rim}"
+        url = f"{self.BASE_URL}/tire-sizes/{width}-{aspect}r{rim}-tires"
 
         print(f"\n{'='*60}")
-        print(f"Scraping tires for size: {size_str}")
-        if brands:
-            print(f"Filtering by brands: {', '.join(brands)}")
+        print(f"Scraping: {size_str}")
+        print(f"URL: {url}")
         print(f"{'='*60}")
 
-        search_url = f"{self.BASE_URL}/tire-sizes/{url_size}-tires"
-
         try:
-            await self.page.goto(search_url, wait_until='domcontentloaded', timeout=90000)
-            await asyncio.sleep(5)
+            self.driver.get(url)
+            self.random_delay(5, 8)
 
-            # Save debug screenshot
-            await self.page.screenshot(path='debug_screenshot.png')
-            print("Debug screenshot saved")
+            # Check if we're blocked
+            page_source = self.driver.page_source.lower()
+            if 'access denied' in page_source or 'blocked' in page_source:
+                print("ACCESS BLOCKED - trying to wait it out...")
+                time.sleep(10)
+                self.driver.refresh()
+                self.random_delay(5, 8)
 
-            # Get all product URLs from the page
-            all_urls = []
+            # Scroll to load content
+            self.scroll_page()
+
+            # Take screenshot for debugging
+            self.driver.save_screenshot('debug_screenshot.png')
+            print("Screenshot saved to debug_screenshot.png")
+
             page_num = 1
-
-            while len(all_urls) < max_results:
+            while page_num <= max_pages:
                 print(f"\nPage {page_num}...")
 
-                urls = await self.page.evaluate("""
-                    () => {
-                        const links = document.querySelectorAll('a[href*="/tire/"], a[href*="/tires/"]');
-                        return [...new Set([...links].map(a => a.href).filter(h => h.includes('-p-') || h.includes('/tire/')))];
-                    }
-                """)
+                # Find all product cards
+                products = self.extract_products_from_page(size_str)
 
-                if not urls:
-                    print("No product links found on page")
+                if products:
+                    print(f"Found {len(products)} products")
+                    self.results.extend(products)
+                else:
+                    print("No products found on this page")
+                    # Print page title for debugging
+                    print(f"Page title: {self.driver.title}")
                     break
-
-                print(f"Found {len(urls)} product links")
-                all_urls.extend(urls)
 
                 # Try to go to next page
-                try:
-                    next_btn = await self.page.query_selector('a[aria-label="Next"], button:has-text("Next"), [class*="next"]')
-                    if next_btn:
-                        await next_btn.click()
-                        await self.page.wait_for_load_state('domcontentloaded')
-                        await asyncio.sleep(3)
-                        page_num += 1
-                    else:
-                        break
-                except:
+                if not self.go_to_next_page():
                     break
 
-            # Remove duplicates
-            all_urls = list(dict.fromkeys(all_urls))[:max_results]
-            print(f"\nTotal unique products: {len(all_urls)}")
-
-            # Scrape each product
-            for i, url in enumerate(all_urls, 1):
-                print(f"\n[{i}/{len(all_urls)}]", end="")
-
-                data = await self.scrape_product_url(url)
-                data['selected_size'] = size_str
-
-                # Filter by brand if specified
-                if brands:
-                    product_brand = data.get('brand', '').lower()
-                    if not any(b.lower() in product_brand for b in brands):
-                        print(f"  -> Skipping (brand filter)")
-                        continue
-
-                self.results.append(data)
-
-                if i < len(all_urls):
-                    await self.random_delay(2, 4)
+                page_num += 1
+                self.random_delay(3, 5)
 
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error scraping {size_str}: {e}")
+            self.driver.save_screenshot('error_screenshot.png')
 
-    def save_results(self, filename: str = None):
+    def extract_products_from_page(self, size_str):
+        """Extract product data from the current page."""
+        products = []
+
+        try:
+            # Wait for products to load
+            WebDriverWait(self.driver, 15).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "a[href*='/tires/']"))
+            )
+        except:
+            print("Timeout waiting for products")
+            return products
+
+        # Try to get product data from the page
+        try:
+            # Execute JavaScript to extract product info
+            product_data = self.driver.execute_script("""
+                const products = [];
+
+                // Find all product links/cards
+                const links = document.querySelectorAll('a[href*="/tires/"]');
+                const seen = new Set();
+
+                links.forEach(link => {
+                    const href = link.href;
+                    if (seen.has(href) || !href.includes('-p-')) return;
+                    seen.add(href);
+
+                    // Try to find the product card container
+                    let card = link.closest('[class*="product"]') ||
+                               link.closest('[class*="card"]') ||
+                               link.closest('article') ||
+                               link.parentElement?.parentElement;
+
+                    if (!card) card = link;
+
+                    // Extract text content
+                    const text = card.innerText || '';
+
+                    // Try to find price
+                    let price = '';
+                    const priceMatch = text.match(/\\$([\\d,]+\\.?\\d*)/);
+                    if (priceMatch) price = priceMatch[1].replace(',', '');
+
+                    // Try to parse brand/model from URL
+                    // URL format: /brand-model-size-p-specs
+                    const urlParts = href.split('/').pop().split('-p-')[0];
+
+                    products.push({
+                        url: href,
+                        raw_text: text.substring(0, 500),
+                        price: price,
+                        url_slug: urlParts
+                    });
+                });
+
+                return products;
+            """)
+
+            for item in product_data:
+                product = {
+                    'selected_size': size_str,
+                    'url': item['url'],
+                    'price': item['price'],
+                    'brand': '',
+                    'model': '',
+                    'sku': '',
+                    'size': '',
+                    'load_index': '',
+                    'speed_rating': '',
+                    'scraped_at': datetime.now().isoformat()
+                }
+
+                # Parse brand/model from URL slug
+                slug = item.get('url_slug', '')
+                if slug:
+                    # Try to extract brand (usually first word)
+                    parts = slug.replace('-', ' ').split()
+                    if parts:
+                        product['brand'] = parts[0].title()
+                        if len(parts) > 1:
+                            # Model is everything else before size
+                            model_parts = []
+                            for p in parts[1:]:
+                                if re.match(r'^\d{3}$', p):  # Hit the size
+                                    break
+                                model_parts.append(p)
+                            product['model'] = ' '.join(model_parts).title()
+
+                # Parse size from URL
+                size_match = re.search(r'(\d{3})[/-](\d{2,3})r(\d{2})', item['url'], re.I)
+                if size_match:
+                    product['size'] = f"{size_match.group(1)}/{size_match.group(2)}R{size_match.group(3)}"
+
+                # Try to extract more from raw text
+                text = item.get('raw_text', '')
+
+                # Look for load/speed (e.g., "110H", "106V")
+                load_speed = re.search(r'\b(\d{2,3})([A-Z])\b', text)
+                if load_speed:
+                    product['load_index'] = load_speed.group(1)
+                    product['speed_rating'] = load_speed.group(2)
+
+                products.append(product)
+
+        except Exception as e:
+            print(f"Error extracting products: {e}")
+
+        return products
+
+    def go_to_next_page(self):
+        """Try to navigate to the next page."""
+        try:
+            # Look for next page button
+            next_buttons = self.driver.find_elements(By.CSS_SELECTOR,
+                "a[aria-label='Next'], button[aria-label='Next'], [class*='next']")
+
+            for btn in next_buttons:
+                if btn.is_displayed() and btn.is_enabled():
+                    try:
+                        btn.click()
+                        self.random_delay(3, 5)
+                        self.scroll_page()
+                        return True
+                    except:
+                        continue
+
+            return False
+        except:
+            return False
+
+    def save_results(self, filename=None):
         """Save results to CSV and Excel."""
         if not self.results:
             print("\nNo results to save!")
-            return None
+            return
 
         if not filename:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"simpletire_{timestamp}"
 
-        columns = ['selected_size', 'sku', 'brand', 'model', 'size', 'price',
-                   'load_index', 'speed_rating', 'tire_type', 'warranty', 'url', 'scraped_at']
+        columns = ['selected_size', 'brand', 'model', 'size', 'price',
+                   'load_index', 'speed_rating', 'sku', 'url', 'scraped_at']
 
-        # CSV
+        # Remove duplicates based on URL
+        seen_urls = set()
+        unique_results = []
+        for r in self.results:
+            if r['url'] not in seen_urls:
+                seen_urls.add(r['url'])
+                unique_results.append(r)
+
+        self.results = unique_results
+
+        # Save CSV
         csv_path = f"{filename}.csv"
         with open(csv_path, 'w', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=columns, extrasaction='ignore')
@@ -376,7 +289,7 @@ class SimpleTireScraper:
             writer.writerows(self.results)
         print(f"\nSaved {len(self.results)} products to {csv_path}")
 
-        # Excel
+        # Save Excel
         if pd is not None:
             try:
                 df = pd.DataFrame(self.results)
@@ -385,69 +298,45 @@ class SimpleTireScraper:
                         df[col] = ''
                 df = df[columns]
                 excel_path = f"{filename}.xlsx"
-                df.to_excel(excel_path, index=False, sheet_name='Tires')
+                df.to_excel(excel_path, index=False)
                 print(f"Saved to Excel: {excel_path}")
             except Exception as e:
-                print(f"Excel save error: {e}")
-
-        return csv_path
+                print(f"Excel error: {e}")
 
 
-async def main():
+def main():
     import argparse
 
-    parser = argparse.ArgumentParser(description='Scrape tire data from SimpleTire.com')
-    parser.add_argument('--urls', nargs='+', help='Product URLs to scrape')
-    parser.add_argument('--urls-file', help='File containing product URLs (one per line)')
-    parser.add_argument('--size', help='Tire size to search (e.g., 275/45R20)')
-    parser.add_argument('--sizes', nargs='+', help='Multiple tire sizes')
-    parser.add_argument('--brands', nargs='+', help='Filter by brands (e.g., Goodyear Cooper)')
-    parser.add_argument('--search', help='Search query')
-    parser.add_argument('--max', type=int, default=50, help='Max results per size (default: 50)')
-    parser.add_argument('--output', '-o', help='Output filename (without extension)')
-    parser.add_argument('--visible', action='store_true', help='Show browser window')
+    parser = argparse.ArgumentParser(description='Scrape SimpleTire.com')
+    parser.add_argument('--sizes', nargs='+', required=True,
+                        help='Tire sizes to scrape (e.g., 275/45R20 265/70R17)')
+    parser.add_argument('--max-pages', type=int, default=10,
+                        help='Max pages per size (default: 10)')
+    parser.add_argument('--output', '-o', help='Output filename')
+    parser.add_argument('--headless', action='store_true',
+                        help='Run browser in headless mode (not recommended)')
 
     args = parser.parse_args()
 
-    scraper = SimpleTireScraper(headless=not args.visible)
+    scraper = SimpleTireScraper(headless=args.headless)
 
     try:
-        await scraper.setup()
+        scraper.setup()
 
-        # Mode 1: Scrape specific URLs
-        if args.urls:
-            await scraper.scrape_urls(args.urls)
-
-        # Mode 2: Scrape URLs from file
-        elif args.urls_file:
-            with open(args.urls_file, 'r') as f:
-                urls = [line.strip() for line in f if line.strip()]
-            await scraper.scrape_urls(urls)
-
-        # Mode 3: Scrape by size(s)
-        elif args.size or args.sizes:
-            sizes = args.sizes or [args.size]
-            for size in sizes:
-                await scraper.scrape_by_size(size, brands=args.brands, max_results=args.max)
-
-        # Mode 4: Search
-        elif args.search:
-            await scraper.scrape_search(args.search, max_results=args.max)
-
-        else:
-            print("Usage examples:")
-            print("  python scraper.py --size 275/45R20")
-            print("  python scraper.py --size 275/45R20 --brands Goodyear Cooper")
-            print("  python scraper.py --urls https://simpletire.com/tire/...")
-            print("  python scraper.py --urls-file my_urls.txt")
-            print("  python scraper.py --search 'all terrain'")
-            return
+        for size in args.sizes:
+            # Parse size: 275/45R20 or 275-45-20
+            match = re.match(r'(\d+)[/\-](\d+)[Rr\-]?(\d+)', size)
+            if match:
+                width, aspect, rim = match.groups()
+                scraper.scrape_size(width, aspect, rim, max_pages=args.max_pages)
+            else:
+                print(f"Invalid size format: {size}")
 
         scraper.save_results(args.output)
 
     finally:
-        await scraper.close()
+        scraper.close()
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    main()

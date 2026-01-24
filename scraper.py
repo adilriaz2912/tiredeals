@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 SimpleTire.com Web Scraper
-Uses Microsoft Edge (built into Windows) for better compatibility
+Uses Selenium 4's built-in driver manager (no external downloads)
 """
 
 import csv
@@ -11,26 +11,21 @@ import re
 import sys
 from datetime import datetime
 
-# Install dependencies if needed
 try:
     from selenium import webdriver
-    from selenium.webdriver.edge.service import Service
     from selenium.webdriver.edge.options import Options
     from selenium.webdriver.common.by import By
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
-    from webdriver_manager.microsoft import EdgeChromiumDriverManager
 except ImportError:
-    print("Installing required packages...")
+    print("Installing selenium...")
     import subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "selenium", "webdriver-manager"])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "selenium"])
     from selenium import webdriver
-    from selenium.webdriver.edge.service import Service
     from selenium.webdriver.edge.options import Options
     from selenium.webdriver.common.by import By
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
-    from webdriver_manager.microsoft import EdgeChromiumDriverManager
 
 try:
     import pandas as pd
@@ -47,7 +42,7 @@ class SimpleTireScraper:
         self.results = []
 
     def setup(self):
-        """Initialize Edge browser."""
+        """Initialize Edge browser using Selenium's built-in driver manager."""
         print("Starting Edge browser...")
 
         options = Options()
@@ -55,20 +50,17 @@ class SimpleTireScraper:
         if self.headless:
             options.add_argument('--headless=new')
 
-        # Anti-detection options
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--disable-blink-features=AutomationControlled')
         options.add_argument('--window-size=1920,1080')
         options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0')
 
-        # Disable automation flags
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option('useAutomationExtension', False)
 
-        # Auto-download and setup EdgeDriver
-        service = Service(EdgeChromiumDriverManager().install())
-        self.driver = webdriver.Edge(service=service, options=options)
+        # Use Selenium 4's built-in driver manager - no Service needed
+        self.driver = webdriver.Edge(options=options)
 
         # Remove webdriver flag
         self.driver.execute_cdp_cmd('Page.addScriptToEvaluateOnNewDocument', {
@@ -112,7 +104,6 @@ class SimpleTireScraper:
             print("Page loading...")
             self.random_delay(5, 8)
 
-            # Check if we're blocked
             page_source = self.driver.page_source.lower()
             if 'access denied' in page_source or 'blocked' in page_source:
                 print("ACCESS BLOCKED - waiting and retrying...")
@@ -120,15 +111,12 @@ class SimpleTireScraper:
                 self.driver.refresh()
                 self.random_delay(5, 8)
 
-            # Check for Cloudflare challenge
             if 'checking your browser' in page_source or 'challenge' in page_source:
                 print("Cloudflare challenge detected - waiting...")
                 time.sleep(15)
 
-            # Scroll to load content
             self.scroll_page()
 
-            # Take screenshot for debugging
             self.driver.save_screenshot('debug_screenshot.png')
             print("Screenshot saved to debug_screenshot.png")
             print(f"Page title: {self.driver.title}")
@@ -137,7 +125,6 @@ class SimpleTireScraper:
             while page_num <= max_pages:
                 print(f"\nPage {page_num}...")
 
-                # Find all product cards
                 products = self.extract_products_from_page(size_str)
 
                 if products:
@@ -147,7 +134,6 @@ class SimpleTireScraper:
                     print("No products found on this page")
                     break
 
-                # Try to go to next page
                 if not self.go_to_next_page():
                     break
 
@@ -167,7 +153,6 @@ class SimpleTireScraper:
         products = []
 
         try:
-            # Wait for page to have some content
             WebDriverWait(self.driver, 20).until(
                 EC.presence_of_element_located((By.TAG_NAME, "body"))
             )
@@ -175,13 +160,9 @@ class SimpleTireScraper:
         except:
             pass
 
-        # Try to get product data from the page
         try:
-            # Execute JavaScript to extract product info
             product_data = self.driver.execute_script("""
                 const products = [];
-
-                // Find all product links/cards - multiple strategies
                 const selectors = [
                     'a[href*="/tires/"]',
                     'a[href*="/tire/"]',
@@ -201,11 +182,10 @@ class SimpleTireScraper:
                     const href = link.href || '';
                     if (!href || seen.has(href)) return;
                     if (!href.includes('simpletire.com')) return;
-                    if (href.includes('/tire-sizes/')) return;  // Skip category links
+                    if (href.includes('/tire-sizes/')) return;
 
                     seen.add(href);
 
-                    // Try to find the product card container
                     let card = link.closest('[class*="product"]') ||
                                link.closest('[class*="Product"]') ||
                                link.closest('[class*="card"]') ||
@@ -216,17 +196,14 @@ class SimpleTireScraper:
 
                     if (!card) card = link;
 
-                    // Extract text content
                     const text = card.innerText || card.textContent || '';
 
-                    // Try to find price
                     let price = '';
                     const priceMatches = text.match(/\\$([\\d,]+\\.?\\d*)/g);
                     if (priceMatches && priceMatches.length > 0) {
                         price = priceMatches[0].replace('$', '').replace(',', '');
                     }
 
-                    // Get URL slug for parsing
                     const urlParts = href.split('/').pop() || '';
                     const slug = urlParts.split('-p-')[0] || urlParts;
 
@@ -257,7 +234,6 @@ class SimpleTireScraper:
                     'scraped_at': datetime.now().isoformat()
                 }
 
-                # Parse brand/model from URL slug
                 slug = item.get('url_slug', '')
                 if slug:
                     parts = slug.replace('-', ' ').split()
@@ -271,15 +247,11 @@ class SimpleTireScraper:
                                 model_parts.append(p)
                             product['model'] = ' '.join(model_parts).title()
 
-                # Parse size from URL
                 size_match = re.search(r'(\d{3})[/-](\d{2,3})r(\d{2})', item['url'], re.I)
                 if size_match:
                     product['size'] = f"{size_match.group(1)}/{size_match.group(2)}R{size_match.group(3)}"
 
-                # Try to extract more from raw text
                 text = item.get('raw_text', '')
-
-                # Look for load/speed rating (e.g., "110H", "106V")
                 load_speed = re.search(r'\b(\d{2,3})([A-Z])\b', text)
                 if load_speed:
                     product['load_index'] = load_speed.group(1)
@@ -337,7 +309,6 @@ class SimpleTireScraper:
         columns = ['selected_size', 'brand', 'model', 'size', 'price',
                    'load_index', 'speed_rating', 'sku', 'url', 'scraped_at']
 
-        # Remove duplicates based on URL
         seen_urls = set()
         unique_results = []
         for r in self.results:
@@ -348,7 +319,6 @@ class SimpleTireScraper:
 
         self.results = unique_results
 
-        # Save CSV
         csv_path = f"{filename}.csv"
         with open(csv_path, 'w', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=columns, extrasaction='ignore')
@@ -356,7 +326,6 @@ class SimpleTireScraper:
             writer.writerows(self.results)
         print(f"\nSaved {len(self.results)} products to {csv_path}")
 
-        # Save Excel
         if pd is not None:
             try:
                 df = pd.DataFrame(self.results)

@@ -27,6 +27,10 @@ import {
   Mail,
   TrendingUp,
   DollarSign,
+  Megaphone,
+  MousePointer,
+  Target,
+  Share2,
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -111,14 +115,32 @@ const navigation: NavItem[] = [
     icon: <ShoppingBag className="w-5 h-5" />,
   },
   {
-    label: 'Email Automation',
-    href: '/email-automation',
-    icon: <Mail className="w-5 h-5" />,
+    label: 'Automations',
+    href: '/automations',
+    icon: <MousePointer className="w-5 h-5" />,
+    children: [
+      { label: 'Email Automation', href: '/email-automation' },
+      { label: 'Browse Abandonment', href: '/automations/browse-abandonment' },
+      { label: 'SMS & Notifications', href: '/notifications' },
+    ],
   },
   {
-    label: 'SMS & Notifications',
-    href: '/notifications',
-    icon: <MessageSquare className="w-5 h-5" />,
+    label: 'Marketing',
+    href: '/marketing',
+    icon: <Megaphone className="w-5 h-5" />,
+    children: [
+      { label: 'Google Ads (PPC)', href: '/marketing/ppc' },
+      { label: 'Google My Business', href: '/marketing/gmb' },
+      { label: 'Social Media Hub', href: '/marketing/social' },
+    ],
+  },
+  {
+    label: 'Competitive Intel',
+    href: '/competitive',
+    icon: <Target className="w-5 h-5" />,
+    children: [
+      { label: 'Price Comparison', href: '/competitive/pricing' },
+    ],
   },
   {
     label: 'Reports',
@@ -126,6 +148,7 @@ const navigation: NavItem[] = [
     icon: <BarChart3 className="w-5 h-5" />,
     children: [
       { label: 'Overview', href: '/reports' },
+      { label: 'P&L Statement', href: '/reports/pnl' },
       { label: 'Margin Reports', href: '/reports/margins' },
       { label: 'Sales Forecast', href: '/reports/forecast' },
     ],

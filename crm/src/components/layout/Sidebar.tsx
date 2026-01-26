@@ -21,6 +21,12 @@ import {
   LogOut,
   ChevronDown,
   Bell,
+  RotateCcw,
+  Tag,
+  Calendar,
+  Mail,
+  TrendingUp,
+  DollarSign,
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -55,9 +61,19 @@ const navigation: NavItem[] = [
     ],
   },
   {
+    label: 'Returns & Refunds',
+    href: '/returns',
+    icon: <RotateCcw className="w-5 h-5" />,
+  },
+  {
     label: 'Shipping',
     href: '/shipping',
     icon: <Truck className="w-5 h-5" />,
+  },
+  {
+    label: 'Scheduling',
+    href: '/scheduling',
+    icon: <Calendar className="w-5 h-5" />,
   },
   {
     label: 'Installers',
@@ -68,6 +84,11 @@ const navigation: NavItem[] = [
     label: 'Inventory',
     href: '/inventory',
     icon: <Package className="w-5 h-5" />,
+  },
+  {
+    label: 'Pricing & Promos',
+    href: '/pricing',
+    icon: <Tag className="w-5 h-5" />,
   },
   {
     label: 'Support Tickets',
@@ -90,6 +111,11 @@ const navigation: NavItem[] = [
     icon: <ShoppingBag className="w-5 h-5" />,
   },
   {
+    label: 'Email Automation',
+    href: '/email-automation',
+    icon: <Mail className="w-5 h-5" />,
+  },
+  {
     label: 'SMS & Notifications',
     href: '/notifications',
     icon: <MessageSquare className="w-5 h-5" />,
@@ -98,6 +124,11 @@ const navigation: NavItem[] = [
     label: 'Reports',
     href: '/reports',
     icon: <BarChart3 className="w-5 h-5" />,
+    children: [
+      { label: 'Overview', href: '/reports' },
+      { label: 'Margin Reports', href: '/reports/margins' },
+      { label: 'Sales Forecast', href: '/reports/forecast' },
+    ],
   },
 ]
 

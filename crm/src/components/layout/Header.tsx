@@ -1,16 +1,17 @@
 'use client'
 
-import { Bell, Search, ChevronDown } from 'lucide-react'
+import { Bell, ChevronDown } from 'lucide-react'
 import { useState } from 'react'
+import { GlobalSearch } from '@/components/ui/GlobalSearch'
 
 interface HeaderProps {
   title: string
   subtitle?: string
+  actions?: React.ReactNode
 }
 
-export function Header({ title, subtitle }: HeaderProps) {
+export function Header({ title, subtitle, actions }: HeaderProps) {
   const [showNotifications, setShowNotifications] = useState(false)
-  const [showSearch, setShowSearch] = useState(false)
 
   return (
     <header className="sticky top-0 z-30 bg-white border-b border-gray-200">
@@ -25,25 +26,8 @@ export function Header({ title, subtitle }: HeaderProps) {
 
         {/* Actions */}
         <div className="flex items-center gap-3">
-          {/* Search */}
-          <div className="relative">
-            <button
-              onClick={() => setShowSearch(!showSearch)}
-              className="p-2.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <Search className="w-5 h-5" />
-            </button>
-            {showSearch && (
-              <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-200 p-2">
-                <input
-                  type="text"
-                  placeholder="Search customers, orders, tickets..."
-                  className="input"
-                  autoFocus
-                />
-              </div>
-            )}
-          </div>
+          {/* Global Search */}
+          <GlobalSearch />
 
           {/* Notifications */}
           <div className="relative">
@@ -107,6 +91,9 @@ export function Header({ title, subtitle }: HeaderProps) {
               <QuickActionItem label="Add Installer" href="/installers/new" />
             </div>
           </div>
+
+          {/* Custom Actions */}
+          {actions}
         </div>
       </div>
     </header>

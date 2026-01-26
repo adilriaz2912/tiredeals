@@ -15,6 +15,11 @@ export function formatCurrency(amount: number | string, currency = 'USD'): strin
   }).format(num)
 }
 
+// Format number with commas
+export function formatNumber(num: number): string {
+  return new Intl.NumberFormat('en-US').format(num)
+}
+
 // Format date
 export function formatDate(date: Date | string, options?: Intl.DateTimeFormatOptions): string {
   const d = typeof date === 'string' ? new Date(date) : date

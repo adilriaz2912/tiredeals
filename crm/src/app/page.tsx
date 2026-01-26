@@ -163,7 +163,7 @@ export default function Dashboard() {
                       <td>
                         <OrderStatusBadge status={order.status} />
                       </td>
-                      <td className="text-gray-500">{formatRelativeTime(order.date)}</td>
+                      <td className="text-gray-500" suppressHydrationWarning>{formatRelativeTime(order.date)}</td>
                     </tr>
                   ))}
                 </tbody>

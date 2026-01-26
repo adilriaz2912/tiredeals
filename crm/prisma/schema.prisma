@@ -1,0 +1,1095 @@
+// TireDeals CRM Database Schema
+// Comprehensive schema for tire retail operations
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== USER & AUTH ====================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  firstName     String
+  lastName      String
+  role          UserRole  @default(STAFF)
+  avatar        String?
+  phone         String?
+  isActive      Boolean   @default(true)
+  lastLoginAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  assignedTickets   SupportTicket[]   @relation("AssignedAgent")
+  ticketComments    TicketComment[]
+  activityLogs      ActivityLog[]
+  notifications     Notification[]
+
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  STAFF
+  SUPPORT
+}
+
+// ==================== CUSTOMER MANAGEMENT ====================
+
+model Customer {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  phone             String?
+  firstName         String
+  lastName          String
+  company           String?
+
+  // Loyalty Program
+  loyaltyPoints     Int       @default(0)
+  loyaltyTier       LoyaltyTier @default(BRONZE)
+  totalSpent        Decimal   @default(0) @db.Decimal(10, 2)
+
+  // Marketing
+  marketingOptIn    Boolean   @default(false)
+  smsOptIn          Boolean   @default(false)
+
+  // Metadata
+  source            String?   // How they found us
+  notes             String?   @db.Text
+  tags              String[]  // Custom tags
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  addresses         Address[]
+  vehicles          Vehicle[]
+  orders            Order[]
+  carts             Cart[]
+  abandonedCarts    AbandonedCart[]
+  supportTickets    SupportTicket[]
+  communications    Communication[]
+  loyaltyHistory    LoyaltyTransaction[]
+  warranties        Warranty[]
+
+  @@index([email])
+  @@index([phone])
+  @@map("customers")
+}
+
+enum LoyaltyTier {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+model Address {
+  id            String    @id @default(cuid())
+  customerId    String
+  type          AddressType @default(SHIPPING)
+  isDefault     Boolean   @default(false)
+  firstName     String
+  lastName      String
+  company       String?
+  street1       String
+  street2       String?
+  city          String
+  state         String
+  zipCode       String
+  country       String    @default("US")
+  phone         String?
+  instructions  String?   // Delivery instructions
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  customer      Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  orders        Order[]   @relation("ShippingAddress")
+  billingOrders Order[]   @relation("BillingAddress")
+
+  @@index([customerId])
+  @@index([zipCode])
+  @@map("addresses")
+}
+
+enum AddressType {
+  SHIPPING
+  BILLING
+  BOTH
+}
+
+model Vehicle {
+  id            String    @id @default(cuid())
+  customerId    String
+  year          Int
+  make          String
+  model         String
+  trim          String?
+  tireSize      String?   // e.g., "225/65R17"
+  nickname      String?   // "My Truck", "Wife's Car"
+  vin           String?
+  licensePlate  String?
+  mileage       Int?
+  isPrimary     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  customer      Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  orders        Order[]
+  warranties    Warranty[]
+
+  @@index([customerId])
+  @@map("vehicles")
+}
+
+// ==================== INVENTORY & PRODUCTS ====================
+
+model TireBrand {
+  id            String    @id @default(cuid())
+  name          String    @unique
+  slug          String    @unique
+  logo          String?
+  description   String?   @db.Text
+  website       String?
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  tires         Tire[]
+
+  @@map("tire_brands")
+}
+
+model TireCategory {
+  id            String    @id @default(cuid())
+  name          String    @unique  // All-Season, Winter, Performance, etc.
+  slug          String    @unique
+  description   String?   @db.Text
+  icon          String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  tires         Tire[]
+
+  @@map("tire_categories")
+}
+
+model Tire {
+  id              String    @id @default(cuid())
+  sku             String    @unique
+  brandId         String
+  categoryId      String
+  name            String
+  description     String?   @db.Text
+
+  // Tire Specifications
+  width           Int       // 225
+  aspectRatio     Int       // 65
+  rimDiameter     Int       // 17
+  loadIndex       Int?      // 102
+  speedRating     String?   // H, V, W, Y
+  tireSize        String    // "225/65R17" computed/stored
+
+  // Additional Specs
+  treadDepth      Decimal?  @db.Decimal(4, 2)  // in 32nds
+  treadwearRating Int?
+  tractionRating  String?   // AA, A, B, C
+  tempRating      String?   // A, B, C
+  sidewall        String?   // BSW, WSW, OWL
+  plyRating       Int?
+  isRunFlat       Boolean   @default(false)
+
+  // Warranty
+  mileageWarranty Int?      // e.g., 60000 miles
+  roadHazardMonths Int?     // Road hazard warranty in months
+
+  // Pricing
+  cost            Decimal   @db.Decimal(10, 2)  // Our cost
+  msrp            Decimal   @db.Decimal(10, 2)  // Manufacturer suggested
+  price           Decimal   @db.Decimal(10, 2)  // Our selling price
+  salePrice       Decimal?  @db.Decimal(10, 2)  // Sale price if on sale
+
+  // Inventory
+  quantity        Int       @default(0)
+  reorderPoint    Int       @default(10)
+  reorderQty      Int       @default(50)
+  warehouseLocation String?
+
+  // Media
+  images          String[]
+
+  // Status
+  isActive        Boolean   @default(true)
+  isFeatured      Boolean   @default(false)
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  brand           TireBrand     @relation(fields: [brandId], references: [id])
+  category        TireCategory  @relation(fields: [categoryId], references: [id])
+  orderItems      OrderItem[]
+  cartItems       CartItem[]
+  inventoryLogs   InventoryLog[]
+  warranties      Warranty[]
+
+  @@index([brandId])
+  @@index([categoryId])
+  @@index([tireSize])
+  @@index([sku])
+  @@map("tires")
+}
+
+model InventoryLog {
+  id            String    @id @default(cuid())
+  tireId        String
+  type          InventoryLogType
+  quantity      Int       // Positive for additions, negative for deductions
+  previousQty   Int
+  newQty        Int
+  reason        String?
+  reference     String?   // Order ID, PO number, etc.
+  cost          Decimal?  @db.Decimal(10, 2)
+  createdAt     DateTime  @default(now())
+
+  // Relations
+  tire          Tire      @relation(fields: [tireId], references: [id])
+
+  @@index([tireId])
+  @@index([createdAt])
+  @@map("inventory_logs")
+}
+
+enum InventoryLogType {
+  PURCHASE      // Bought from supplier
+  SALE          // Sold to customer
+  ADJUSTMENT    // Manual adjustment
+  RETURN        // Customer return
+  DAMAGED       // Write-off damaged
+  TRANSFER      // Warehouse transfer
+}
+
+// ==================== ORDERS & SHIPPING ====================
+
+model Order {
+  id              String    @id @default(cuid())
+  orderNumber     String    @unique
+  customerId      String
+  vehicleId       String?
+
+  // Addresses
+  shippingAddressId String
+  billingAddressId  String
+
+  // Order Details
+  status          OrderStatus @default(PENDING)
+  paymentStatus   PaymentStatus @default(PENDING)
+
+  // Pricing
+  subtotal        Decimal   @db.Decimal(10, 2)
+  shippingCost    Decimal   @db.Decimal(10, 2) @default(0)
+  taxAmount       Decimal   @db.Decimal(10, 2) @default(0)
+  discount        Decimal   @db.Decimal(10, 2) @default(0)
+  total           Decimal   @db.Decimal(10, 2)
+
+  // Loyalty
+  loyaltyPointsUsed   Int   @default(0)
+  loyaltyPointsEarned Int   @default(0)
+
+  // Payment
+  paymentMethod   String?
+  paymentRef      String?   // Transaction ID
+
+  // Installer
+  installerId     String?
+  installationDate DateTime?
+  installationNotes String?
+
+  // Internal
+  notes           String?   @db.Text  // Internal notes
+  customerNotes   String?   @db.Text  // Customer's notes
+  source          String?   // Website, phone, etc.
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  customer        Customer  @relation(fields: [customerId], references: [id])
+  vehicle         Vehicle?  @relation(fields: [vehicleId], references: [id])
+  shippingAddress Address   @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
+  billingAddress  Address   @relation("BillingAddress", fields: [billingAddressId], references: [id])
+  installer       Installer? @relation(fields: [installerId], references: [id])
+  items           OrderItem[]
+  shipments       Shipment[]
+  warranties      Warranty[]
+  communications  Communication[]
+
+  @@index([customerId])
+  @@index([orderNumber])
+  @@index([status])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  OUT_FOR_DELIVERY
+  DELIVERED
+  INSTALLED
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  AUTHORIZED
+  PAID
+  PARTIALLY_REFUNDED
+  REFUNDED
+  FAILED
+}
+
+model OrderItem {
+  id            String    @id @default(cuid())
+  orderId       String
+  tireId        String
+  quantity      Int
+  unitPrice     Decimal   @db.Decimal(10, 2)
+  totalPrice    Decimal   @db.Decimal(10, 2)
+  discount      Decimal   @db.Decimal(10, 2) @default(0)
+
+  // Snapshot of tire info at time of order
+  tireName      String
+  tireSku       String
+  tireSize      String
+
+  createdAt     DateTime  @default(now())
+
+  // Relations
+  order         Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  tire          Tire      @relation(fields: [tireId], references: [id])
+
+  @@index([orderId])
+  @@map("order_items")
+}
+
+model Shipment {
+  id              String    @id @default(cuid())
+  orderId         String
+  carrier         ShippingCarrier
+  trackingNumber  String?
+  trackingUrl     String?
+
+  status          ShipmentStatus @default(PENDING)
+
+  // Dates
+  shippedAt       DateTime?
+  estimatedDelivery DateTime?
+  deliveredAt     DateTime?
+
+  // Package Info
+  weight          Decimal?  @db.Decimal(8, 2)
+  length          Decimal?  @db.Decimal(6, 2)
+  width           Decimal?  @db.Decimal(6, 2)
+  height          Decimal?  @db.Decimal(6, 2)
+
+  // Cost
+  shippingCost    Decimal?  @db.Decimal(10, 2)
+
+  // Proof
+  signedBy        String?
+  deliveryPhoto   String?
+
+  notes           String?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  order           Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  trackingEvents  TrackingEvent[]
+
+  @@index([orderId])
+  @@index([trackingNumber])
+  @@map("shipments")
+}
+
+enum ShippingCarrier {
+  FEDEX
+  UPS
+  USPS
+  DHL
+  FREIGHT
+  LOCAL_DELIVERY
+  PICKUP
+}
+
+enum ShipmentStatus {
+  PENDING
+  LABEL_CREATED
+  PICKED_UP
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  EXCEPTION
+  RETURNED
+}
+
+model TrackingEvent {
+  id            String    @id @default(cuid())
+  shipmentId    String
+  status        String
+  description   String
+  location      String?
+  timestamp     DateTime
+  createdAt     DateTime  @default(now())
+
+  // Relations
+  shipment      Shipment  @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+
+  @@index([shipmentId])
+  @@map("tracking_events")
+}
+
+// ==================== LOCAL INSTALLER NETWORK ====================
+
+model Installer {
+  id              String    @id @default(cuid())
+  name            String
+  slug            String    @unique
+  type            InstallerType @default(INDEPENDENT)
+
+  // Contact
+  email           String
+  phone           String
+  website         String?
+
+  // Address
+  street1         String
+  street2         String?
+  city            String
+  state           String
+  zipCode         String
+  country         String    @default("US")
+
+  // Location for geo-search
+  latitude        Decimal?  @db.Decimal(10, 8)
+  longitude       Decimal?  @db.Decimal(11, 8)
+
+  // Business Info
+  businessHours   Json?     // { mon: "8:00-18:00", tue: "8:00-18:00", ... }
+  services        String[]  // ["Tire Installation", "Balancing", "Alignment", "TPMS"]
+  certifications  String[]  // ["ASE Certified", "TIA Certified"]
+
+  // Partnership
+  isPartner       Boolean   @default(false)
+  commissionRate  Decimal?  @db.Decimal(5, 2)  // Percentage
+  installationFee Decimal?  @db.Decimal(10, 2)  // Base fee we pay them
+
+  // Ratings
+  rating          Decimal   @default(0) @db.Decimal(3, 2)
+  reviewCount     Int       @default(0)
+
+  // Status
+  isActive        Boolean   @default(true)
+  isVerified      Boolean   @default(false)
+
+  // Internal
+  notes           String?   @db.Text
+  contactPerson   String?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  orders          Order[]
+  reviews         InstallerReview[]
+  communications  InstallerCommunication[]
+
+  @@index([zipCode])
+  @@index([city, state])
+  @@index([isActive, isPartner])
+  @@map("installers")
+}
+
+enum InstallerType {
+  INDEPENDENT
+  CHAIN
+  DEALERSHIP
+  FRANCHISE
+}
+
+model InstallerReview {
+  id            String    @id @default(cuid())
+  installerId   String
+  customerName  String
+  rating        Int       // 1-5
+  title         String?
+  comment       String?   @db.Text
+  isVerified    Boolean   @default(false)  // Verified purchase
+  isPublished   Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+
+  // Relations
+  installer     Installer @relation(fields: [installerId], references: [id], onDelete: Cascade)
+
+  @@index([installerId])
+  @@map("installer_reviews")
+}
+
+model InstallerCommunication {
+  id            String    @id @default(cuid())
+  installerId   String
+  type          CommunicationType
+  subject       String
+  message       String    @db.Text
+  status        CommunicationStatus @default(SENT)
+  sentAt        DateTime  @default(now())
+  readAt        DateTime?
+
+  // For bulk emails
+  campaignId    String?
+
+  // Relations
+  installer     Installer @relation(fields: [installerId], references: [id], onDelete: Cascade)
+
+  @@index([installerId])
+  @@map("installer_communications")
+}
+
+// ==================== WARRANTY TRACKING ====================
+
+model Warranty {
+  id              String    @id @default(cuid())
+  customerId      String
+  orderId         String
+  tireId          String
+  vehicleId       String?
+
+  type            WarrantyType
+  status          WarrantyStatus @default(ACTIVE)
+
+  // Coverage Details
+  startDate       DateTime
+  endDate         DateTime?
+  mileageStart    Int?
+  mileageLimit    Int?      // Max miles covered
+
+  // Road Hazard Specific
+  roadHazardMonths Int?
+
+  // Claim Info
+  claimCount      Int       @default(0)
+  maxClaims       Int?
+
+  notes           String?   @db.Text
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  customer        Customer  @relation(fields: [customerId], references: [id])
+  order           Order     @relation(fields: [orderId], references: [id])
+  tire            Tire      @relation(fields: [tireId], references: [id])
+  vehicle         Vehicle?  @relation(fields: [vehicleId], references: [id])
+  claims          WarrantyClaim[]
+
+  @@index([customerId])
+  @@index([status])
+  @@index([endDate])
+  @@map("warranties")
+}
+
+enum WarrantyType {
+  MILEAGE         // Tread life warranty
+  ROAD_HAZARD     // Covers flats, punctures
+  MANUFACTURER    // Defects
+  WORKMANSHIP     // Installation issues
+}
+
+enum WarrantyStatus {
+  ACTIVE
+  EXPIRED
+  VOIDED
+  CLAIMED
+}
+
+model WarrantyClaim {
+  id              String    @id @default(cuid())
+  warrantyId      String
+
+  claimNumber     String    @unique
+  status          ClaimStatus @default(SUBMITTED)
+
+  // Claim Details
+  reason          String
+  description     String    @db.Text
+  currentMileage  Int?
+
+  // Resolution
+  resolution      String?   @db.Text
+  resolutionType  ClaimResolution?
+  replacementSku  String?
+  refundAmount    Decimal?  @db.Decimal(10, 2)
+
+  // Documentation
+  photos          String[]
+
+  submittedAt     DateTime  @default(now())
+  resolvedAt      DateTime?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  warranty        Warranty  @relation(fields: [warrantyId], references: [id])
+
+  @@index([warrantyId])
+  @@index([claimNumber])
+  @@map("warranty_claims")
+}
+
+enum ClaimStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  DENIED
+  COMPLETED
+}
+
+enum ClaimResolution {
+  REPLACEMENT
+  PRO_RATED_CREDIT
+  FULL_REFUND
+  REPAIR
+  DENIED
+}
+
+// ==================== LOYALTY PROGRAM ====================
+
+model LoyaltyTransaction {
+  id            String    @id @default(cuid())
+  customerId    String
+  type          LoyaltyTransactionType
+  points        Int       // Positive for earned, negative for spent
+  balance       Int       // Balance after transaction
+  description   String
+  referenceId   String?   // Order ID, etc.
+  expiresAt     DateTime?
+  createdAt     DateTime  @default(now())
+
+  // Relations
+  customer      Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@index([createdAt])
+  @@map("loyalty_transactions")
+}
+
+enum LoyaltyTransactionType {
+  EARNED_PURCHASE     // Points from order
+  EARNED_REVIEW       // Points for leaving review
+  EARNED_REFERRAL     // Points for referring someone
+  EARNED_BONUS        // Promotional bonus
+  SPENT_REDEMPTION    // Used points for discount
+  EXPIRED             // Points expired
+  ADJUSTMENT          // Manual adjustment
+}
+
+model LoyaltyReward {
+  id            String    @id @default(cuid())
+  name          String
+  description   String?
+  pointsCost    Int
+  rewardType    RewardType
+  discountValue Decimal?  @db.Decimal(10, 2)  // Dollar amount or percentage
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("loyalty_rewards")
+}
+
+enum RewardType {
+  FLAT_DISCOUNT       // $X off
+  PERCENT_DISCOUNT    // X% off
+  FREE_SHIPPING
+  FREE_INSTALLATION
+  PRODUCT             // Free product
+}
+
+// ==================== ABANDONED CART RECOVERY ====================
+
+model Cart {
+  id            String    @id @default(cuid())
+  customerId    String?
+  sessionId     String?   // For guest carts
+
+  subtotal      Decimal   @db.Decimal(10, 2) @default(0)
+
+  isAbandoned   Boolean   @default(false)
+  abandonedAt   DateTime?
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  customer      Customer? @relation(fields: [customerId], references: [id])
+  items         CartItem[]
+
+  @@index([customerId])
+  @@index([sessionId])
+  @@index([isAbandoned])
+  @@map("carts")
+}
+
+model CartItem {
+  id            String    @id @default(cuid())
+  cartId        String
+  tireId        String
+  quantity      Int
+  unitPrice     Decimal   @db.Decimal(10, 2)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  cart          Cart      @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  tire          Tire      @relation(fields: [tireId], references: [id])
+
+  @@index([cartId])
+  @@map("cart_items")
+}
+
+model AbandonedCart {
+  id            String    @id @default(cuid())
+  customerId    String
+
+  cartValue     Decimal   @db.Decimal(10, 2)
+  itemCount     Int
+  cartSnapshot  Json      // Snapshot of cart items
+
+  // Recovery Attempts
+  emailsSent    Int       @default(0)
+  lastEmailAt   DateTime?
+  smsSent       Int       @default(0)
+  lastSmsAt     DateTime?
+
+  // Status
+  status        AbandonedCartStatus @default(ABANDONED)
+  recoveredAt   DateTime?
+  recoveredOrderId String?
+
+  // Incentive Offered
+  discountCode  String?
+  discountAmount Decimal? @db.Decimal(10, 2)
+
+  abandonedAt   DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  customer      Customer  @relation(fields: [customerId], references: [id])
+
+  @@index([customerId])
+  @@index([status])
+  @@index([abandonedAt])
+  @@map("abandoned_carts")
+}
+
+enum AbandonedCartStatus {
+  ABANDONED
+  EMAIL_SENT
+  RECOVERED
+  EXPIRED
+  UNSUBSCRIBED
+}
+
+// ==================== SUPPORT TICKETING ====================
+
+model SupportTicket {
+  id            String    @id @default(cuid())
+  ticketNumber  String    @unique
+  customerId    String
+  assignedToId  String?
+
+  subject       String
+  description   String    @db.Text
+
+  category      TicketCategory
+  priority      TicketPriority @default(MEDIUM)
+  status        TicketStatus @default(OPEN)
+
+  // Related entities
+  orderId       String?
+
+  // SLA
+  dueAt         DateTime?
+  firstResponseAt DateTime?
+  resolvedAt    DateTime?
+
+  // Satisfaction
+  satisfactionRating Int?    // 1-5
+  satisfactionComment String?
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  customer      Customer  @relation(fields: [customerId], references: [id])
+  assignedTo    User?     @relation("AssignedAgent", fields: [assignedToId], references: [id])
+  comments      TicketComment[]
+  attachments   TicketAttachment[]
+
+  @@index([customerId])
+  @@index([assignedToId])
+  @@index([status])
+  @@index([ticketNumber])
+  @@map("support_tickets")
+}
+
+enum TicketCategory {
+  ORDER_ISSUE
+  SHIPPING
+  RETURNS
+  WARRANTY
+  PRODUCT_QUESTION
+  INSTALLATION
+  BILLING
+  TECHNICAL
+  OTHER
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_CUSTOMER
+  WAITING_INTERNAL
+  RESOLVED
+  CLOSED
+}
+
+model TicketComment {
+  id            String    @id @default(cuid())
+  ticketId      String
+  userId        String?   // Null if customer comment
+
+  message       String    @db.Text
+  isInternal    Boolean   @default(false)  // Internal notes not shown to customer
+  isFromCustomer Boolean  @default(false)
+
+  createdAt     DateTime  @default(now())
+
+  // Relations
+  ticket        SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  user          User?     @relation(fields: [userId], references: [id])
+
+  @@index([ticketId])
+  @@map("ticket_comments")
+}
+
+model TicketAttachment {
+  id            String    @id @default(cuid())
+  ticketId      String
+  fileName      String
+  fileUrl       String
+  fileType      String
+  fileSize      Int
+  createdAt     DateTime  @default(now())
+
+  // Relations
+  ticket        SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+  @@map("ticket_attachments")
+}
+
+// ==================== COMMUNICATIONS ====================
+
+model Communication {
+  id            String    @id @default(cuid())
+  customerId    String
+  orderId       String?
+
+  type          CommunicationType
+  channel       CommunicationChannel
+
+  subject       String?
+  message       String    @db.Text
+
+  status        CommunicationStatus @default(SENT)
+  sentAt        DateTime  @default(now())
+  deliveredAt   DateTime?
+  readAt        DateTime?
+  failedAt      DateTime?
+  failureReason String?
+
+  // For emails
+  fromEmail     String?
+  toEmail       String?
+
+  // For SMS
+  fromPhone     String?
+  toPhone       String?
+
+  // Campaign tracking
+  campaignId    String?
+  templateId    String?
+
+  createdAt     DateTime  @default(now())
+
+  // Relations
+  customer      Customer  @relation(fields: [customerId], references: [id])
+  order         Order?    @relation(fields: [orderId], references: [id])
+
+  @@index([customerId])
+  @@index([orderId])
+  @@index([type])
+  @@map("communications")
+}
+
+enum CommunicationType {
+  ORDER_CONFIRMATION
+  SHIPPING_UPDATE
+  DELIVERY_CONFIRMATION
+  ABANDONED_CART
+  WARRANTY_REMINDER
+  LOYALTY_UPDATE
+  PROMOTIONAL
+  SUPPORT_RESPONSE
+  INSTALLER_NOTIFICATION
+  REVIEW_REQUEST
+  GENERAL
+}
+
+enum CommunicationChannel {
+  EMAIL
+  SMS
+  PUSH
+  IN_APP
+}
+
+enum CommunicationStatus {
+  PENDING
+  SENT
+  DELIVERED
+  READ
+  FAILED
+  BOUNCED
+}
+
+model SmsTemplate {
+  id            String    @id @default(cuid())
+  name          String
+  slug          String    @unique
+  message       String    // Max 160 chars for single SMS
+  variables     String[]  // Available merge tags
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("sms_templates")
+}
+
+model EmailTemplate {
+  id            String    @id @default(cuid())
+  name          String
+  slug          String    @unique
+  subject       String
+  htmlBody      String    @db.Text
+  textBody      String?   @db.Text
+  variables     String[]
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("email_templates")
+}
+
+// ==================== ACTIVITY & NOTIFICATIONS ====================
+
+model ActivityLog {
+  id            String    @id @default(cuid())
+  userId        String?
+  entityType    String    // Customer, Order, Ticket, etc.
+  entityId      String
+  action        String    // created, updated, deleted, etc.
+  description   String
+  changes       Json?     // Before/after values
+  ipAddress     String?
+  userAgent     String?
+  createdAt     DateTime  @default(now())
+
+  // Relations
+  user          User?     @relation(fields: [userId], references: [id])
+
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("activity_logs")
+}
+
+model Notification {
+  id            String    @id @default(cuid())
+  userId        String
+  title         String
+  message       String
+  type          NotificationType
+  isRead        Boolean   @default(false)
+  actionUrl     String?
+  createdAt     DateTime  @default(now())
+
+  // Relations
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+  @@map("notifications")
+}
+
+enum NotificationType {
+  ORDER
+  TICKET
+  INVENTORY
+  WARRANTY
+  SYSTEM
+  ALERT
+}
+
+// ==================== SETTINGS & CONFIG ====================
+
+model Setting {
+  id            String    @id @default(cuid())
+  key           String    @unique
+  value         Json
+  description   String?
+  updatedAt     DateTime  @updatedAt
+
+  @@map("settings")
+}

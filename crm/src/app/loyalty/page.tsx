@@ -26,7 +26,7 @@ const loyaltyStats = {
 }
 
 const tierBreakdown = [
-  { tier: 'PLATINUM', count: 45, color: 'bg-purple-500', label: 'Platinum' },
+  { tier: 'PLATINUM', count: 45, color: 'bg-green-500', label: 'Platinum' },
   { tier: 'GOLD', count: 180, color: 'bg-yellow-500', label: 'Gold' },
   { tier: 'SILVER', count: 425, color: 'bg-gray-400', label: 'Silver' },
   { tier: 'BRONZE', count: 600, color: 'bg-amber-600', label: 'Bronze' },

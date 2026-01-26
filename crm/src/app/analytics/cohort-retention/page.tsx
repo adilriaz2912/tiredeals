@@ -115,15 +115,15 @@ export default function CohortRetention() {
   const [viewMode, setViewMode] = useState<'retention' | 'revenue'>('retention')
 
   const getRetentionColor = (value: number) => {
-    if (value >= 70) return 'bg-emerald-500'
-    if (value >= 50) return 'bg-cyan-500'
+    if (value >= 70) return 'bg-green-500'
+    if (value >= 50) return 'bg-green-400'
     if (value >= 30) return 'bg-amber-500'
     return 'bg-rose-500'
   }
 
   const getRetentionBgColor = (value: number) => {
-    if (value >= 70) return 'bg-emerald-500/20'
-    if (value >= 50) return 'bg-cyan-500/20'
+    if (value >= 70) return 'bg-green-500/20'
+    if (value >= 50) return 'bg-green-400/20'
     if (value >= 30) return 'bg-amber-500/20'
     return 'bg-rose-500/20'
   }
@@ -140,26 +140,26 @@ export default function CohortRetention() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="card p-6">
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-emerald-500/20">
-                <Users className="w-6 h-6 text-emerald-400" />
+              <div className="p-3 rounded-xl bg-green-500/20">
+                <Users className="w-6 h-6 text-green-400" />
               </div>
-              <TrendingUp className="w-5 h-5 text-emerald-400" />
+              <TrendingUp className="w-5 h-5 text-green-400" />
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{stats.avgRetention30}%</p>
-              <p className="text-sm text-slate-400 mt-1">30-Day Retention</p>
+              <p className="text-sm text-neutral-400 mt-1">30-Day Retention</p>
             </div>
           </div>
 
           <div className="card p-6">
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-cyan-500/20">
-                <Calendar className="w-6 h-6 text-cyan-400" />
+              <div className="p-3 rounded-xl bg-green-400/20">
+                <Calendar className="w-6 h-6 text-green-300" />
               </div>
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{stats.avgRetention90}%</p>
-              <p className="text-sm text-slate-400 mt-1">90-Day Retention</p>
+              <p className="text-sm text-neutral-400 mt-1">90-Day Retention</p>
             </div>
           </div>
 
@@ -171,34 +171,34 @@ export default function CohortRetention() {
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{stats.avgRetention365}%</p>
-              <p className="text-sm text-slate-400 mt-1">12-Month Retention</p>
+              <p className="text-sm text-neutral-400 mt-1">12-Month Retention</p>
             </div>
           </div>
 
           <div className="card p-6">
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-violet-500/20">
-                <DollarSign className="w-6 h-6 text-violet-400" />
+              <div className="p-3 rounded-xl bg-green-500/20">
+                <DollarSign className="w-6 h-6 text-green-400" />
               </div>
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{stats.bestCohort}</p>
-              <p className="text-sm text-slate-400 mt-1">Best Performing Cohort</p>
+              <p className="text-sm text-neutral-400 mt-1">Best Performing Cohort</p>
             </div>
           </div>
         </div>
 
         {/* Cohort Table */}
         <div className="card">
-          <div className="px-6 py-4 border-b border-slate-800/50 flex items-center justify-between">
+          <div className="px-6 py-4 border-b border-neutral-800/50 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-white">Cohort Retention Matrix</h2>
             <div className="flex gap-2">
               <button
                 onClick={() => setViewMode('retention')}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   viewMode === 'retention'
-                    ? 'bg-emerald-500/20 text-emerald-400'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-green-500/20 text-green-400'
+                    : 'text-neutral-400 hover:text-white'
                 }`}
               >
                 Retention %
@@ -207,13 +207,13 @@ export default function CohortRetention() {
                 onClick={() => setViewMode('revenue')}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   viewMode === 'revenue'
-                    ? 'bg-emerald-500/20 text-emerald-400'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-green-500/20 text-green-400'
+                    : 'text-neutral-400 hover:text-white'
                 }`}
               >
                 Revenue
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 bg-slate-800/50 text-slate-300 rounded-lg hover:bg-slate-800 transition-colors">
+              <button className="flex items-center gap-2 px-4 py-2 bg-neutral-800/50 text-neutral-300 rounded-lg hover:bg-neutral-800 transition-colors">
                 <Download className="w-4 h-4" />
                 Export
               </button>
@@ -223,11 +223,11 @@ export default function CohortRetention() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-800/50">
-                  <th className="text-left p-4 text-sm font-medium text-slate-400 sticky left-0 bg-slate-900">Cohort</th>
-                  <th className="text-center p-4 text-sm font-medium text-slate-400">Size</th>
+                <tr className="border-b border-neutral-800/50">
+                  <th className="text-left p-4 text-sm font-medium text-neutral-400 sticky left-0 bg-neutral-900">Cohort</th>
+                  <th className="text-center p-4 text-sm font-medium text-neutral-400">Size</th>
                   {[...Array(12)].map((_, i) => (
-                    <th key={i} className="text-center p-3 text-sm font-medium text-slate-400">
+                    <th key={i} className="text-center p-3 text-sm font-medium text-neutral-400">
                       M{i}
                     </th>
                   ))}
@@ -235,9 +235,9 @@ export default function CohortRetention() {
               </thead>
               <tbody>
                 {cohortData.map((cohort) => (
-                  <tr key={cohort.cohort} className="border-b border-slate-800/30 hover:bg-slate-800/20">
-                    <td className="p-4 font-medium text-white sticky left-0 bg-slate-900">{cohort.cohort}</td>
-                    <td className="text-center p-4 text-slate-300">{cohort.customers}</td>
+                  <tr key={cohort.cohort} className="border-b border-neutral-800/30 hover:bg-neutral-800/20">
+                    <td className="p-4 font-medium text-white sticky left-0 bg-neutral-900">{cohort.cohort}</td>
+                    <td className="text-center p-4 text-neutral-300">{cohort.customers}</td>
                     {[...Array(12)].map((_, i) => {
                       const value = viewMode === 'retention' ? cohort.retention[i] : cohort.revenue[i]
                       if (value === undefined) {
@@ -249,11 +249,11 @@ export default function CohortRetention() {
                             className={`py-2 px-1 rounded text-center text-xs font-medium ${
                               viewMode === 'retention'
                                 ? getRetentionBgColor(value)
-                                : 'bg-slate-800/60'
+                                : 'bg-neutral-800/60'
                             } ${
                               viewMode === 'retention'
-                                ? value >= 50 ? 'text-white' : 'text-slate-300'
-                                : 'text-slate-300'
+                                ? value >= 50 ? 'text-white' : 'text-neutral-300'
+                                : 'text-neutral-300'
                             }`}
                           >
                             {viewMode === 'retention' ? `${value}%` : `$${(value / 1000).toFixed(1)}k`}
@@ -268,14 +268,14 @@ export default function CohortRetention() {
           </div>
 
           {/* Legend */}
-          <div className="px-6 py-4 border-t border-slate-800/50 flex items-center gap-6">
-            <span className="text-sm text-slate-400">Retention:</span>
+          <div className="px-6 py-4 border-t border-neutral-800/50 flex items-center gap-6">
+            <span className="text-sm text-neutral-400">Retention:</span>
             <div className="flex items-center gap-4">
               <span className="flex items-center gap-2 text-xs">
-                <span className="w-3 h-3 rounded bg-emerald-500" /> 70%+
+                <span className="w-3 h-3 rounded bg-green-500" /> 70%+
               </span>
               <span className="flex items-center gap-2 text-xs">
-                <span className="w-3 h-3 rounded bg-cyan-500" /> 50-69%
+                <span className="w-3 h-3 rounded bg-green-400" /> 50-69%
               </span>
               <span className="flex items-center gap-2 text-xs">
                 <span className="w-3 h-3 rounded bg-amber-500" /> 30-49%
@@ -289,46 +289,46 @@ export default function CohortRetention() {
 
         {/* Channel Retention */}
         <div className="card">
-          <div className="px-6 py-4 border-b border-slate-800/50">
+          <div className="px-6 py-4 border-b border-neutral-800/50">
             <h2 className="text-lg font-semibold text-white">Retention by Acquisition Channel</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-800/50">
-                  <th className="text-left p-4 text-sm font-medium text-slate-400">Channel</th>
-                  <th className="text-center p-4 text-sm font-medium text-slate-400">Month 1</th>
-                  <th className="text-center p-4 text-sm font-medium text-slate-400">Month 3</th>
-                  <th className="text-center p-4 text-sm font-medium text-slate-400">Month 6</th>
-                  <th className="text-center p-4 text-sm font-medium text-slate-400">Month 12</th>
-                  <th className="text-center p-4 text-sm font-medium text-slate-400">Avg CLV</th>
+                <tr className="border-b border-neutral-800/50">
+                  <th className="text-left p-4 text-sm font-medium text-neutral-400">Channel</th>
+                  <th className="text-center p-4 text-sm font-medium text-neutral-400">Month 1</th>
+                  <th className="text-center p-4 text-sm font-medium text-neutral-400">Month 3</th>
+                  <th className="text-center p-4 text-sm font-medium text-neutral-400">Month 6</th>
+                  <th className="text-center p-4 text-sm font-medium text-neutral-400">Month 12</th>
+                  <th className="text-center p-4 text-sm font-medium text-neutral-400">Avg CLV</th>
                 </tr>
               </thead>
               <tbody>
                 {channelRetention.map((channel) => (
-                  <tr key={channel.channel} className="border-b border-slate-800/30 hover:bg-slate-800/30">
+                  <tr key={channel.channel} className="border-b border-neutral-800/30 hover:bg-neutral-800/30">
                     <td className="p-4 font-medium text-white">{channel.channel}</td>
                     <td className="p-4 text-center">
-                      <span className={`${channel.month1 >= 70 ? 'text-emerald-400' : channel.month1 >= 50 ? 'text-cyan-400' : 'text-amber-400'}`}>
+                      <span className={`${channel.month1 >= 70 ? 'text-green-400' : channel.month1 >= 50 ? 'text-green-300' : 'text-amber-400'}`}>
                         {channel.month1}%
                       </span>
                     </td>
                     <td className="p-4 text-center">
-                      <span className={`${channel.month3 >= 60 ? 'text-emerald-400' : channel.month3 >= 40 ? 'text-cyan-400' : 'text-amber-400'}`}>
+                      <span className={`${channel.month3 >= 60 ? 'text-green-400' : channel.month3 >= 40 ? 'text-green-300' : 'text-amber-400'}`}>
                         {channel.month3}%
                       </span>
                     </td>
                     <td className="p-4 text-center">
-                      <span className={`${channel.month6 >= 50 ? 'text-emerald-400' : channel.month6 >= 30 ? 'text-cyan-400' : 'text-amber-400'}`}>
+                      <span className={`${channel.month6 >= 50 ? 'text-green-400' : channel.month6 >= 30 ? 'text-green-300' : 'text-amber-400'}`}>
                         {channel.month6}%
                       </span>
                     </td>
                     <td className="p-4 text-center">
-                      <span className={`${channel.month12 >= 40 ? 'text-emerald-400' : channel.month12 >= 25 ? 'text-cyan-400' : 'text-amber-400'}`}>
+                      <span className={`${channel.month12 >= 40 ? 'text-green-400' : channel.month12 >= 25 ? 'text-green-300' : 'text-amber-400'}`}>
                         {channel.month12}%
                       </span>
                     </td>
-                    <td className="p-4 text-center text-emerald-400 font-semibold">
+                    <td className="p-4 text-center text-green-400 font-semibold">
                       {formatCurrency(channel.avgClv)}
                     </td>
                   </tr>

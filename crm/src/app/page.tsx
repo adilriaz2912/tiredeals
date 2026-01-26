@@ -134,9 +134,9 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Recent Orders */}
           <div className="lg:col-span-2 card">
-            <div className="px-6 py-4 border-b border-slate-800/50 flex items-center justify-between">
+            <div className="px-6 py-4 border-b border-neutral-800/50 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-white">Recent Orders</h2>
-              <Link href="/orders" className="text-sm text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1 transition-colors">
+              <Link href="/orders" className="text-sm text-green-400 hover:text-green-300 font-medium flex items-center gap-1 transition-colors">
                 View All <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -155,16 +155,16 @@ export default function Dashboard() {
                   {recentOrders.map((order) => (
                     <tr key={order.id}>
                       <td>
-                        <Link href={`/orders/${order.id}`} className="font-medium text-emerald-400 hover:text-emerald-300 transition-colors">
+                        <Link href={`/orders/${order.id}`} className="font-medium text-green-400 hover:text-green-300 transition-colors">
                           {order.id}
                         </Link>
                       </td>
-                      <td className="text-slate-300">{order.customer}</td>
+                      <td className="text-neutral-300">{order.customer}</td>
                       <td className="font-medium text-white">{formatCurrency(order.total)}</td>
                       <td>
                         <OrderStatusBadge status={order.status} />
                       </td>
-                      <td className="text-slate-400" suppressHydrationWarning>{formatRelativeTime(order.date)}</td>
+                      <td className="text-neutral-400" suppressHydrationWarning>{formatRelativeTime(order.date)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -174,7 +174,7 @@ export default function Dashboard() {
 
           {/* Top Products */}
           <div className="card">
-            <div className="px-6 py-4 border-b border-slate-800/50">
+            <div className="px-6 py-4 border-b border-neutral-800/50">
               <h2 className="text-lg font-semibold text-white flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-amber-400" />
                 Top Selling Tires
@@ -185,17 +185,17 @@ export default function Dashboard() {
                 <div key={product.name} className="flex items-center gap-4 group">
                   <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${
                     index === 0 ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30' :
-                    index === 1 ? 'bg-gradient-to-br from-slate-400 to-slate-500 text-white' :
+                    index === 1 ? 'bg-gradient-to-br from-neutral-400 to-neutral-500 text-white' :
                     index === 2 ? 'bg-gradient-to-br from-amber-700 to-amber-800 text-white' :
-                    'bg-slate-800 text-slate-400'
+                    'bg-neutral-800 text-neutral-400'
                   }`}>
                     {index + 1}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white truncate group-hover:text-emerald-400 transition-colors">{product.name}</p>
-                    <p className="text-xs text-slate-500">{product.sold} sold</p>
+                    <p className="text-sm font-medium text-white truncate group-hover:text-green-400 transition-colors">{product.name}</p>
+                    <p className="text-xs text-neutral-500">{product.sold} sold</p>
                   </div>
-                  <span className="text-sm font-semibold text-emerald-400">
+                  <span className="text-sm font-semibold text-green-400">
                     {formatCurrency(product.revenue)}
                   </span>
                 </div>
@@ -208,23 +208,23 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Recent Support Tickets */}
           <div className="card">
-            <div className="px-6 py-4 border-b border-slate-800/50 flex items-center justify-between">
+            <div className="px-6 py-4 border-b border-neutral-800/50 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-white">Recent Support Tickets</h2>
-              <Link href="/support" className="text-sm text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1 transition-colors">
+              <Link href="/support" className="text-sm text-green-400 hover:text-green-300 font-medium flex items-center gap-1 transition-colors">
                 View All <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
             <div className="p-6 space-y-3">
               {recentTickets.map((ticket) => (
-                <div key={ticket.id} className="flex items-start gap-4 p-4 bg-slate-800/40 rounded-xl border border-slate-700/50 hover:border-slate-600/50 transition-colors">
+                <div key={ticket.id} className="flex items-start gap-4 p-4 bg-neutral-800/40 rounded-xl border border-neutral-700/50 hover:border-neutral-600/50 transition-colors">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <Link href={`/support/${ticket.id}`} className="text-sm font-medium text-white hover:text-emerald-400 transition-colors">
+                      <Link href={`/support/${ticket.id}`} className="text-sm font-medium text-white hover:text-green-400 transition-colors">
                         {ticket.subject}
                       </Link>
                       <PriorityBadge priority={ticket.priority} />
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-neutral-500 mt-1">
                       {ticket.id} • {ticket.customer}
                     </p>
                   </div>
@@ -236,9 +236,9 @@ export default function Dashboard() {
 
           {/* Quick Actions */}
           <div className="card">
-            <div className="px-6 py-4 border-b border-slate-800/50">
+            <div className="px-6 py-4 border-b border-neutral-800/50">
               <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-                <Zap className="w-5 h-5 text-cyan-400" />
+                <Zap className="w-5 h-5 text-green-300" />
                 Quick Actions
               </h2>
             </div>
@@ -295,28 +295,28 @@ function StatCard({
   color: 'emerald' | 'cyan' | 'violet' | 'amber'
 }) {
   const gradients = {
-    emerald: 'from-emerald-500 to-cyan-500',
-    cyan: 'from-cyan-500 to-blue-500',
-    violet: 'from-violet-500 to-purple-500',
+    emerald: 'bg-green-500',
+    cyan: 'from-green-400 to-blue-500',
+    violet: 'from-green-500 to-green-500',
     amber: 'from-amber-500 to-orange-500',
   }
 
   const glows = {
-    emerald: 'shadow-emerald-500/20',
-    cyan: 'shadow-cyan-500/20',
-    violet: 'shadow-violet-500/20',
+    emerald: 'shadow-green-500/20',
+    cyan: 'shadow-green-400/20',
+    violet: 'shadow-green-500/20',
     amber: 'shadow-amber-500/20',
   }
 
   const iconBg = {
-    emerald: 'bg-emerald-500/20 text-emerald-400',
-    cyan: 'bg-cyan-500/20 text-cyan-400',
-    violet: 'bg-violet-500/20 text-violet-400',
+    emerald: 'bg-green-500/20 text-green-400',
+    cyan: 'bg-green-400/20 text-green-300',
+    violet: 'bg-green-500/20 text-green-400',
     amber: 'bg-amber-500/20 text-amber-400',
   }
 
   return (
-    <div className={`relative overflow-hidden rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-slate-800/60 p-6 shadow-2xl ${glows[color]}`}>
+    <div className={`relative overflow-hidden rounded-2xl bg-neutral-900/60 backdrop-blur-xl border border-neutral-800/60 p-6 shadow-2xl ${glows[color]}`}>
       {/* Gradient accent */}
       <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${gradients[color]} opacity-10 blur-2xl`} />
 
@@ -327,7 +327,7 @@ function StatCard({
           </div>
           <div className={`flex items-center gap-1 text-sm font-medium px-2.5 py-1 rounded-full ${
             change >= 0
-              ? 'text-emerald-400 bg-emerald-500/10'
+              ? 'text-green-400 bg-green-500/10'
               : 'text-rose-400 bg-rose-500/10'
           }`}>
             {change >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
@@ -336,7 +336,7 @@ function StatCard({
         </div>
         <div className="mt-4">
           <p className="text-3xl font-bold text-white">{value}</p>
-          <p className="text-sm text-slate-400 mt-1">{title}</p>
+          <p className="text-sm text-neutral-400 mt-1">{title}</p>
         </div>
       </div>
     </div>
@@ -376,10 +376,10 @@ function AlertCard({
       glow: 'hover:shadow-orange-500/10',
     },
     purple: {
-      bg: 'bg-purple-500/10 hover:bg-purple-500/20',
-      border: 'border-purple-500/20 hover:border-purple-500/40',
-      icon: 'text-purple-400',
-      glow: 'hover:shadow-purple-500/10',
+      bg: 'bg-green-500/10 hover:bg-green-500/20',
+      border: 'border-green-500/20 hover:border-green-500/40',
+      icon: 'text-green-400',
+      glow: 'hover:shadow-green-500/10',
     },
   }
 
@@ -390,10 +390,10 @@ function AlertCard({
       href={href}
       className={`flex items-center gap-4 p-4 rounded-xl border ${s.bg} ${s.border} transition-all duration-300 hover:shadow-xl ${s.glow}`}
     >
-      <div className={`p-2.5 rounded-lg bg-slate-800/50 ${s.icon}`}>{icon}</div>
+      <div className={`p-2.5 rounded-lg bg-neutral-800/50 ${s.icon}`}>{icon}</div>
       <div>
         <p className="text-2xl font-bold text-white">{value}</p>
-        <p className="text-sm text-slate-400">{title}</p>
+        <p className="text-sm text-neutral-400">{title}</p>
       </div>
     </Link>
   )
@@ -403,18 +403,18 @@ function OrderStatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     PENDING: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
     CONFIRMED: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-    PROCESSING: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
-    SHIPPED: 'bg-violet-500/20 text-violet-400 border-violet-500/30',
+    PROCESSING: 'bg-green-400/20 text-green-300 border-green-400/30',
+    SHIPPED: 'bg-green-500/20 text-green-400 border-green-500/30',
     OUT_FOR_DELIVERY: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30',
-    DELIVERED: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+    DELIVERED: 'bg-green-500/20 text-green-400 border-green-500/30',
     INSTALLED: 'bg-green-500/20 text-green-400 border-green-500/30',
-    COMPLETED: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+    COMPLETED: 'bg-green-500/20 text-green-400 border-green-500/30',
     CANCELLED: 'bg-rose-500/20 text-rose-400 border-rose-500/30',
-    REFUNDED: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
+    REFUNDED: 'bg-neutral-500/20 text-neutral-400 border-neutral-500/30',
   }
 
   return (
-    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${styles[status] || 'bg-slate-500/20 text-slate-400 border-slate-500/30'}`}>
+    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${styles[status] || 'bg-neutral-500/20 text-neutral-400 border-neutral-500/30'}`}>
       {status.replace(/_/g, ' ')}
     </span>
   )
@@ -423,15 +423,15 @@ function OrderStatusBadge({ status }: { status: string }) {
 function TicketStatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     OPEN: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-    IN_PROGRESS: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
-    WAITING_CUSTOMER: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
-    WAITING_INTERNAL: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
-    RESOLVED: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-    CLOSED: 'bg-slate-600/20 text-slate-500 border-slate-600/30',
+    IN_PROGRESS: 'bg-green-400/20 text-green-300 border-green-400/30',
+    WAITING_CUSTOMER: 'bg-neutral-500/20 text-neutral-400 border-neutral-500/30',
+    WAITING_INTERNAL: 'bg-neutral-500/20 text-neutral-400 border-neutral-500/30',
+    RESOLVED: 'bg-green-500/20 text-green-400 border-green-500/30',
+    CLOSED: 'bg-neutral-600/20 text-neutral-500 border-neutral-600/30',
   }
 
   return (
-    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${styles[status] || 'bg-slate-500/20 text-slate-400 border-slate-500/30'}`}>
+    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${styles[status] || 'bg-neutral-500/20 text-neutral-400 border-neutral-500/30'}`}>
       {status.replace(/_/g, ' ')}
     </span>
   )
@@ -439,14 +439,14 @@ function TicketStatusBadge({ status }: { status: string }) {
 
 function PriorityBadge({ priority }: { priority: string }) {
   const styles: Record<string, string> = {
-    LOW: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
+    LOW: 'bg-neutral-500/20 text-neutral-400 border-neutral-500/30',
     MEDIUM: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
     HIGH: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
     URGENT: 'bg-rose-500/20 text-rose-400 border-rose-500/30',
   }
 
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${styles[priority] || 'bg-slate-500/20 text-slate-400 border-slate-500/30'}`}>
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${styles[priority] || 'bg-neutral-500/20 text-neutral-400 border-neutral-500/30'}`}>
       {priority}
     </span>
   )
@@ -466,22 +466,22 @@ function QuickActionButton({
   color: 'emerald' | 'cyan' | 'violet' | 'amber'
 }) {
   const iconStyles = {
-    emerald: 'bg-emerald-500/20 text-emerald-400 group-hover:bg-emerald-500/30',
-    cyan: 'bg-cyan-500/20 text-cyan-400 group-hover:bg-cyan-500/30',
-    violet: 'bg-violet-500/20 text-violet-400 group-hover:bg-violet-500/30',
+    emerald: 'bg-green-500/20 text-green-400 group-hover:bg-green-500/30',
+    cyan: 'bg-green-400/20 text-green-300 group-hover:bg-green-400/30',
+    violet: 'bg-green-500/20 text-green-400 group-hover:bg-green-500/30',
     amber: 'bg-amber-500/20 text-amber-400 group-hover:bg-amber-500/30',
   }
 
   return (
     <Link
       href={href}
-      className="group flex flex-col items-center justify-center p-5 bg-slate-800/40 rounded-xl border border-slate-700/50 hover:border-slate-600/50 hover:bg-slate-800/60 transition-all duration-300 text-center"
+      className="group flex flex-col items-center justify-center p-5 bg-neutral-800/40 rounded-xl border border-neutral-700/50 hover:border-neutral-600/50 hover:bg-neutral-800/60 transition-all duration-300 text-center"
     >
       <div className={`p-3.5 rounded-xl transition-colors ${iconStyles[color]} mb-3`}>
         {icon}
       </div>
-      <p className="text-sm font-medium text-white group-hover:text-emerald-400 transition-colors">{label}</p>
-      <p className="text-xs text-slate-500 mt-0.5">{description}</p>
+      <p className="text-sm font-medium text-white group-hover:text-green-400 transition-colors">{label}</p>
+      <p className="text-xs text-neutral-500 mt-0.5">{description}</p>
     </Link>
   )
 }

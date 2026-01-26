@@ -136,16 +136,16 @@ export default function CallCenter() {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
           <div className="card p-4">
             <div className="flex items-center gap-2 mb-2">
-              <Phone className="w-4 h-4 text-emerald-400" />
-              <span className="text-xs text-slate-400">Total Calls</span>
+              <Phone className="w-4 h-4 text-green-400" />
+              <span className="text-xs text-neutral-400">Total Calls</span>
             </div>
             <p className="text-2xl font-bold text-white">{stats.totalCalls}</p>
           </div>
 
           <div className="card p-4">
             <div className="flex items-center gap-2 mb-2">
-              <PhoneCall className="w-4 h-4 text-cyan-400" />
-              <span className="text-xs text-slate-400">Answered</span>
+              <PhoneCall className="w-4 h-4 text-green-300" />
+              <span className="text-xs text-neutral-400">Answered</span>
             </div>
             <p className="text-2xl font-bold text-white">{stats.answeredCalls}</p>
           </div>
@@ -153,7 +153,7 @@ export default function CallCenter() {
           <div className="card p-4">
             <div className="flex items-center gap-2 mb-2">
               <PhoneMissed className="w-4 h-4 text-rose-400" />
-              <span className="text-xs text-slate-400">Missed</span>
+              <span className="text-xs text-neutral-400">Missed</span>
             </div>
             <p className="text-2xl font-bold text-white">{stats.missedCalls}</p>
           </div>
@@ -161,39 +161,39 @@ export default function CallCenter() {
           <div className="card p-4">
             <div className="flex items-center gap-2 mb-2">
               <Clock className="w-4 h-4 text-amber-400" />
-              <span className="text-xs text-slate-400">Avg Wait</span>
+              <span className="text-xs text-neutral-400">Avg Wait</span>
             </div>
             <p className="text-2xl font-bold text-white">{stats.avgWaitTime}</p>
           </div>
 
           <div className="card p-4">
             <div className="flex items-center gap-2 mb-2">
-              <Timer className="w-4 h-4 text-violet-400" />
-              <span className="text-xs text-slate-400">Avg Talk</span>
+              <Timer className="w-4 h-4 text-green-400" />
+              <span className="text-xs text-neutral-400">Avg Talk</span>
             </div>
             <p className="text-2xl font-bold text-white">{stats.avgTalkTime}</p>
           </div>
 
           <div className="card p-4">
             <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-4 h-4 text-emerald-400" />
-              <span className="text-xs text-slate-400">SLA %</span>
+              <TrendingUp className="w-4 h-4 text-green-400" />
+              <span className="text-xs text-neutral-400">SLA %</span>
             </div>
             <p className="text-2xl font-bold text-white">{stats.serviceLevel}%</p>
           </div>
 
           <div className="card p-4">
             <div className="flex items-center gap-2 mb-2">
-              <Users className="w-4 h-4 text-cyan-400" />
-              <span className="text-xs text-slate-400">In Queue</span>
+              <Users className="w-4 h-4 text-green-300" />
+              <span className="text-xs text-neutral-400">In Queue</span>
             </div>
             <p className="text-2xl font-bold text-amber-400">{stats.queueSize}</p>
           </div>
 
           <div className="card p-4">
             <div className="flex items-center gap-2 mb-2">
-              <Headphones className="w-4 h-4 text-emerald-400" />
-              <span className="text-xs text-slate-400">Active</span>
+              <Headphones className="w-4 h-4 text-green-400" />
+              <span className="text-xs text-neutral-400">Active</span>
             </div>
             <p className="text-2xl font-bold text-white">{stats.activeAgents}</p>
           </div>
@@ -202,23 +202,23 @@ export default function CallCenter() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Agent Status */}
           <div className="lg:col-span-2 card">
-            <div className="px-6 py-4 border-b border-slate-800/50 flex items-center justify-between">
+            <div className="px-6 py-4 border-b border-neutral-800/50 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-                <Headphones className="w-5 h-5 text-emerald-400" />
+                <Headphones className="w-5 h-5 text-green-400" />
                 Agent Status
               </h2>
               <div className="flex items-center gap-4 text-sm">
                 <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                  <span className="text-slate-400">On Call</span>
+                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                  <span className="text-neutral-400">On Call</span>
                 </span>
                 <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 bg-cyan-500 rounded-full" />
-                  <span className="text-slate-400">Available</span>
+                  <span className="w-2 h-2 bg-green-400 rounded-full" />
+                  <span className="text-neutral-400">Available</span>
                 </span>
                 <span className="flex items-center gap-1">
                   <span className="w-2 h-2 bg-amber-500 rounded-full" />
-                  <span className="text-slate-400">Break</span>
+                  <span className="text-neutral-400">Break</span>
                 </span>
               </div>
             </div>
@@ -226,22 +226,22 @@ export default function CallCenter() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-slate-800/50">
-                    <th className="text-left p-4 text-sm font-medium text-slate-400">Agent</th>
-                    <th className="text-left p-4 text-sm font-medium text-slate-400">Status</th>
-                    <th className="text-left p-4 text-sm font-medium text-slate-400">Calls</th>
-                    <th className="text-left p-4 text-sm font-medium text-slate-400">Avg Handle</th>
-                    <th className="text-left p-4 text-sm font-medium text-slate-400">Missed</th>
-                    <th className="text-left p-4 text-sm font-medium text-slate-400">CSAT</th>
-                    <th className="text-left p-4 text-sm font-medium text-slate-400">Resolution</th>
+                  <tr className="border-b border-neutral-800/50">
+                    <th className="text-left p-4 text-sm font-medium text-neutral-400">Agent</th>
+                    <th className="text-left p-4 text-sm font-medium text-neutral-400">Status</th>
+                    <th className="text-left p-4 text-sm font-medium text-neutral-400">Calls</th>
+                    <th className="text-left p-4 text-sm font-medium text-neutral-400">Avg Handle</th>
+                    <th className="text-left p-4 text-sm font-medium text-neutral-400">Missed</th>
+                    <th className="text-left p-4 text-sm font-medium text-neutral-400">CSAT</th>
+                    <th className="text-left p-4 text-sm font-medium text-neutral-400">Resolution</th>
                   </tr>
                 </thead>
                 <tbody>
                   {agents.map((agent) => (
-                    <tr key={agent.id} className="border-b border-slate-800/30 hover:bg-slate-800/30">
+                    <tr key={agent.id} className="border-b border-neutral-800/30 hover:bg-neutral-800/30">
                       <td className="p-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-white text-sm font-medium">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br bg-green-500 flex items-center justify-center text-white text-sm font-medium">
                             {agent.name.split(' ').map(n => n[0]).join('')}
                           </div>
                           <span className="font-medium text-white">{agent.name}</span>
@@ -251,9 +251,9 @@ export default function CallCenter() {
                         <AgentStatusBadge status={agent.status} currentCall={agent.currentCall} />
                       </td>
                       <td className="p-4 text-white">{agent.callsToday}</td>
-                      <td className="p-4 text-slate-300">{agent.avgHandleTime}</td>
+                      <td className="p-4 text-neutral-300">{agent.avgHandleTime}</td>
                       <td className="p-4">
-                        <span className={agent.missedCalls > 0 ? 'text-rose-400' : 'text-emerald-400'}>
+                        <span className={agent.missedCalls > 0 ? 'text-rose-400' : 'text-green-400'}>
                           {agent.missedCalls}
                         </span>
                       </td>
@@ -262,8 +262,8 @@ export default function CallCenter() {
                       </td>
                       <td className="p-4">
                         <span className={`${
-                          agent.resolution >= 95 ? 'text-emerald-400' :
-                          agent.resolution >= 90 ? 'text-cyan-400' :
+                          agent.resolution >= 95 ? 'text-green-400' :
+                          agent.resolution >= 90 ? 'text-green-300' :
                           'text-amber-400'
                         }`}>
                           {agent.resolution}%
@@ -278,9 +278,9 @@ export default function CallCenter() {
 
           {/* Call Volume Chart */}
           <div className="card">
-            <div className="px-6 py-4 border-b border-slate-800/50">
+            <div className="px-6 py-4 border-b border-neutral-800/50">
               <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-cyan-400" />
+                <BarChart3 className="w-5 h-5 text-green-300" />
                 Call Volume by Hour
               </h2>
             </div>
@@ -288,10 +288,10 @@ export default function CallCenter() {
               <div className="space-y-3">
                 {hourlyVolume.map((hour) => (
                   <div key={hour.hour} className="flex items-center gap-3">
-                    <span className="text-xs text-slate-400 w-10">{hour.hour}</span>
-                    <div className="flex-1 h-6 bg-slate-800 rounded overflow-hidden relative">
+                    <span className="text-xs text-neutral-400 w-10">{hour.hour}</span>
+                    <div className="flex-1 h-6 bg-neutral-800 rounded overflow-hidden relative">
                       <div
-                        className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500"
+                        className="h-full bg-green-500"
                         style={{ width: `${(hour.calls / 50) * 100}%` }}
                       />
                       <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-white">
@@ -302,19 +302,19 @@ export default function CallCenter() {
                 ))}
               </div>
 
-              <div className="mt-6 p-4 bg-slate-800/40 rounded-lg">
+              <div className="mt-6 p-4 bg-neutral-800/40 rounded-lg">
                 <h4 className="text-sm font-medium text-white mb-3">Peak Hours</h4>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-400">Highest Volume</span>
-                  <span className="text-emerald-400">1PM (45 calls)</span>
+                  <span className="text-neutral-400">Highest Volume</span>
+                  <span className="text-green-400">1PM (45 calls)</span>
                 </div>
                 <div className="flex items-center justify-between text-sm mt-2">
-                  <span className="text-slate-400">Longest Wait</span>
+                  <span className="text-neutral-400">Longest Wait</span>
                   <span className="text-amber-400">1PM (1:50 avg)</span>
                 </div>
                 <div className="flex items-center justify-between text-sm mt-2">
-                  <span className="text-slate-400">Best SLA</span>
-                  <span className="text-cyan-400">4PM (98%)</span>
+                  <span className="text-neutral-400">Best SLA</span>
+                  <span className="text-green-300">4PM (98%)</span>
                 </div>
               </div>
             </div>
@@ -323,9 +323,9 @@ export default function CallCenter() {
 
         {/* Recent Calls */}
         <div className="card">
-          <div className="px-6 py-4 border-b border-slate-800/50 flex items-center justify-between">
+          <div className="px-6 py-4 border-b border-neutral-800/50 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-              <Activity className="w-5 h-5 text-violet-400" />
+              <Activity className="w-5 h-5 text-green-400" />
               Recent Calls
             </h2>
             <div className="flex gap-2">
@@ -335,8 +335,8 @@ export default function CallCenter() {
                   onClick={() => setTimeRange(range)}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     timeRange === range
-                      ? 'bg-emerald-500/20 text-emerald-400'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-green-500/20 text-green-400'
+                      : 'text-neutral-400 hover:text-white'
                   }`}
                 >
                   {range.charAt(0).toUpperCase() + range.slice(1)}
@@ -348,35 +348,35 @@ export default function CallCenter() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-800/50">
-                  <th className="text-left p-4 text-sm font-medium text-slate-400">Call ID</th>
-                  <th className="text-left p-4 text-sm font-medium text-slate-400">Customer</th>
-                  <th className="text-left p-4 text-sm font-medium text-slate-400">Phone</th>
-                  <th className="text-left p-4 text-sm font-medium text-slate-400">Agent</th>
-                  <th className="text-left p-4 text-sm font-medium text-slate-400">Duration</th>
-                  <th className="text-left p-4 text-sm font-medium text-slate-400">Type</th>
-                  <th className="text-left p-4 text-sm font-medium text-slate-400">Topic</th>
-                  <th className="text-left p-4 text-sm font-medium text-slate-400">Status</th>
+                <tr className="border-b border-neutral-800/50">
+                  <th className="text-left p-4 text-sm font-medium text-neutral-400">Call ID</th>
+                  <th className="text-left p-4 text-sm font-medium text-neutral-400">Customer</th>
+                  <th className="text-left p-4 text-sm font-medium text-neutral-400">Phone</th>
+                  <th className="text-left p-4 text-sm font-medium text-neutral-400">Agent</th>
+                  <th className="text-left p-4 text-sm font-medium text-neutral-400">Duration</th>
+                  <th className="text-left p-4 text-sm font-medium text-neutral-400">Type</th>
+                  <th className="text-left p-4 text-sm font-medium text-neutral-400">Topic</th>
+                  <th className="text-left p-4 text-sm font-medium text-neutral-400">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {recentCalls.map((call) => (
-                  <tr key={call.id} className="border-b border-slate-800/30 hover:bg-slate-800/30">
-                    <td className="p-4 font-mono text-sm text-slate-400">{call.id}</td>
+                  <tr key={call.id} className="border-b border-neutral-800/30 hover:bg-neutral-800/30">
+                    <td className="p-4 font-mono text-sm text-neutral-400">{call.id}</td>
                     <td className="p-4 text-white">{call.customer}</td>
-                    <td className="p-4 text-slate-300">{call.phone}</td>
-                    <td className="p-4 text-slate-300">{call.agent}</td>
+                    <td className="p-4 text-neutral-300">{call.phone}</td>
+                    <td className="p-4 text-neutral-300">{call.agent}</td>
                     <td className="p-4 text-white">{call.duration}</td>
                     <td className="p-4">
                       <span className={`px-2 py-1 rounded text-xs ${
                         call.type === 'inbound'
-                          ? 'bg-cyan-500/20 text-cyan-400'
-                          : 'bg-violet-500/20 text-violet-400'
+                          ? 'bg-green-400/20 text-green-300'
+                          : 'bg-green-500/20 text-green-400'
                       }`}>
                         {call.type}
                       </span>
                     </td>
-                    <td className="p-4 text-slate-300">{call.topic}</td>
+                    <td className="p-4 text-neutral-300">{call.topic}</td>
                     <td className="p-4">
                       <CallStatusBadge status={call.status} />
                     </td>
@@ -393,10 +393,10 @@ export default function CallCenter() {
 
 function AgentStatusBadge({ status, currentCall }: { status: string; currentCall: string | null }) {
   const styles: Record<string, { bg: string; dot: string; text: string }> = {
-    on_call: { bg: 'bg-emerald-500/20', dot: 'bg-emerald-500 animate-pulse', text: 'text-emerald-400' },
-    available: { bg: 'bg-cyan-500/20', dot: 'bg-cyan-500', text: 'text-cyan-400' },
+    on_call: { bg: 'bg-green-500/20', dot: 'bg-green-500 animate-pulse', text: 'text-green-400' },
+    available: { bg: 'bg-green-400/20', dot: 'bg-green-400', text: 'text-green-300' },
     break: { bg: 'bg-amber-500/20', dot: 'bg-amber-500', text: 'text-amber-400' },
-    after_call: { bg: 'bg-violet-500/20', dot: 'bg-violet-500', text: 'text-violet-400' },
+    after_call: { bg: 'bg-green-500/20', dot: 'bg-green-500', text: 'text-green-400' },
   }
 
   const labels: Record<string, string> = {
@@ -415,7 +415,7 @@ function AgentStatusBadge({ status, currentCall }: { status: string; currentCall
         {labels[status]}
       </span>
       {currentCall && (
-        <span className="text-xs text-slate-500">{currentCall}</span>
+        <span className="text-xs text-neutral-500">{currentCall}</span>
       )}
     </div>
   )
@@ -423,8 +423,8 @@ function AgentStatusBadge({ status, currentCall }: { status: string; currentCall
 
 function CallStatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    in_progress: 'bg-emerald-500/20 text-emerald-400',
-    completed: 'bg-slate-500/20 text-slate-400',
+    in_progress: 'bg-green-500/20 text-green-400',
+    completed: 'bg-neutral-500/20 text-neutral-400',
     missed: 'bg-rose-500/20 text-rose-400',
   }
 

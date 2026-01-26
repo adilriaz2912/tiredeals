@@ -18,14 +18,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label htmlFor={inputId} className="block text-sm font-medium text-slate-300 mb-1.5">
+          <label htmlFor={inputId} className="block text-sm font-medium text-neutral-300 mb-1.5">
             {label}
             {props.required && <span className="text-rose-400 ml-1">*</span>}
           </label>
         )}
         <div className="relative">
           {leftIcon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500">
               {leftIcon}
             </div>
           )}
@@ -33,12 +33,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={inputId}
             className={cn(
-              'w-full px-4 py-2.5 rounded-xl border bg-slate-800/50 text-white placeholder:text-slate-500',
+              'w-full px-4 py-2.5 rounded-xl border bg-neutral-800/50 text-white placeholder:text-neutral-500',
               'focus:outline-none focus:ring-2 focus:ring-offset-0 transition-all duration-200',
               'backdrop-blur-sm',
               error
                 ? 'border-rose-500/50 focus:ring-rose-500/50 focus:border-rose-500'
-                : 'border-slate-700/50 focus:ring-emerald-500/50 focus:border-emerald-500/50 hover:border-slate-600',
+                : 'border-neutral-700/50 focus:ring-green-500/50 focus:border-green-500/50 hover:border-neutral-600',
               leftIcon && 'pl-10',
               rightIcon && 'pr-10',
               className
@@ -48,7 +48,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightIcon && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500">
               {rightIcon}
             </div>
           )}
@@ -59,7 +59,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           </p>
         )}
         {hint && !error && (
-          <p id={`${inputId}-hint`} className="mt-1.5 text-sm text-slate-500">
+          <p id={`${inputId}-hint`} className="mt-1.5 text-sm text-neutral-500">
             {hint}
           </p>
         )}

@@ -14,13 +14,13 @@ export function Header({ title, subtitle, actions }: HeaderProps) {
   const [showNotifications, setShowNotifications] = useState(false)
 
   return (
-    <header className="sticky top-0 z-30 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800/50">
+    <header className="sticky top-0 z-30 bg-neutral-900/80 backdrop-blur-xl border-b border-neutral-800/50">
       <div className="flex items-center justify-between px-6 py-4">
         {/* Title */}
         <div>
           <h1 className="text-2xl font-bold text-white">{title}</h1>
           {subtitle && (
-            <p className="text-sm text-slate-400 mt-0.5">{subtitle}</p>
+            <p className="text-sm text-neutral-400 mt-0.5">{subtitle}</p>
           )}
         </div>
 
@@ -33,16 +33,16 @@ export function Header({ title, subtitle, actions }: HeaderProps) {
           <div className="relative">
             <button
               onClick={() => setShowNotifications(!showNotifications)}
-              className="relative p-2.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-all duration-200"
+              className="relative p-2.5 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-xl transition-all duration-200"
             >
               <Bell className="w-5 h-5" />
               <span className="notification-dot" />
             </button>
             {showNotifications && (
-              <div className="absolute right-0 top-full mt-2 w-80 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
-                <div className="px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+              <div className="absolute right-0 top-full mt-2 w-80 bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl overflow-hidden">
+                <div className="px-4 py-3 border-b border-neutral-800 flex items-center justify-between">
                   <h3 className="font-semibold text-white">Notifications</h3>
-                  <span className="text-xs text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded-full">4 new</span>
+                  <span className="text-xs text-green-400 bg-green-500/20 px-2 py-0.5 rounded-full">4 new</span>
                 </div>
                 <div className="max-h-96 overflow-y-auto">
                   <NotificationItem
@@ -70,8 +70,8 @@ export function Header({ title, subtitle, actions }: HeaderProps) {
                     type="warranty"
                   />
                 </div>
-                <div className="px-4 py-3 border-t border-slate-800">
-                  <button className="text-sm text-emerald-400 hover:text-emerald-300 font-medium transition-colors">
+                <div className="px-4 py-3 border-t border-neutral-800">
+                  <button className="text-sm text-green-400 hover:text-green-300 font-medium transition-colors">
                     View all notifications
                   </button>
                 </div>
@@ -86,7 +86,7 @@ export function Header({ title, subtitle, actions }: HeaderProps) {
               Quick Actions
               <ChevronDown className="w-4 h-4" />
             </button>
-            <div className="absolute right-0 top-full mt-2 w-48 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+            <div className="absolute right-0 top-full mt-2 w-48 bg-neutral-900 border border-neutral-800 rounded-xl shadow-2xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
               <QuickActionItem label="New Customer" href="/customers/new" />
               <QuickActionItem label="New Order" href="/orders/new" />
               <QuickActionItem label="New Ticket" href="/support/new" />
@@ -114,20 +114,20 @@ function NotificationItem({
   type: 'order' | 'inventory' | 'ticket' | 'warranty'
 }) {
   const colors = {
-    order: 'from-emerald-500 to-cyan-500',
+    order: 'from-green-500 to-green-400',
     inventory: 'from-amber-500 to-orange-500',
     ticket: 'from-blue-500 to-indigo-500',
     warranty: 'from-red-500 to-rose-500',
   }
 
   return (
-    <div className="px-4 py-3 hover:bg-slate-800/50 cursor-pointer border-b border-slate-800/50 last:border-0 transition-colors">
+    <div className="px-4 py-3 hover:bg-neutral-800/50 cursor-pointer border-b border-neutral-800/50 last:border-0 transition-colors">
       <div className="flex gap-3">
         <div className={`w-2 h-2 rounded-full mt-2 bg-gradient-to-r ${colors[type]}`} />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-white">{title}</p>
-          <p className="text-sm text-slate-400 truncate">{message}</p>
-          <p className="text-xs text-slate-500 mt-1">{time}</p>
+          <p className="text-sm text-neutral-400 truncate">{message}</p>
+          <p className="text-xs text-neutral-500 mt-1">{time}</p>
         </div>
       </div>
     </div>
@@ -138,7 +138,7 @@ function QuickActionItem({ label, href }: { label: string; href: string }) {
   return (
     <a
       href={href}
-      className="block px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+      className="block px-4 py-2.5 text-sm text-neutral-300 hover:bg-neutral-800 hover:text-white transition-colors"
     >
       {label}
     </a>

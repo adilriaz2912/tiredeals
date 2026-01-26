@@ -237,20 +237,20 @@ export function Sidebar() {
   const sidebarContent = (
     <>
       {/* Logo */}
-      <div className="flex items-center gap-3 px-6 py-5 border-b border-slate-800/50">
+      <div className="flex items-center gap-3 px-6 py-5 border-b border-neutral-800/50">
         <div className="relative">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-            <Sparkles className="w-6 h-6 text-white" />
+          <div className="w-11 h-11 rounded-xl bg-green-500 flex items-center justify-center shadow-lg shadow-green-500/20">
+            <Sparkles className="w-6 h-6 text-black" />
           </div>
-          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-slate-900" />
+          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-black" />
         </div>
         <div>
           <h1 className="font-bold text-lg text-white">TireDeals</h1>
-          <p className="text-xs text-slate-500">CRM Dashboard</p>
+          <p className="text-xs text-neutral-500">CRM Dashboard</p>
         </div>
         {/* Mobile close button */}
         <button
-          className="lg:hidden ml-auto p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+          className="lg:hidden ml-auto p-2 text-neutral-400 hover:text-white rounded-lg hover:bg-neutral-800"
           onClick={() => setIsMobileOpen(false)}
           aria-label="Close sidebar"
         >
@@ -270,14 +270,14 @@ export function Sidebar() {
                     className={cn(
                       'w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl transition-all duration-200',
                       isActive(item.href)
-                        ? 'bg-gradient-to-r from-emerald-500/20 to-cyan-500/10 text-emerald-400'
-                        : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
+                        ? 'bg-green-500/20 text-green-400'
+                        : 'text-neutral-400 hover:bg-neutral-800/50 hover:text-white'
                     )}
                   >
                     <div className="flex items-center gap-3">
                       <span className={cn(
                         'transition-colors',
-                        isActive(item.href) ? 'text-emerald-400' : ''
+                        isActive(item.href) ? 'text-green-400' : ''
                       )}>
                         {item.icon}
                       </span>
@@ -294,7 +294,7 @@ export function Sidebar() {
                     'overflow-hidden transition-all duration-200',
                     expandedItems.includes(item.label) ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                   )}>
-                    <ul className="mt-1 ml-4 pl-4 border-l border-slate-800 space-y-1">
+                    <ul className="mt-1 ml-4 pl-4 border-l border-neutral-800 space-y-1">
                       {item.children.map((child) => (
                         <li key={child.href}>
                           <Link
@@ -302,8 +302,8 @@ export function Sidebar() {
                             className={cn(
                               'block px-3 py-2 text-sm rounded-lg transition-all duration-200',
                               pathname === child.href
-                                ? 'text-emerald-400 bg-emerald-500/10'
-                                : 'text-slate-500 hover:text-white hover:bg-slate-800/50'
+                                ? 'text-green-400 bg-green-500/10'
+                                : 'text-neutral-500 hover:text-white hover:bg-neutral-800/50'
                             )}
                           >
                             {child.label}
@@ -319,19 +319,19 @@ export function Sidebar() {
                   className={cn(
                     'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200',
                     isActive(item.href)
-                      ? 'bg-gradient-to-r from-emerald-500/20 to-cyan-500/10 text-emerald-400 shadow-lg shadow-emerald-500/5'
-                      : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
+                      ? 'bg-green-500/20 text-green-400 shadow-lg shadow-green-500/5'
+                      : 'text-neutral-400 hover:bg-neutral-800/50 hover:text-white'
                   )}
                 >
                   <span className={cn(
                     'transition-colors',
-                    isActive(item.href) ? 'text-emerald-400' : ''
+                    isActive(item.href) ? 'text-green-400' : ''
                   )}>
                     {item.icon}
                   </span>
                   <span className="text-sm font-medium">{item.label}</span>
                   {item.badge && (
-                    <span className="ml-auto bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
+                    <span className="ml-auto bg-green-500 text-black text-xs font-semibold px-2 py-0.5 rounded-full">
                       {item.badge}
                     </span>
                   )}
@@ -343,14 +343,14 @@ export function Sidebar() {
       </nav>
 
       {/* Settings */}
-      <div className="p-3 border-t border-slate-800/50">
+      <div className="p-3 border-t border-neutral-800/50">
         <Link
           href="/settings"
           className={cn(
             'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200',
             pathname === '/settings'
-              ? 'bg-gradient-to-r from-emerald-500/20 to-cyan-500/10 text-emerald-400'
-              : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
+              ? 'bg-green-500/20 text-green-400'
+              : 'text-neutral-400 hover:bg-neutral-800/50 hover:text-white'
           )}
         >
           <Settings className="w-5 h-5" />
@@ -359,16 +359,16 @@ export function Sidebar() {
       </div>
 
       {/* User Profile */}
-      <div className="p-4 border-t border-slate-800/50">
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/30">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center text-sm font-semibold text-white shadow-lg shadow-violet-500/20">
+      <div className="p-4 border-t border-neutral-800/50">
+        <div className="flex items-center gap-3 p-3 rounded-xl bg-neutral-800/30">
+          <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-sm font-semibold text-black shadow-lg shadow-green-500/20">
             AR
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-white truncate">Admin User</p>
-            <p className="text-xs text-slate-500 truncate">admin@tiredeals.com</p>
+            <p className="text-xs text-neutral-500 truncate">admin@tiredeals.com</p>
           </div>
-          <button className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-700 transition-colors">
+          <button className="p-2 text-neutral-400 hover:text-white rounded-lg hover:bg-neutral-700 transition-colors">
             <LogOut className="w-4 h-4" />
           </button>
         </div>
@@ -380,7 +380,7 @@ export function Sidebar() {
     <>
       {/* Mobile hamburger button */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 bg-slate-900 border border-slate-800 text-white rounded-xl shadow-xl"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 bg-neutral-900 border border-neutral-800 text-white rounded-xl shadow-xl"
         onClick={() => setIsMobileOpen(true)}
         aria-label="Open sidebar"
       >
@@ -390,7 +390,7 @@ export function Sidebar() {
       {/* Mobile backdrop */}
       {isMobileOpen && (
         <div
-          className="lg:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+          className="lg:hidden fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
           onClick={() => setIsMobileOpen(false)}
           aria-hidden="true"
         />
@@ -400,7 +400,7 @@ export function Sidebar() {
       <aside
         className={cn(
           'lg:hidden fixed left-0 top-0 z-50 h-screen w-72 flex flex-col transform transition-transform duration-300 ease-out',
-          'bg-slate-900/95 backdrop-blur-xl border-r border-slate-800/50',
+          'bg-black/95 backdrop-blur-xl border-r border-neutral-800/50',
           isMobileOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
@@ -408,7 +408,7 @@ export function Sidebar() {
       </aside>
 
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-64 flex-col bg-slate-900/80 backdrop-blur-xl border-r border-slate-800/50">
+      <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-64 flex-col bg-black/90 backdrop-blur-xl border-r border-neutral-800/50">
         {sidebarContent}
       </aside>
     </>

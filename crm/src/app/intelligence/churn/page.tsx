@@ -160,7 +160,7 @@ export default function ChurnRiskScoring() {
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{formatCurrency(stats.atRiskRevenue)}</p>
-              <p className="text-sm text-slate-400 mt-1">At-Risk Revenue</p>
+              <p className="text-sm text-neutral-400 mt-1">At-Risk Revenue</p>
             </div>
           </div>
 
@@ -172,34 +172,34 @@ export default function ChurnRiskScoring() {
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{stats.criticalCustomers + stats.highRiskCustomers}</p>
-              <p className="text-sm text-slate-400 mt-1">High Risk Customers</p>
-              <p className="text-xs text-slate-500">{stats.criticalCustomers} critical, {stats.highRiskCustomers} high</p>
+              <p className="text-sm text-neutral-400 mt-1">High Risk Customers</p>
+              <p className="text-xs text-neutral-500">{stats.criticalCustomers} critical, {stats.highRiskCustomers} high</p>
             </div>
           </div>
 
           <div className="card p-6">
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-emerald-500/20">
-                <RefreshCw className="w-6 h-6 text-emerald-400" />
+              <div className="p-3 rounded-xl bg-green-500/20">
+                <RefreshCw className="w-6 h-6 text-green-400" />
               </div>
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{stats.savedThisMonth}</p>
-              <p className="text-sm text-slate-400 mt-1">Saved This Month</p>
-              <p className="text-xs text-emerald-400">{formatCurrency(stats.savedRevenue)} recovered</p>
+              <p className="text-sm text-neutral-400 mt-1">Saved This Month</p>
+              <p className="text-xs text-green-400">{formatCurrency(stats.savedRevenue)} recovered</p>
             </div>
           </div>
 
           <div className="card p-6">
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-cyan-500/20">
-                <Activity className="w-6 h-6 text-cyan-400" />
+              <div className="p-3 rounded-xl bg-green-400/20">
+                <Activity className="w-6 h-6 text-green-300" />
               </div>
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{stats.churnRate}%</p>
-              <p className="text-sm text-slate-400 mt-1">Churn Rate</p>
-              <p className="text-xs text-emerald-400">vs {stats.industryAvg}% industry avg</p>
+              <p className="text-sm text-neutral-400 mt-1">Churn Rate</p>
+              <p className="text-xs text-green-400">vs {stats.industryAvg}% industry avg</p>
             </div>
           </div>
         </div>
@@ -207,7 +207,7 @@ export default function ChurnRiskScoring() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* At-Risk Customers */}
           <div className="lg:col-span-2 card">
-            <div className="px-6 py-4 border-b border-slate-800/50 flex flex-wrap items-center justify-between gap-4">
+            <div className="px-6 py-4 border-b border-neutral-800/50 flex flex-wrap items-center justify-between gap-4">
               <h2 className="text-lg font-semibold text-white">At-Risk Customers</h2>
               <div className="flex gap-2">
                 {(['all', 'critical', 'high', 'medium'] as const).map((level) => (
@@ -219,8 +219,8 @@ export default function ChurnRiskScoring() {
                         ? level === 'critical' ? 'bg-rose-500/20 text-rose-400' :
                           level === 'high' ? 'bg-orange-500/20 text-orange-400' :
                           level === 'medium' ? 'bg-amber-500/20 text-amber-400' :
-                          'bg-emerald-500/20 text-emerald-400'
-                        : 'text-slate-400 hover:text-white'
+                          'bg-green-500/20 text-green-400'
+                        : 'text-neutral-400 hover:text-white'
                     }`}
                   >
                     {level.charAt(0).toUpperCase() + level.slice(1)}
@@ -230,22 +230,22 @@ export default function ChurnRiskScoring() {
             </div>
 
             {selectedCustomers.length > 0 && (
-              <div className="px-6 py-3 bg-emerald-500/10 border-b border-emerald-500/20 flex items-center justify-between">
-                <span className="text-sm text-emerald-400">{selectedCustomers.length} selected</span>
+              <div className="px-6 py-3 bg-green-500/10 border-b border-green-500/20 flex items-center justify-between">
+                <span className="text-sm text-green-400">{selectedCustomers.length} selected</span>
                 <div className="flex gap-2">
-                  <button className="flex items-center gap-1 px-3 py-1.5 bg-emerald-500/20 text-emerald-400 rounded-lg text-sm">
+                  <button className="flex items-center gap-1 px-3 py-1.5 bg-green-500/20 text-green-400 rounded-lg text-sm">
                     <Mail className="w-4 h-4" /> Email
                   </button>
-                  <button className="flex items-center gap-1 px-3 py-1.5 bg-cyan-500/20 text-cyan-400 rounded-lg text-sm">
+                  <button className="flex items-center gap-1 px-3 py-1.5 bg-green-400/20 text-green-300 rounded-lg text-sm">
                     <Gift className="w-4 h-4" /> Send Offer
                   </button>
                 </div>
               </div>
             )}
 
-            <div className="divide-y divide-slate-800/30">
+            <div className="divide-y divide-neutral-800/30">
               {filteredCustomers.map((customer) => (
-                <div key={customer.id} className="p-6 hover:bg-slate-800/20 transition-colors">
+                <div key={customer.id} className="p-6 hover:bg-neutral-800/20 transition-colors">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-start gap-4">
                       <input
@@ -256,17 +256,17 @@ export default function ChurnRiskScoring() {
                             ? prev.filter(id => id !== customer.id)
                             : [...prev, customer.id]
                         )}
-                        className="mt-1 w-4 h-4 rounded border-slate-600 bg-slate-800 text-emerald-500"
+                        className="mt-1 w-4 h-4 rounded border-neutral-600 bg-neutral-800 text-green-500"
                       />
                       <div>
                         <div className="flex items-center gap-3">
-                          <Link href={`/customers/${customer.id}`} className="font-medium text-white hover:text-emerald-400">
+                          <Link href={`/customers/${customer.id}`} className="font-medium text-white hover:text-green-400">
                             {customer.name}
                           </Link>
                           <RiskBadge level={customer.riskLevel} score={customer.riskScore} />
                         </div>
-                        <p className="text-sm text-slate-500 mt-1">{customer.email}</p>
-                        <div className="flex items-center gap-4 mt-2 text-sm text-slate-400">
+                        <p className="text-sm text-neutral-500 mt-1">{customer.email}</p>
+                        <div className="flex items-center gap-4 mt-2 text-sm text-neutral-400">
                           <span className="flex items-center gap-1">
                             <Clock className="w-4 h-4" />
                             {customer.daysSinceOrder} days since order
@@ -280,20 +280,20 @@ export default function ChurnRiskScoring() {
                             </span>
                           ))}
                         </div>
-                        <div className="mt-3 p-3 bg-slate-800/40 rounded-lg">
-                          <p className="text-xs text-slate-500 mb-1">Recommended Action</p>
-                          <p className="text-sm text-emerald-400">{customer.recommendedAction}</p>
+                        <div className="mt-3 p-3 bg-neutral-800/40 rounded-lg">
+                          <p className="text-xs text-neutral-500 mb-1">Recommended Action</p>
+                          <p className="text-sm text-green-400">{customer.recommendedAction}</p>
                         </div>
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <button className="p-2 text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg" title="Send Email">
+                      <button className="p-2 text-neutral-400 hover:text-green-400 hover:bg-green-500/10 rounded-lg" title="Send Email">
                         <Mail className="w-4 h-4" />
                       </button>
-                      <button className="p-2 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg" title="Call">
+                      <button className="p-2 text-neutral-400 hover:text-green-300 hover:bg-green-400/10 rounded-lg" title="Call">
                         <Phone className="w-4 h-4" />
                       </button>
-                      <button className="p-2 text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 rounded-lg" title="Send Offer">
+                      <button className="p-2 text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 rounded-lg" title="Send Offer">
                         <Gift className="w-4 h-4" />
                       </button>
                     </div>
@@ -307,17 +307,17 @@ export default function ChurnRiskScoring() {
           <div className="space-y-6">
             {/* Churn Signals */}
             <div className="card">
-              <div className="px-6 py-4 border-b border-slate-800/50">
+              <div className="px-6 py-4 border-b border-neutral-800/50">
                 <h2 className="text-lg font-semibold text-white">Churn Signals</h2>
               </div>
               <div className="p-6 space-y-4">
                 {churnSignals.map((signal) => (
                   <div key={signal.signal}>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm text-slate-300">{signal.signal}</span>
-                      <span className="text-xs text-slate-500">{signal.customers} customers</span>
+                      <span className="text-sm text-neutral-300">{signal.signal}</span>
+                      <span className="text-xs text-neutral-500">{signal.customers} customers</span>
                     </div>
-                    <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-gradient-to-r from-rose-500 to-orange-500"
                         style={{ width: `${signal.weight * 4}%` }}
@@ -330,19 +330,19 @@ export default function ChurnRiskScoring() {
 
             {/* Win-Back Campaigns */}
             <div className="card">
-              <div className="px-6 py-4 border-b border-slate-800/50 flex items-center justify-between">
+              <div className="px-6 py-4 border-b border-neutral-800/50 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-white">Win-Back Campaigns</h2>
-                <button className="text-sm text-emerald-400 hover:text-emerald-300">+ New</button>
+                <button className="text-sm text-green-400 hover:text-green-300">+ New</button>
               </div>
               <div className="p-4 space-y-3">
                 {campaigns.map((campaign) => (
-                  <div key={campaign.name} className="p-3 bg-slate-800/40 rounded-lg">
+                  <div key={campaign.name} className="p-3 bg-neutral-800/40 rounded-lg">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium text-white">{campaign.name}</span>
                       <span className={`text-xs px-2 py-0.5 rounded ${
                         campaign.status === 'active'
-                          ? 'bg-emerald-500/20 text-emerald-400'
-                          : 'bg-slate-500/20 text-slate-400'
+                          ? 'bg-green-500/20 text-green-400'
+                          : 'bg-neutral-500/20 text-neutral-400'
                       }`}>
                         {campaign.status}
                       </span>
@@ -350,15 +350,15 @@ export default function ChurnRiskScoring() {
                     <div className="grid grid-cols-3 gap-2 text-center">
                       <div>
                         <p className="text-lg font-semibold text-white">{campaign.converted}</p>
-                        <p className="text-xs text-slate-500">Converted</p>
+                        <p className="text-xs text-neutral-500">Converted</p>
                       </div>
                       <div>
                         <p className="text-lg font-semibold text-white">{Math.round(campaign.opened / campaign.sent * 100)}%</p>
-                        <p className="text-xs text-slate-500">Open Rate</p>
+                        <p className="text-xs text-neutral-500">Open Rate</p>
                       </div>
                       <div>
-                        <p className="text-lg font-semibold text-emerald-400">{formatCurrency(campaign.revenue)}</p>
-                        <p className="text-xs text-slate-500">Revenue</p>
+                        <p className="text-lg font-semibold text-green-400">{formatCurrency(campaign.revenue)}</p>
+                        <p className="text-xs text-neutral-500">Revenue</p>
                       </div>
                     </div>
                   </div>

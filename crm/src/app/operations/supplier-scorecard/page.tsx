@@ -175,38 +175,38 @@ export default function SupplierScorecard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="card p-6">
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-emerald-500/20">
-                <Star className="w-6 h-6 text-emerald-400" />
+              <div className="p-3 rounded-xl bg-green-500/20">
+                <Star className="w-6 h-6 text-green-400" />
               </div>
-              <TrendingUp className="w-5 h-5 text-emerald-400" />
+              <TrendingUp className="w-5 h-5 text-green-400" />
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{stats.avgScore}</p>
-              <p className="text-sm text-slate-400 mt-1">Avg Supplier Score</p>
+              <p className="text-sm text-neutral-400 mt-1">Avg Supplier Score</p>
             </div>
           </div>
 
           <div className="card p-6">
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-cyan-500/20">
-                <Truck className="w-6 h-6 text-cyan-400" />
+              <div className="p-3 rounded-xl bg-green-400/20">
+                <Truck className="w-6 h-6 text-green-300" />
               </div>
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{stats.onTimeDelivery}%</p>
-              <p className="text-sm text-slate-400 mt-1">On-Time Delivery</p>
+              <p className="text-sm text-neutral-400 mt-1">On-Time Delivery</p>
             </div>
           </div>
 
           <div className="card p-6">
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-violet-500/20">
-                <Package className="w-6 h-6 text-violet-400" />
+              <div className="p-3 rounded-xl bg-green-500/20">
+                <Package className="w-6 h-6 text-green-400" />
               </div>
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{stats.avgFillRate}%</p>
-              <p className="text-sm text-slate-400 mt-1">Avg Fill Rate</p>
+              <p className="text-sm text-neutral-400 mt-1">Avg Fill Rate</p>
             </div>
           </div>
 
@@ -218,7 +218,7 @@ export default function SupplierScorecard() {
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{formatCurrency(stats.totalVolume)}</p>
-              <p className="text-sm text-slate-400 mt-1">Total Volume (YTD)</p>
+              <p className="text-sm text-neutral-400 mt-1">Total Volume (YTD)</p>
             </div>
           </div>
         </div>
@@ -226,7 +226,7 @@ export default function SupplierScorecard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Supplier List */}
           <div className="lg:col-span-2 card">
-            <div className="px-6 py-4 border-b border-slate-800/50 flex items-center justify-between">
+            <div className="px-6 py-4 border-b border-neutral-800/50 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-white flex items-center gap-2">
                 <Award className="w-5 h-5 text-amber-400" />
                 Supplier Rankings
@@ -238,8 +238,8 @@ export default function SupplierScorecard() {
                     onClick={() => setSortBy(sort)}
                     className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                       sortBy === sort
-                        ? 'bg-emerald-500/20 text-emerald-400'
-                        : 'text-slate-400 hover:text-white'
+                        ? 'bg-green-500/20 text-green-400'
+                        : 'text-neutral-400 hover:text-white'
                     }`}
                   >
                     {sort === 'score' ? 'Score' : sort === 'volume' ? 'Volume' : 'Fill Rate'}
@@ -248,29 +248,29 @@ export default function SupplierScorecard() {
               </div>
             </div>
 
-            <div className="divide-y divide-slate-800/30">
+            <div className="divide-y divide-neutral-800/30">
               {sortedSuppliers.map((supplier, index) => (
                 <button
                   key={supplier.id}
                   onClick={() => setSelectedSupplier(selectedSupplier === supplier.id ? null : supplier.id)}
-                  className={`w-full p-4 text-left hover:bg-slate-800/20 transition-colors ${
-                    selectedSupplier === supplier.id ? 'bg-slate-800/30' : ''
+                  className={`w-full p-4 text-left hover:bg-neutral-800/20 transition-colors ${
+                    selectedSupplier === supplier.id ? 'bg-neutral-800/30' : ''
                   }`}
                 >
                   <div className="flex items-center gap-4">
                     <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${
                       index === 0 ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white' :
-                      index === 1 ? 'bg-gradient-to-br from-slate-400 to-slate-500 text-white' :
+                      index === 1 ? 'bg-gradient-to-br from-neutral-400 to-neutral-500 text-white' :
                       index === 2 ? 'bg-gradient-to-br from-amber-700 to-amber-800 text-white' :
-                      'bg-slate-800 text-slate-400'
+                      'bg-neutral-800 text-neutral-400'
                     }`}>
                       {index + 1}
                     </span>
 
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold ${
-                      supplier.tier === 'platinum' ? 'bg-gradient-to-br from-violet-500 to-purple-600 text-white' :
+                      supplier.tier === 'platinum' ? 'bg-gradient-to-br from-green-500 to-purple-600 text-white' :
                       supplier.tier === 'gold' ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white' :
-                      'bg-gradient-to-br from-slate-400 to-slate-500 text-white'
+                      'bg-gradient-to-br from-neutral-400 to-neutral-500 text-white'
                     }`}>
                       {supplier.logo}
                     </div>
@@ -285,24 +285,24 @@ export default function SupplierScorecard() {
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-4 mt-1 text-sm text-slate-400">
+                      <div className="flex items-center gap-4 mt-1 text-sm text-neutral-400">
                         <span>{formatCurrency(supplier.volume)} volume</span>
                         <span>{supplier.orders} orders</span>
                         <span className="flex items-center gap-1">
-                          {supplier.trend === 'up' && <TrendingUp className="w-3 h-3 text-emerald-400" />}
+                          {supplier.trend === 'up' && <TrendingUp className="w-3 h-3 text-green-400" />}
                           {supplier.trend === 'down' && <TrendingDown className="w-3 h-3 text-rose-400" />}
-                          {supplier.trend === 'stable' && <span className="text-slate-500">—</span>}
+                          {supplier.trend === 'stable' && <span className="text-neutral-500">—</span>}
                         </span>
                       </div>
                     </div>
 
                     <div className="text-right">
                       <div className="flex items-center gap-2">
-                        <div className="w-24 h-2 bg-slate-800 rounded-full overflow-hidden">
+                        <div className="w-24 h-2 bg-neutral-800 rounded-full overflow-hidden">
                           <div
                             className={`h-full ${
-                              supplier.overallScore >= 90 ? 'bg-emerald-500' :
-                              supplier.overallScore >= 80 ? 'bg-cyan-500' :
+                              supplier.overallScore >= 90 ? 'bg-green-500' :
+                              supplier.overallScore >= 80 ? 'bg-green-400' :
                               supplier.overallScore >= 70 ? 'bg-amber-500' :
                               'bg-rose-500'
                             }`}
@@ -310,8 +310,8 @@ export default function SupplierScorecard() {
                           />
                         </div>
                         <span className={`text-lg font-bold ${
-                          supplier.overallScore >= 90 ? 'text-emerald-400' :
-                          supplier.overallScore >= 80 ? 'text-cyan-400' :
+                          supplier.overallScore >= 90 ? 'text-green-400' :
+                          supplier.overallScore >= 80 ? 'text-green-300' :
                           supplier.overallScore >= 70 ? 'text-amber-400' :
                           'text-rose-400'
                         }`}>
@@ -323,13 +323,13 @@ export default function SupplierScorecard() {
                       )}
                     </div>
 
-                    <ChevronRight className={`w-5 h-5 text-slate-500 transition-transform ${
+                    <ChevronRight className={`w-5 h-5 text-neutral-500 transition-transform ${
                       selectedSupplier === supplier.id ? 'rotate-90' : ''
                     }`} />
                   </div>
 
                   {selectedSupplier === supplier.id && (
-                    <div className="mt-4 pt-4 border-t border-slate-800/50 grid grid-cols-5 gap-4">
+                    <div className="mt-4 pt-4 border-t border-neutral-800/50 grid grid-cols-5 gap-4">
                       <MetricCard label="Fill Rate" value={supplier.metrics.fillRate} suffix="%" />
                       <MetricCard label="On-Time" value={supplier.metrics.onTimeDelivery} suffix="%" />
                       <MetricCard label="Quality" value={supplier.metrics.qualityScore} suffix="%" />
@@ -346,20 +346,20 @@ export default function SupplierScorecard() {
           <div className="space-y-6">
             {/* Recent Issues */}
             <div className="card">
-              <div className="px-6 py-4 border-b border-slate-800/50 flex items-center justify-between">
+              <div className="px-6 py-4 border-b border-neutral-800/50 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-white">Recent Issues</h2>
                 <AlertTriangle className="w-5 h-5 text-amber-400" />
               </div>
               <div className="p-4 space-y-3">
                 {recentIssues.map((issue, i) => (
-                  <div key={i} className="p-3 bg-slate-800/40 rounded-lg">
+                  <div key={i} className="p-3 bg-neutral-800/40 rounded-lg">
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-sm font-medium text-white">{issue.supplier}</span>
                       <SeverityBadge severity={issue.severity} />
                     </div>
-                    <p className="text-sm text-slate-400">{issue.issue}</p>
+                    <p className="text-sm text-neutral-400">{issue.issue}</p>
                     <div className="flex items-center justify-between mt-2">
-                      <span className="text-xs text-slate-500">{issue.date}</span>
+                      <span className="text-xs text-neutral-500">{issue.date}</span>
                       <IssuStatusBadge status={issue.status} />
                     </div>
                   </div>
@@ -373,29 +373,29 @@ export default function SupplierScorecard() {
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="text-slate-400">Fill Rate Target</span>
+                    <span className="text-neutral-400">Fill Rate Target</span>
                     <span className="text-white">95%</span>
                   </div>
-                  <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                    <div className="h-full bg-emerald-500" style={{ width: '93.6%' }} />
+                  <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-green-500" style={{ width: '93.6%' }} />
                   </div>
                 </div>
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="text-slate-400">On-Time Target</span>
+                    <span className="text-neutral-400">On-Time Target</span>
                     <span className="text-white">95%</span>
                   </div>
-                  <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                    <div className="h-full bg-cyan-500" style={{ width: '91.3%' }} />
+                  <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-green-400" style={{ width: '91.3%' }} />
                   </div>
                 </div>
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="text-slate-400">Quality Target</span>
+                    <span className="text-neutral-400">Quality Target</span>
                     <span className="text-white">99%</span>
                   </div>
-                  <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                    <div className="h-full bg-violet-500" style={{ width: '97.5%' }} />
+                  <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-green-500" style={{ width: '97.5%' }} />
                   </div>
                 </div>
               </div>
@@ -409,9 +409,9 @@ export default function SupplierScorecard() {
 
 function TierBadge({ tier }: { tier: string }) {
   const styles: Record<string, string> = {
-    platinum: 'bg-violet-500/20 text-violet-400 border-violet-500/30',
+    platinum: 'bg-green-500/20 text-green-400 border-green-500/30',
     gold: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-    silver: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
+    silver: 'bg-neutral-500/20 text-neutral-400 border-neutral-500/30',
   }
 
   return (
@@ -425,7 +425,7 @@ function SeverityBadge({ severity }: { severity: string }) {
   const styles: Record<string, string> = {
     high: 'bg-rose-500/20 text-rose-400',
     medium: 'bg-amber-500/20 text-amber-400',
-    low: 'bg-slate-500/20 text-slate-400',
+    low: 'bg-neutral-500/20 text-neutral-400',
   }
 
   return (
@@ -439,7 +439,7 @@ function IssuStatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     open: 'text-rose-400',
     investigating: 'text-amber-400',
-    resolved: 'text-emerald-400',
+    resolved: 'text-green-400',
   }
 
   return (
@@ -453,14 +453,14 @@ function MetricCard({ label, value, suffix }: { label: string; value: number; su
   return (
     <div className="text-center">
       <p className={`text-lg font-bold ${
-        value >= 95 ? 'text-emerald-400' :
-        value >= 85 ? 'text-cyan-400' :
+        value >= 95 ? 'text-green-400' :
+        value >= 85 ? 'text-green-300' :
         value >= 75 ? 'text-amber-400' :
         'text-rose-400'
       }`}>
         {value}{suffix}
       </p>
-      <p className="text-xs text-slate-500">{label}</p>
+      <p className="text-xs text-neutral-500">{label}</p>
     </div>
   )
 }

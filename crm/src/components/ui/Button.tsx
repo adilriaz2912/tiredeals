@@ -28,13 +28,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center gap-2 font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed'
+      'inline-flex items-center justify-center gap-2 font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed'
 
     const variants = {
-      primary: 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white hover:from-emerald-400 hover:to-cyan-400 hover:shadow-lg hover:shadow-emerald-500/25 focus:ring-emerald-500',
-      secondary: 'bg-slate-800 text-white hover:bg-slate-700 border border-slate-700 focus:ring-slate-500',
-      outline: 'border border-slate-600 bg-transparent text-slate-300 hover:bg-slate-800 hover:text-white focus:ring-slate-500',
-      ghost: 'text-slate-400 hover:bg-slate-800 hover:text-white focus:ring-slate-500',
+      primary: 'bg-gradient-to-r from-green-500 to-green-400 text-white hover:from-green-400 hover:to-green-300 hover:shadow-lg hover:shadow-green-500/25 focus:ring-green-500',
+      secondary: 'bg-neutral-800 text-white hover:bg-neutral-700 border border-neutral-700 focus:ring-neutral-500',
+      outline: 'border border-neutral-600 bg-transparent text-neutral-300 hover:bg-neutral-800 hover:text-white focus:ring-neutral-500',
+      ghost: 'text-neutral-400 hover:bg-neutral-800 hover:text-white focus:ring-neutral-500',
       danger: 'bg-gradient-to-r from-rose-500 to-red-500 text-white hover:from-rose-400 hover:to-red-400 hover:shadow-lg hover:shadow-rose-500/25 focus:ring-rose-500',
     }
 

@@ -83,10 +83,10 @@ const monthlyTrend = [
 const expenseBreakdown = [
   { category: 'Inventory (COGS)', amount: 312450, percent: 68.0, color: 'bg-blue-500' },
   { category: 'Shipping', amount: 42500, percent: 9.2, color: 'bg-green-500' },
-  { category: 'Payroll', amount: 45000, percent: 9.8, color: 'bg-purple-500' },
+  { category: 'Payroll', amount: 45000, percent: 9.8, color: 'bg-green-500' },
   { category: 'Marketing', amount: 28500, percent: 6.2, color: 'bg-amber-500' },
   { category: 'Other OpEx', amount: 15500, percent: 3.4, color: 'bg-pink-500' },
-  { category: 'Processing Fees', amount: 15258, percent: 3.3, color: 'bg-cyan-500' },
+  { category: 'Processing Fees', amount: 15258, percent: 3.3, color: 'bg-green-400' },
 ]
 
 export default function PnLPage() {

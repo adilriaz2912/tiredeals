@@ -57,13 +57,13 @@ export function ConfirmDialog({
   const icons = {
     danger: <Trash2 className="w-6 h-6 text-rose-400" />,
     warning: <AlertTriangle className="w-6 h-6 text-amber-400" />,
-    info: <Info className="w-6 h-6 text-cyan-400" />,
+    info: <Info className="w-6 h-6 text-green-300" />,
   }
 
   const iconBgs = {
     danger: 'bg-rose-500/20',
     warning: 'bg-amber-500/20',
-    info: 'bg-cyan-500/20',
+    info: 'bg-green-400/20',
   }
 
   const buttonVariants = {
@@ -89,7 +89,7 @@ export function ConfirmDialog({
         aria-labelledby="dialog-title"
         aria-describedby="dialog-description"
         tabIndex={-1}
-        className="relative bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-800/60 max-w-md w-full mx-4 animate-slide-up focus:outline-none"
+        className="relative bg-neutral-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-neutral-800/60 max-w-md w-full mx-4 animate-slide-up focus:outline-none"
       >
         <div className="p-6">
           <div className="flex items-start gap-4">
@@ -100,13 +100,13 @@ export function ConfirmDialog({
               <h3 id="dialog-title" className="text-lg font-semibold text-white">
                 {title}
               </h3>
-              <p id="dialog-description" className="mt-2 text-sm text-slate-400">
+              <p id="dialog-description" className="mt-2 text-sm text-neutral-400">
                 {message}
               </p>
             </div>
             <button
               onClick={onClose}
-              className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+              className="p-1 text-neutral-400 hover:text-white rounded-lg hover:bg-neutral-800 transition-colors"
               aria-label="Close"
             >
               <X className="w-5 h-5" />

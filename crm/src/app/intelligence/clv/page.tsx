@@ -131,33 +131,33 @@ export default function CustomerLifetimeValue() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="card p-6">
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-emerald-500/20">
-                <DollarSign className="w-6 h-6 text-emerald-400" />
+              <div className="p-3 rounded-xl bg-green-500/20">
+                <DollarSign className="w-6 h-6 text-green-400" />
               </div>
-              <span className="flex items-center gap-1 text-sm text-emerald-400">
+              <span className="flex items-center gap-1 text-sm text-green-400">
                 <ArrowUpRight className="w-4 h-4" />
                 12.5%
               </span>
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{formatCurrency(totalClv)}</p>
-              <p className="text-sm text-slate-400 mt-1">Total Customer Value</p>
+              <p className="text-sm text-neutral-400 mt-1">Total Customer Value</p>
             </div>
           </div>
 
           <div className="card p-6">
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-cyan-500/20">
-                <Target className="w-6 h-6 text-cyan-400" />
+              <div className="p-3 rounded-xl bg-green-400/20">
+                <Target className="w-6 h-6 text-green-300" />
               </div>
-              <span className="flex items-center gap-1 text-sm text-emerald-400">
+              <span className="flex items-center gap-1 text-sm text-green-400">
                 <ArrowUpRight className="w-4 h-4" />
                 8.3%
               </span>
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{formatCurrency(avgClv)}</p>
-              <p className="text-sm text-slate-400 mt-1">Average CLV</p>
+              <p className="text-sm text-neutral-400 mt-1">Average CLV</p>
             </div>
           </div>
 
@@ -169,8 +169,8 @@ export default function CustomerLifetimeValue() {
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{segments[0].count}</p>
-              <p className="text-sm text-slate-400 mt-1">VIP Customers</p>
-              <p className="text-xs text-slate-500">Top 5% by value</p>
+              <p className="text-sm text-neutral-400 mt-1">VIP Customers</p>
+              <p className="text-xs text-neutral-500">Top 5% by value</p>
             </div>
           </div>
 
@@ -182,17 +182,17 @@ export default function CustomerLifetimeValue() {
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{segments[3].count}</p>
-              <p className="text-sm text-slate-400 mt-1">At-Risk Customers</p>
-              <p className="text-xs text-slate-500">Need re-engagement</p>
+              <p className="text-sm text-neutral-400 mt-1">At-Risk Customers</p>
+              <p className="text-xs text-neutral-500">Need re-engagement</p>
             </div>
           </div>
         </div>
 
         {/* Customer Segments */}
         <div className="card">
-          <div className="px-6 py-4 border-b border-slate-800/50 flex items-center justify-between">
+          <div className="px-6 py-4 border-b border-neutral-800/50 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-white">Customer Segments</h2>
-            <button className="flex items-center gap-2 px-4 py-2 bg-slate-800/50 text-slate-300 rounded-lg hover:bg-slate-800 transition-colors">
+            <button className="flex items-center gap-2 px-4 py-2 bg-neutral-800/50 text-neutral-300 rounded-lg hover:bg-neutral-800 transition-colors">
               <Download className="w-4 h-4" />
               Export Report
             </button>
@@ -202,8 +202,8 @@ export default function CustomerLifetimeValue() {
               const Icon = segment.icon
               const colors: Record<string, { bg: string; text: string; border: string }> = {
                 amber: { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/30' },
-                emerald: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/30' },
-                cyan: { bg: 'bg-cyan-500/10', text: 'text-cyan-400', border: 'border-cyan-500/30' },
+                emerald: { bg: 'bg-green-500/10', text: 'text-green-400', border: 'border-green-500/30' },
+                cyan: { bg: 'bg-green-400/10', text: 'text-green-300', border: 'border-green-400/30' },
                 rose: { bg: 'bg-rose-500/10', text: 'text-rose-400', border: 'border-rose-500/30' },
               }
               const color = colors[segment.color]
@@ -215,7 +215,7 @@ export default function CustomerLifetimeValue() {
                   className={`p-5 rounded-xl border transition-all text-left ${
                     selectedSegment === segment.id
                       ? `${color.bg} ${color.border} border-2`
-                      : 'bg-slate-800/40 border-slate-700/50 hover:border-slate-600'
+                      : 'bg-neutral-800/40 border-neutral-700/50 hover:border-neutral-600'
                   }`}
                 >
                   <div className="flex items-center gap-3 mb-4">
@@ -224,26 +224,26 @@ export default function CustomerLifetimeValue() {
                     </div>
                     <div>
                       <h3 className="font-medium text-white">{segment.name}</h3>
-                      <p className="text-xs text-slate-500">{segment.count} customers</p>
+                      <p className="text-xs text-neutral-500">{segment.count} customers</p>
                     </div>
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-sm text-slate-400">Avg CLV</span>
+                      <span className="text-sm text-neutral-400">Avg CLV</span>
                       <span className="text-sm font-medium text-white">{formatCurrency(segment.avgClv)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm text-slate-400">Retention</span>
+                      <span className="text-sm text-neutral-400">Retention</span>
                       <span className="text-sm font-medium text-white">{segment.retentionRate}%</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm text-slate-400">Avg Orders</span>
+                      <span className="text-sm text-neutral-400">Avg Orders</span>
                       <span className="text-sm font-medium text-white">{segment.avgOrders}</span>
                     </div>
                   </div>
                   <div className="mt-4 flex flex-wrap gap-1">
                     {segment.characteristics.map((char, i) => (
-                      <span key={i} className="text-xs px-2 py-0.5 bg-slate-800 text-slate-400 rounded">
+                      <span key={i} className="text-xs px-2 py-0.5 bg-neutral-800 text-neutral-400 rounded">
                         {char}
                       </span>
                     ))}
@@ -257,7 +257,7 @@ export default function CustomerLifetimeValue() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Top Customers */}
           <div className="lg:col-span-2 card">
-            <div className="px-6 py-4 border-b border-slate-800/50 flex items-center justify-between">
+            <div className="px-6 py-4 border-b border-neutral-800/50 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-white">Top Customers by CLV</h2>
               <div className="flex gap-2">
                 {(['all', 'B2B', 'B2C'] as const).map((type) => (
@@ -266,8 +266,8 @@ export default function CustomerLifetimeValue() {
                     onClick={() => setCustomerType(type)}
                     className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                       customerType === type
-                        ? 'bg-emerald-500/20 text-emerald-400'
-                        : 'text-slate-400 hover:text-white'
+                        ? 'bg-green-500/20 text-green-400'
+                        : 'text-neutral-400 hover:text-white'
                     }`}
                   >
                     {type === 'all' ? 'All' : type}
@@ -278,47 +278,47 @@ export default function CustomerLifetimeValue() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-slate-800/50">
-                    <th className="text-left p-4 text-sm font-medium text-slate-400">Customer</th>
-                    <th className="text-left p-4 text-sm font-medium text-slate-400">Type</th>
-                    <th className="text-left p-4 text-sm font-medium text-slate-400">CLV</th>
-                    <th className="text-left p-4 text-sm font-medium text-slate-400">Orders</th>
-                    <th className="text-left p-4 text-sm font-medium text-slate-400">Trend</th>
-                    <th className="text-left p-4 text-sm font-medium text-slate-400"></th>
+                  <tr className="border-b border-neutral-800/50">
+                    <th className="text-left p-4 text-sm font-medium text-neutral-400">Customer</th>
+                    <th className="text-left p-4 text-sm font-medium text-neutral-400">Type</th>
+                    <th className="text-left p-4 text-sm font-medium text-neutral-400">CLV</th>
+                    <th className="text-left p-4 text-sm font-medium text-neutral-400">Orders</th>
+                    <th className="text-left p-4 text-sm font-medium text-neutral-400">Trend</th>
+                    <th className="text-left p-4 text-sm font-medium text-neutral-400"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredCustomers.map((customer, index) => (
-                    <tr key={customer.id} className="border-b border-slate-800/30 hover:bg-slate-800/30">
+                    <tr key={customer.id} className="border-b border-neutral-800/30 hover:bg-neutral-800/30">
                       <td className="p-4">
                         <div className="flex items-center gap-3">
                           <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                            index < 3 ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white' : 'bg-slate-800 text-slate-400'
+                            index < 3 ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white' : 'bg-neutral-800 text-neutral-400'
                           }`}>
                             {index + 1}
                           </span>
                           <div>
                             <p className="font-medium text-white">{customer.name}</p>
-                            <p className="text-xs text-slate-500">{customer.id}</p>
+                            <p className="text-xs text-neutral-500">{customer.id}</p>
                           </div>
                         </div>
                       </td>
                       <td className="p-4">
                         <span className={`px-2 py-1 rounded text-xs font-medium ${
                           customer.type === 'B2B'
-                            ? 'bg-violet-500/20 text-violet-400'
-                            : 'bg-cyan-500/20 text-cyan-400'
+                            ? 'bg-green-500/20 text-green-400'
+                            : 'bg-green-400/20 text-green-300'
                         }`}>
                           {customer.type}
                         </span>
                       </td>
                       <td className="p-4">
-                        <span className="font-semibold text-emerald-400">{formatCurrency(customer.clv)}</span>
+                        <span className="font-semibold text-green-400">{formatCurrency(customer.clv)}</span>
                       </td>
-                      <td className="p-4 text-slate-300">{customer.orders}</td>
+                      <td className="p-4 text-neutral-300">{customer.orders}</td>
                       <td className="p-4">
                         {customer.trend === 'up' && (
-                          <span className="flex items-center gap-1 text-emerald-400">
+                          <span className="flex items-center gap-1 text-green-400">
                             <ArrowUpRight className="w-4 h-4" /> Growing
                           </span>
                         )}
@@ -328,11 +328,11 @@ export default function CustomerLifetimeValue() {
                           </span>
                         )}
                         {customer.trend === 'stable' && (
-                          <span className="text-slate-400">Stable</span>
+                          <span className="text-neutral-400">Stable</span>
                         )}
                       </td>
                       <td className="p-4">
-                        <Link href={`/customers/${customer.id}`} className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors inline-block">
+                        <Link href={`/customers/${customer.id}`} className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-700 rounded-lg transition-colors inline-block">
                           <ChevronRight className="w-4 h-4" />
                         </Link>
                       </td>
@@ -345,7 +345,7 @@ export default function CustomerLifetimeValue() {
 
           {/* CLV Factors */}
           <div className="card">
-            <div className="px-6 py-4 border-b border-slate-800/50">
+            <div className="px-6 py-4 border-b border-neutral-800/50">
               <h2 className="text-lg font-semibold text-white">CLV Impact Factors</h2>
             </div>
             <div className="p-6 space-y-4">
@@ -353,32 +353,32 @@ export default function CustomerLifetimeValue() {
                 <div key={factor.factor}>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium text-white">{factor.factor}</span>
-                    <span className="text-sm text-emerald-400">{factor.impact}%</span>
+                    <span className="text-sm text-green-400">{factor.impact}%</span>
                   </div>
-                  <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                  <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500"
+                      className="h-full bg-green-500"
                       style={{ width: `${factor.impact}%` }}
                     />
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">{factor.description}</p>
+                  <p className="text-xs text-neutral-500 mt-1">{factor.description}</p>
                 </div>
               ))}
             </div>
 
-            <div className="px-6 py-4 border-t border-slate-800/50">
+            <div className="px-6 py-4 border-t border-neutral-800/50">
               <h3 className="text-sm font-medium text-white mb-3">CLV Distribution</h3>
               <div className="space-y-2">
                 {clvDistribution.map((dist) => (
                   <div key={dist.range} className="flex items-center gap-3">
-                    <span className="text-xs text-slate-400 w-16">{dist.range}</span>
-                    <div className="flex-1 h-4 bg-slate-800 rounded overflow-hidden">
+                    <span className="text-xs text-neutral-400 w-16">{dist.range}</span>
+                    <div className="flex-1 h-4 bg-neutral-800 rounded overflow-hidden">
                       <div
-                        className="h-full bg-gradient-to-r from-cyan-500 to-emerald-500"
+                        className="h-full bg-gradient-to-r from-green-400 to-green-500"
                         style={{ width: `${dist.percentage}%` }}
                       />
                     </div>
-                    <span className="text-xs text-slate-400 w-16 text-right">{dist.count}</span>
+                    <span className="text-xs text-neutral-400 w-16 text-right">{dist.count}</span>
                   </div>
                 ))}
               </div>

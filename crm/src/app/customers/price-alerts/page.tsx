@@ -124,36 +124,36 @@ export default function PriceAlerts() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <div className="card p-5">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-emerald-500/20">
-                <Bell className="w-5 h-5 text-emerald-400" />
+              <div className="p-2.5 rounded-xl bg-green-500/20">
+                <Bell className="w-5 h-5 text-green-400" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{stats.activeAlerts}</p>
-                <p className="text-xs text-slate-400">Active Alerts</p>
+                <p className="text-xs text-neutral-400">Active Alerts</p>
               </div>
             </div>
           </div>
 
           <div className="card p-5">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-cyan-500/20">
-                <BellRing className="w-5 h-5 text-cyan-400" />
+              <div className="p-2.5 rounded-xl bg-green-400/20">
+                <BellRing className="w-5 h-5 text-green-300" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{stats.triggeredToday}</p>
-                <p className="text-xs text-slate-400">Triggered Today</p>
+                <p className="text-xs text-neutral-400">Triggered Today</p>
               </div>
             </div>
           </div>
 
           <div className="card p-5">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-violet-500/20">
-                <ShoppingCart className="w-5 h-5 text-violet-400" />
+              <div className="p-2.5 rounded-xl bg-green-500/20">
+                <ShoppingCart className="w-5 h-5 text-green-400" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{stats.convertedThisWeek}</p>
-                <p className="text-xs text-slate-400">Converted (7d)</p>
+                <p className="text-xs text-neutral-400">Converted (7d)</p>
               </div>
             </div>
           </div>
@@ -165,7 +165,7 @@ export default function PriceAlerts() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{stats.conversionRate}%</p>
-                <p className="text-xs text-slate-400">Conv. Rate</p>
+                <p className="text-xs text-neutral-400">Conv. Rate</p>
               </div>
             </div>
           </div>
@@ -177,7 +177,7 @@ export default function PriceAlerts() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{formatCurrency(stats.potentialRevenue)}</p>
-                <p className="text-xs text-slate-400">Potential Rev</p>
+                <p className="text-xs text-neutral-400">Potential Rev</p>
               </div>
             </div>
           </div>
@@ -186,9 +186,9 @@ export default function PriceAlerts() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Price Alerts Table */}
           <div className="lg:col-span-2 card">
-            <div className="px-6 py-4 border-b border-slate-800/50 flex items-center justify-between">
+            <div className="px-6 py-4 border-b border-neutral-800/50 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-                <Bell className="w-5 h-5 text-emerald-400" />
+                <Bell className="w-5 h-5 text-green-400" />
                 Price Alerts
               </h2>
               <div className="flex gap-2">
@@ -198,8 +198,8 @@ export default function PriceAlerts() {
                     onClick={() => setFilter(f)}
                     className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                       filter === f
-                        ? 'bg-emerald-500/20 text-emerald-400'
-                        : 'text-slate-400 hover:text-white'
+                        ? 'bg-green-500/20 text-green-400'
+                        : 'text-neutral-400 hover:text-white'
                     }`}
                   >
                     {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -208,52 +208,52 @@ export default function PriceAlerts() {
               </div>
             </div>
 
-            <div className="divide-y divide-slate-800/30">
+            <div className="divide-y divide-neutral-800/30">
               {filteredAlerts.map((alert) => (
-                <div key={alert.id} className="p-4 hover:bg-slate-800/20 transition-colors">
+                <div key={alert.id} className="p-4 hover:bg-neutral-800/20 transition-colors">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <StatusBadge status={alert.status} />
-                        <span className="text-sm text-slate-500">#{alert.id}</span>
+                        <span className="text-sm text-neutral-500">#{alert.id}</span>
                       </div>
                       <h3 className="font-medium text-white">{alert.product}</h3>
-                      <p className="text-sm text-slate-400 mt-1">
+                      <p className="text-sm text-neutral-400 mt-1">
                         {alert.customer} • {alert.email}
                       </p>
 
                       <div className="flex items-center gap-6 mt-3 text-sm">
                         <div>
-                          <span className="text-slate-500">Current: </span>
+                          <span className="text-neutral-500">Current: </span>
                           <span className="text-white font-medium">{formatCurrency(alert.currentPrice)}</span>
                         </div>
                         <div>
-                          <span className="text-slate-500">Target: </span>
-                          <span className="text-emerald-400 font-medium">{formatCurrency(alert.targetPrice)}</span>
+                          <span className="text-neutral-500">Target: </span>
+                          <span className="text-green-400 font-medium">{formatCurrency(alert.targetPrice)}</span>
                         </div>
                         <div>
-                          <span className="text-slate-500">Notify at: </span>
-                          <span className="text-cyan-400 font-medium">{formatCurrency(alert.notifyBelow)}</span>
+                          <span className="text-neutral-500">Notify at: </span>
+                          <span className="text-green-300 font-medium">{formatCurrency(alert.notifyBelow)}</span>
                         </div>
-                        <div className="flex items-center gap-1 text-slate-500">
+                        <div className="flex items-center gap-1 text-neutral-500">
                           <Eye className="w-3 h-3" />
                           {alert.views} views
                         </div>
                       </div>
 
                       {alert.status === 'triggered' && alert.triggeredPrice && (
-                        <div className="mt-3 p-2 bg-cyan-500/10 border border-cyan-500/20 rounded-lg inline-flex items-center gap-2">
-                          <BellRing className="w-4 h-4 text-cyan-400" />
-                          <span className="text-sm text-cyan-400">
+                        <div className="mt-3 p-2 bg-green-400/10 border border-green-400/20 rounded-lg inline-flex items-center gap-2">
+                          <BellRing className="w-4 h-4 text-green-300" />
+                          <span className="text-sm text-green-300">
                             Triggered at {formatCurrency(alert.triggeredPrice)}
                           </span>
                         </div>
                       )}
 
                       {alert.status === 'converted' && alert.convertedPrice && (
-                        <div className="mt-3 p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg inline-flex items-center gap-2">
-                          <Check className="w-4 h-4 text-emerald-400" />
-                          <span className="text-sm text-emerald-400">
+                        <div className="mt-3 p-2 bg-green-500/10 border border-green-500/20 rounded-lg inline-flex items-center gap-2">
+                          <Check className="w-4 h-4 text-green-400" />
+                          <span className="text-sm text-green-400">
                             Purchased at {formatCurrency(alert.convertedPrice)} on {alert.convertedAt}
                           </span>
                         </div>
@@ -262,13 +262,13 @@ export default function PriceAlerts() {
 
                     <div className="flex gap-2">
                       {alert.status === 'triggered' && (
-                        <button className="px-3 py-1.5 bg-emerald-500/20 text-emerald-400 rounded-lg text-sm hover:bg-emerald-500/30 transition-colors">
+                        <button className="px-3 py-1.5 bg-green-500/20 text-green-400 rounded-lg text-sm hover:bg-green-500/30 transition-colors">
                           Send Reminder
                         </button>
                       )}
                       <Link
                         href={`/customers/${alert.id}`}
-                        className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg"
+                        className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg"
                       >
                         <ChevronRight className="w-4 h-4" />
                       </Link>
@@ -283,31 +283,31 @@ export default function PriceAlerts() {
           <div className="space-y-6">
             {/* Recent Notifications */}
             <div className="card">
-              <div className="px-6 py-4 border-b border-slate-800/50">
+              <div className="px-6 py-4 border-b border-neutral-800/50">
                 <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-                  <Send className="w-5 h-5 text-cyan-400" />
+                  <Send className="w-5 h-5 text-green-300" />
                   Recent Notifications
                 </h2>
               </div>
               <div className="p-4 space-y-3">
                 {recentNotifications.map((notif, i) => (
-                  <div key={i} className="p-3 bg-slate-800/40 rounded-lg">
+                  <div key={i} className="p-3 bg-neutral-800/40 rounded-lg">
                     <div className="flex items-center justify-between mb-1">
                       <span className="font-medium text-white text-sm">{notif.customer}</span>
                       {notif.opened ? (
-                        <span className="text-xs text-emerald-400 flex items-center gap-1">
+                        <span className="text-xs text-green-400 flex items-center gap-1">
                           <Check className="w-3 h-3" /> Opened
                         </span>
                       ) : (
-                        <span className="text-xs text-slate-500">Pending</span>
+                        <span className="text-xs text-neutral-500">Pending</span>
                       )}
                     </div>
-                    <p className="text-xs text-slate-400">{notif.product}</p>
+                    <p className="text-xs text-neutral-400">{notif.product}</p>
                     <div className="flex items-center gap-2 mt-2 text-xs">
-                      <span className="text-slate-500 line-through">{formatCurrency(notif.oldPrice)}</span>
-                      <span className="text-emerald-400">{formatCurrency(notif.newPrice)}</span>
-                      <span className="text-slate-600">•</span>
-                      <span className="text-slate-500">{notif.sentAt}</span>
+                      <span className="text-neutral-500 line-through">{formatCurrency(notif.oldPrice)}</span>
+                      <span className="text-green-400">{formatCurrency(notif.newPrice)}</span>
+                      <span className="text-neutral-600">•</span>
+                      <span className="text-neutral-500">{notif.sentAt}</span>
                     </div>
                   </div>
                 ))}
@@ -317,24 +317,24 @@ export default function PriceAlerts() {
             {/* Alert Settings */}
             <div className="card p-6">
               <h3 className="font-medium text-white mb-4 flex items-center gap-2">
-                <Settings className="w-5 h-5 text-slate-400" />
+                <Settings className="w-5 h-5 text-neutral-400" />
                 Alert Settings
               </h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-400">Auto-notify on drop</span>
-                  <span className="text-sm text-emerald-400">Enabled</span>
+                  <span className="text-sm text-neutral-400">Auto-notify on drop</span>
+                  <span className="text-sm text-green-400">Enabled</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-400">Min price drop %</span>
+                  <span className="text-sm text-neutral-400">Min price drop %</span>
                   <span className="text-sm text-white">5%</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-400">Reminder frequency</span>
+                  <span className="text-sm text-neutral-400">Reminder frequency</span>
                   <span className="text-sm text-white">Weekly</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-400">Alert expiry</span>
+                  <span className="text-sm text-neutral-400">Alert expiry</span>
                   <span className="text-sm text-white">90 days</span>
                 </div>
               </div>
@@ -348,9 +348,9 @@ export default function PriceAlerts() {
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    active: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-    triggered: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
-    converted: 'bg-violet-500/20 text-violet-400 border-violet-500/30',
+    active: 'bg-green-500/20 text-green-400 border-green-500/30',
+    triggered: 'bg-green-400/20 text-green-300 border-green-400/30',
+    converted: 'bg-green-500/20 text-green-400 border-green-500/30',
   }
 
   return (

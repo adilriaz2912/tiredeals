@@ -85,38 +85,38 @@ export default function Attribution() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="card p-6">
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-emerald-500/20">
-                <DollarSign className="w-6 h-6 text-emerald-400" />
+              <div className="p-3 rounded-xl bg-green-500/20">
+                <DollarSign className="w-6 h-6 text-green-400" />
               </div>
-              <TrendingUp className="w-5 h-5 text-emerald-400" />
+              <TrendingUp className="w-5 h-5 text-green-400" />
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{formatCurrency(stats.totalRevenue)}</p>
-              <p className="text-sm text-slate-400 mt-1">Total Revenue (30d)</p>
+              <p className="text-sm text-neutral-400 mt-1">Total Revenue (30d)</p>
             </div>
           </div>
 
           <div className="card p-6">
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-cyan-500/20">
-                <ShoppingCart className="w-6 h-6 text-cyan-400" />
+              <div className="p-3 rounded-xl bg-green-400/20">
+                <ShoppingCart className="w-6 h-6 text-green-300" />
               </div>
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{stats.totalConversions.toLocaleString()}</p>
-              <p className="text-sm text-slate-400 mt-1">Conversions</p>
+              <p className="text-sm text-neutral-400 mt-1">Conversions</p>
             </div>
           </div>
 
           <div className="card p-6">
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-violet-500/20">
-                <MousePointer className="w-6 h-6 text-violet-400" />
+              <div className="p-3 rounded-xl bg-green-500/20">
+                <MousePointer className="w-6 h-6 text-green-400" />
               </div>
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{stats.avgTouchpoints}</p>
-              <p className="text-sm text-slate-400 mt-1">Avg Touchpoints</p>
+              <p className="text-sm text-neutral-400 mt-1">Avg Touchpoints</p>
             </div>
           </div>
 
@@ -128,14 +128,14 @@ export default function Attribution() {
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{stats.avgDaysToConvert}</p>
-              <p className="text-sm text-slate-400 mt-1">Avg Days to Convert</p>
+              <p className="text-sm text-neutral-400 mt-1">Avg Days to Convert</p>
             </div>
           </div>
         </div>
 
         {/* Attribution Model Selector */}
         <div className="card">
-          <div className="px-6 py-4 border-b border-slate-800/50">
+          <div className="px-6 py-4 border-b border-neutral-800/50">
             <h2 className="text-lg font-semibold text-white">Attribution Model</h2>
           </div>
           <div className="p-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -145,16 +145,16 @@ export default function Attribution() {
                 onClick={() => setSelectedModel(model.id)}
                 className={`p-3 rounded-xl border text-left transition-all ${
                   selectedModel === model.id
-                    ? 'bg-emerald-500/10 border-emerald-500/30'
-                    : 'bg-slate-800/40 border-slate-700/50 hover:border-slate-600'
+                    ? 'bg-green-500/10 border-green-500/30'
+                    : 'bg-neutral-800/40 border-neutral-700/50 hover:border-neutral-600'
                 }`}
               >
                 <p className={`font-medium text-sm ${
-                  selectedModel === model.id ? 'text-emerald-400' : 'text-white'
+                  selectedModel === model.id ? 'text-green-400' : 'text-white'
                 }`}>
                   {model.name}
                 </p>
-                <p className="text-xs text-slate-500 mt-1">{model.description}</p>
+                <p className="text-xs text-neutral-500 mt-1">{model.description}</p>
               </button>
             ))}
           </div>
@@ -162,23 +162,23 @@ export default function Attribution() {
 
         {/* Channel Performance */}
         <div className="card">
-          <div className="px-6 py-4 border-b border-slate-800/50 flex items-center justify-between">
+          <div className="px-6 py-4 border-b border-neutral-800/50 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-cyan-400" />
+              <BarChart3 className="w-5 h-5 text-green-300" />
               Channel Performance
             </h2>
-            <span className="text-sm text-slate-400">Model: {attributionModels.find(m => m.id === selectedModel)?.name}</span>
+            <span className="text-sm text-neutral-400">Model: {attributionModels.find(m => m.id === selectedModel)?.name}</span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-800/50">
-                  <th className="text-left p-4 text-sm font-medium text-slate-400">Channel</th>
-                  <th className="text-right p-4 text-sm font-medium text-slate-400">Conversions</th>
-                  <th className="text-right p-4 text-sm font-medium text-slate-400">Revenue</th>
-                  <th className="text-right p-4 text-sm font-medium text-slate-400">Cost</th>
-                  <th className="text-right p-4 text-sm font-medium text-slate-400">ROAS</th>
-                  <th className="text-left p-4 text-sm font-medium text-slate-400">Performance</th>
+                <tr className="border-b border-neutral-800/50">
+                  <th className="text-left p-4 text-sm font-medium text-neutral-400">Channel</th>
+                  <th className="text-right p-4 text-sm font-medium text-neutral-400">Conversions</th>
+                  <th className="text-right p-4 text-sm font-medium text-neutral-400">Revenue</th>
+                  <th className="text-right p-4 text-sm font-medium text-neutral-400">Cost</th>
+                  <th className="text-right p-4 text-sm font-medium text-neutral-400">ROAS</th>
+                  <th className="text-left p-4 text-sm font-medium text-neutral-400">Performance</th>
                 </tr>
               </thead>
               <tbody>
@@ -187,27 +187,27 @@ export default function Attribution() {
                   const barWidth = (channel.revenue / maxRevenue) * 100
 
                   return (
-                    <tr key={channel.channel} className="border-b border-slate-800/30 hover:bg-slate-800/30">
+                    <tr key={channel.channel} className="border-b border-neutral-800/30 hover:bg-neutral-800/30">
                       <td className="p-4 font-medium text-white">{channel.channel}</td>
-                      <td className="p-4 text-right text-slate-300">{channel.conversions}</td>
-                      <td className="p-4 text-right text-emerald-400 font-semibold">{formatCurrency(channel.revenue)}</td>
-                      <td className="p-4 text-right text-slate-300">
+                      <td className="p-4 text-right text-neutral-300">{channel.conversions}</td>
+                      <td className="p-4 text-right text-green-400 font-semibold">{formatCurrency(channel.revenue)}</td>
+                      <td className="p-4 text-right text-neutral-300">
                         {channel.cost > 0 ? formatCurrency(channel.cost) : '-'}
                       </td>
                       <td className="p-4 text-right">
                         <span className={`font-semibold ${
-                          channel.roas === Infinity ? 'text-violet-400' :
-                          channel.roas >= 5 ? 'text-emerald-400' :
-                          channel.roas >= 3 ? 'text-cyan-400' :
+                          channel.roas === Infinity ? 'text-green-400' :
+                          channel.roas >= 5 ? 'text-green-400' :
+                          channel.roas >= 3 ? 'text-green-300' :
                           'text-amber-400'
                         }`}>
                           {channel.roas === Infinity ? 'Organic' : `${channel.roas.toFixed(2)}x`}
                         </span>
                       </td>
                       <td className="p-4">
-                        <div className="w-32 h-2 bg-slate-800 rounded-full overflow-hidden">
+                        <div className="w-32 h-2 bg-neutral-800 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500"
+                            className="h-full bg-green-500"
                             style={{ width: `${barWidth}%` }}
                           />
                         </div>
@@ -222,7 +222,7 @@ export default function Attribution() {
 
         {/* Top Conversion Paths */}
         <div className="card">
-          <div className="px-6 py-4 border-b border-slate-800/50">
+          <div className="px-6 py-4 border-b border-neutral-800/50">
             <h2 className="text-lg font-semibold text-white flex items-center gap-2">
               <Zap className="w-5 h-5 text-amber-400" />
               Top Conversion Paths
@@ -230,28 +230,28 @@ export default function Attribution() {
           </div>
           <div className="p-6 space-y-4">
             {journeyPaths.map((journey, i) => (
-              <div key={i} className="p-4 bg-slate-800/40 rounded-xl">
+              <div key={i} className="p-4 bg-neutral-800/40 rounded-xl">
                 <div className="flex items-center gap-3 mb-3">
                   {journey.path.map((step, j) => (
                     <div key={j} className="flex items-center">
-                      <span className="px-3 py-1.5 bg-slate-700 text-white text-sm rounded-lg">
+                      <span className="px-3 py-1.5 bg-neutral-700 text-white text-sm rounded-lg">
                         {step}
                       </span>
                       {j < journey.path.length - 1 && (
-                        <ArrowRight className="w-4 h-4 text-slate-500 mx-2" />
+                        <ArrowRight className="w-4 h-4 text-neutral-500 mx-2" />
                       )}
                     </div>
                   ))}
                 </div>
                 <div className="flex items-center gap-6 text-sm">
-                  <span className="text-slate-400">
+                  <span className="text-neutral-400">
                     <span className="text-white font-medium">{journey.conversions}</span> conversions
                   </span>
-                  <span className="text-slate-400">
-                    <span className="text-emerald-400 font-medium">{formatCurrency(journey.revenue)}</span> revenue
+                  <span className="text-neutral-400">
+                    <span className="text-green-400 font-medium">{formatCurrency(journey.revenue)}</span> revenue
                   </span>
-                  <span className="text-slate-400">
-                    <span className="text-cyan-400 font-medium">{journey.avgDays}</span> avg days
+                  <span className="text-neutral-400">
+                    <span className="text-green-300 font-medium">{journey.avgDays}</span> avg days
                   </span>
                 </div>
               </div>

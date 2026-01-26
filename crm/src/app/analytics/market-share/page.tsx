@@ -111,43 +111,43 @@ export default function MarketShare() {
       <div className="p-6 space-y-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="card p-6 border-2 border-emerald-500/30 bg-emerald-500/5">
+          <div className="card p-6 border-2 border-green-500/30 bg-green-500/5">
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-emerald-500/20">
-                <PieChart className="w-6 h-6 text-emerald-400" />
+              <div className="p-3 rounded-xl bg-green-500/20">
+                <PieChart className="w-6 h-6 text-green-400" />
               </div>
-              <span className="flex items-center gap-1 text-emerald-400 text-sm">
+              <span className="flex items-center gap-1 text-green-400 text-sm">
                 <ArrowUpRight className="w-4 h-4" />
                 +{stats.shareGrowth}%
               </span>
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">{stats.currentShare}%</p>
-              <p className="text-sm text-slate-400 mt-1">Our Market Share</p>
+              <p className="text-sm text-neutral-400 mt-1">Our Market Share</p>
             </div>
           </div>
 
           <div className="card p-6">
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-cyan-500/20">
-                <Globe className="w-6 h-6 text-cyan-400" />
+              <div className="p-3 rounded-xl bg-green-400/20">
+                <Globe className="w-6 h-6 text-green-300" />
               </div>
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">${stats.marketSize}</p>
-              <p className="text-sm text-slate-400 mt-1">Total Market Size</p>
+              <p className="text-sm text-neutral-400 mt-1">Total Market Size</p>
             </div>
           </div>
 
           <div className="card p-6">
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-violet-500/20">
-                <DollarSign className="w-6 h-6 text-violet-400" />
+              <div className="p-3 rounded-xl bg-green-500/20">
+                <DollarSign className="w-6 h-6 text-green-400" />
               </div>
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">${stats.ourRevenue}</p>
-              <p className="text-sm text-slate-400 mt-1">Our Revenue (Est.)</p>
+              <p className="text-sm text-neutral-400 mt-1">Our Revenue (Est.)</p>
             </div>
           </div>
 
@@ -159,7 +159,7 @@ export default function MarketShare() {
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-white">#4</p>
-              <p className="text-sm text-slate-400 mt-1">Industry Ranking</p>
+              <p className="text-sm text-neutral-400 mt-1">Industry Ranking</p>
             </div>
           </div>
         </div>
@@ -172,8 +172,8 @@ export default function MarketShare() {
               onClick={() => setView(v)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 view === v
-                  ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white'
-                  : 'bg-slate-800/50 text-slate-400 hover:text-white'
+                  ? 'bg-green-500 text-white'
+                  : 'bg-neutral-800/50 text-neutral-400 hover:text-white'
               }`}
             >
               {v.charAt(0).toUpperCase() + v.slice(1)} View
@@ -185,7 +185,7 @@ export default function MarketShare() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Market Share Chart */}
             <div className="card">
-              <div className="px-6 py-4 border-b border-slate-800/50">
+              <div className="px-6 py-4 border-b border-neutral-800/50">
                 <h2 className="text-lg font-semibold text-white">Market Share Distribution</h2>
               </div>
               <div className="p-6 space-y-4">
@@ -196,25 +196,25 @@ export default function MarketShare() {
                   return (
                     <div key={company.competitor}>
                       <div className="flex items-center justify-between mb-2">
-                        <span className={`font-medium ${isUs ? 'text-emerald-400' : 'text-white'}`}>
+                        <span className={`font-medium ${isUs ? 'text-green-400' : 'text-white'}`}>
                           {company.competitor}
                         </span>
                         <div className="flex items-center gap-3">
                           <span className={`text-sm flex items-center gap-1 ${
-                            change > 0 ? 'text-emerald-400' : change < 0 ? 'text-rose-400' : 'text-slate-400'
+                            change > 0 ? 'text-green-400' : change < 0 ? 'text-rose-400' : 'text-neutral-400'
                           }`}>
                             {change > 0 ? <ArrowUpRight className="w-3 h-3" /> : change < 0 ? <ArrowDownRight className="w-3 h-3" /> : null}
                             {change > 0 ? '+' : ''}{change.toFixed(1)}%
                           </span>
-                          <span className={`font-semibold ${isUs ? 'text-emerald-400' : 'text-white'}`}>
+                          <span className={`font-semibold ${isUs ? 'text-green-400' : 'text-white'}`}>
                             {company.share}%
                           </span>
                         </div>
                       </div>
-                      <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
+                      <div className="h-3 bg-neutral-800 rounded-full overflow-hidden">
                         <div
                           className={`h-full rounded-full ${
-                            isUs ? 'bg-gradient-to-r from-emerald-500 to-cyan-500' : 'bg-slate-600'
+                            isUs ? 'bg-green-500' : 'bg-neutral-600'
                           }`}
                           style={{ width: `${(company.share / 25) * 100}%` }}
                         />
@@ -227,38 +227,38 @@ export default function MarketShare() {
 
             {/* Competitive Metrics */}
             <div className="card">
-              <div className="px-6 py-4 border-b border-slate-800/50">
+              <div className="px-6 py-4 border-b border-neutral-800/50">
                 <h2 className="text-lg font-semibold text-white">Competitive Comparison</h2>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-slate-800/50">
-                      <th className="text-left p-3 text-sm font-medium text-slate-400">Metric</th>
-                      <th className="text-center p-3 text-sm font-medium text-emerald-400">Us</th>
-                      <th className="text-center p-3 text-sm font-medium text-slate-400">SimpleTire</th>
-                      <th className="text-center p-3 text-sm font-medium text-slate-400">TireRack</th>
-                      <th className="text-center p-3 text-sm font-medium text-slate-400">Discount</th>
+                    <tr className="border-b border-neutral-800/50">
+                      <th className="text-left p-3 text-sm font-medium text-neutral-400">Metric</th>
+                      <th className="text-center p-3 text-sm font-medium text-green-400">Us</th>
+                      <th className="text-center p-3 text-sm font-medium text-neutral-400">SimpleTire</th>
+                      <th className="text-center p-3 text-sm font-medium text-neutral-400">TireRack</th>
+                      <th className="text-center p-3 text-sm font-medium text-neutral-400">Discount</th>
                     </tr>
                   </thead>
                   <tbody>
                     {competitiveMetrics.map((row) => (
-                      <tr key={row.metric} className="border-b border-slate-800/30">
+                      <tr key={row.metric} className="border-b border-neutral-800/30">
                         <td className="p-3 text-sm text-white">{row.metric}</td>
                         <td className={`p-3 text-center text-sm font-medium ${
-                          row.advantage === 'us' ? 'text-emerald-400 bg-emerald-500/10' : 'text-slate-300'
+                          row.advantage === 'us' ? 'text-green-400 bg-green-500/10' : 'text-neutral-300'
                         }`}>
                           {typeof row.us === 'number' ? `$${row.us}` : row.us}
                         </td>
-                        <td className="p-3 text-center text-sm text-slate-300">
+                        <td className="p-3 text-center text-sm text-neutral-300">
                           {typeof row.simpleTire === 'number' ? `$${row.simpleTire}` : row.simpleTire}
                         </td>
                         <td className={`p-3 text-center text-sm font-medium ${
-                          row.advantage === 'tireRack' ? 'text-amber-400 bg-amber-500/10' : 'text-slate-300'
+                          row.advantage === 'tireRack' ? 'text-amber-400 bg-amber-500/10' : 'text-neutral-300'
                         }`}>
                           {typeof row.tireRack === 'number' ? `$${row.tireRack}` : row.tireRack}
                         </td>
-                        <td className="p-3 text-center text-sm text-slate-300">
+                        <td className="p-3 text-center text-sm text-neutral-300">
                           {typeof row.discountTire === 'number' ? `$${row.discountTire}` : row.discountTire}
                         </td>
                       </tr>
@@ -272,34 +272,34 @@ export default function MarketShare() {
 
         {view === 'segment' && (
           <div className="card">
-            <div className="px-6 py-4 border-b border-slate-800/50">
+            <div className="px-6 py-4 border-b border-neutral-800/50">
               <h2 className="text-lg font-semibold text-white">Market Share by Segment</h2>
             </div>
             <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {segmentShare.map((seg) => (
-                <div key={seg.segment} className="p-4 bg-slate-800/40 rounded-xl">
+                <div key={seg.segment} className="p-4 bg-neutral-800/40 rounded-xl">
                   <h3 className="font-medium text-white mb-4">{seg.segment}</h3>
                   <div className="space-y-3">
                     <div>
                       <div className="flex justify-between text-sm mb-1">
-                        <span className="text-emerald-400">TireDeals</span>
-                        <span className="text-emerald-400 font-semibold">{seg.us}%</span>
+                        <span className="text-green-400">TireDeals</span>
+                        <span className="text-green-400 font-semibold">{seg.us}%</span>
                       </div>
-                      <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                      <div className="h-2 bg-neutral-700 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500"
+                          className="h-full bg-green-500"
                           style={{ width: `${(seg.us / 30) * 100}%` }}
                         />
                       </div>
                     </div>
                     <div>
                       <div className="flex justify-between text-sm mb-1">
-                        <span className="text-slate-400">{seg.leader} (Leader)</span>
-                        <span className="text-slate-300 font-semibold">{seg.leaderShare}%</span>
+                        <span className="text-neutral-400">{seg.leader} (Leader)</span>
+                        <span className="text-neutral-300 font-semibold">{seg.leaderShare}%</span>
                       </div>
-                      <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                      <div className="h-2 bg-neutral-700 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-slate-500"
+                          className="h-full bg-neutral-500"
                           style={{ width: `${(seg.leaderShare / 30) * 100}%` }}
                         />
                       </div>
@@ -313,18 +313,18 @@ export default function MarketShare() {
 
         {view === 'regional' && (
           <div className="card">
-            <div className="px-6 py-4 border-b border-slate-800/50">
+            <div className="px-6 py-4 border-b border-neutral-800/50">
               <h2 className="text-lg font-semibold text-white">Regional Market Share</h2>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-slate-800/50">
-                    <th className="text-left p-4 text-sm font-medium text-slate-400">Region</th>
-                    <th className="text-center p-4 text-sm font-medium text-slate-400">Our Share</th>
-                    <th className="text-left p-4 text-sm font-medium text-slate-400">Top Competitor</th>
-                    <th className="text-center p-4 text-sm font-medium text-slate-400">Their Share</th>
-                    <th className="text-left p-4 text-sm font-medium text-slate-400">Gap</th>
+                  <tr className="border-b border-neutral-800/50">
+                    <th className="text-left p-4 text-sm font-medium text-neutral-400">Region</th>
+                    <th className="text-center p-4 text-sm font-medium text-neutral-400">Our Share</th>
+                    <th className="text-left p-4 text-sm font-medium text-neutral-400">Top Competitor</th>
+                    <th className="text-center p-4 text-sm font-medium text-neutral-400">Their Share</th>
+                    <th className="text-left p-4 text-sm font-medium text-neutral-400">Gap</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -332,16 +332,16 @@ export default function MarketShare() {
                     const gap = reg.competitorShare - reg.us
 
                     return (
-                      <tr key={reg.region} className="border-b border-slate-800/30 hover:bg-slate-800/30">
+                      <tr key={reg.region} className="border-b border-neutral-800/30 hover:bg-neutral-800/30">
                         <td className="p-4 font-medium text-white">{reg.region}</td>
                         <td className="p-4 text-center">
-                          <span className="text-emerald-400 font-semibold">{reg.us}%</span>
+                          <span className="text-green-400 font-semibold">{reg.us}%</span>
                         </td>
-                        <td className="p-4 text-slate-300">{reg.topCompetitor}</td>
-                        <td className="p-4 text-center text-slate-300">{reg.competitorShare}%</td>
+                        <td className="p-4 text-neutral-300">{reg.topCompetitor}</td>
+                        <td className="p-4 text-center text-neutral-300">{reg.competitorShare}%</td>
                         <td className="p-4">
                           <div className="flex items-center gap-2">
-                            <div className="w-24 h-2 bg-slate-800 rounded-full overflow-hidden">
+                            <div className="w-24 h-2 bg-neutral-800 rounded-full overflow-hidden">
                               <div
                                 className="h-full bg-rose-500"
                                 style={{ width: `${(gap / 30) * 100}%` }}

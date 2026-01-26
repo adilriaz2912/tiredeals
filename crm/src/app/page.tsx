@@ -9,7 +9,7 @@ import {
   TrendingDown,
   Package,
   Truck,
-  TicketCheck,
+  Ticket,
   Shield,
   ShoppingBag,
   ArrowRight,
@@ -102,7 +102,7 @@ export default function Dashboard() {
           <AlertCard
             title="Open Tickets"
             value={alerts.openTickets}
-            icon={<TicketCheck className="w-5 h-5" />}
+            icon={<Ticket className="w-5 h-5" />}
             href="/support?status=OPEN"
             color="red"
           />

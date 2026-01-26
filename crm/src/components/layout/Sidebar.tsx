@@ -10,7 +10,7 @@ import {
   Truck,
   Wrench,
   Package,
-  TicketCheck,
+  Ticket,
   Shield,
   Gift,
   ShoppingBag,
@@ -71,7 +71,7 @@ const navigation: NavItem[] = [
   {
     label: 'Support Tickets',
     href: '/support',
-    icon: <TicketCheck className="w-5 h-5" />,
+    icon: <Ticket className="w-5 h-5" />,
   },
   {
     label: 'Warranties',

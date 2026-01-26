@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import {
@@ -28,6 +27,18 @@ import {
   Menu,
   X,
   Sparkles,
+  Brain,
+  TrendingUp,
+  DollarSign,
+  AlertTriangle,
+  Phone,
+  Bot,
+  MapPin,
+  PieChart,
+  Banknote,
+  Bell,
+  Activity,
+  Zap,
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
@@ -49,6 +60,10 @@ const navigation: NavItem[] = [
     label: 'Customers',
     href: '/customers',
     icon: <Users className="w-5 h-5" />,
+    children: [
+      { label: 'All Customers', href: '/customers' },
+      { label: 'Price Drop Alerts', href: '/customers/price-alerts' },
+    ],
   },
   {
     label: 'Orders',
@@ -67,14 +82,62 @@ const navigation: NavItem[] = [
     icon: <RotateCcw className="w-5 h-5" />,
   },
   {
+    label: 'Intelligence',
+    href: '/intelligence',
+    icon: <Brain className="w-5 h-5" />,
+    children: [
+      { label: 'Tire Replacement Predictor', href: '/intelligence/tire-predictor' },
+      { label: 'Customer Lifetime Value', href: '/intelligence/clv' },
+      { label: 'Churn Risk Scoring', href: '/intelligence/churn' },
+      { label: 'Dynamic Pricing', href: '/intelligence/dynamic-pricing' },
+    ],
+  },
+  {
+    label: 'Operations',
+    href: '/operations',
+    icon: <Zap className="w-5 h-5" />,
+    children: [
+      { label: 'Smart Scheduling', href: '/operations/smart-scheduling' },
+      { label: 'Supplier Scorecard', href: '/operations/supplier-scorecard' },
+      { label: 'Fraud Detection', href: '/operations/fraud-detection' },
+    ],
+  },
+  {
+    label: 'Support',
+    href: '/support',
+    icon: <Ticket className="w-5 h-5" />,
+    children: [
+      { label: 'All Tickets', href: '/support' },
+      { label: 'AI Routing', href: '/support/ai-routing' },
+      { label: 'Call Center', href: '/support/call-center' },
+    ],
+  },
+  {
+    label: 'Analytics',
+    href: '/analytics',
+    icon: <BarChart3 className="w-5 h-5" />,
+    children: [
+      { label: 'Cohort Retention', href: '/analytics/cohort-retention' },
+      { label: 'Attribution', href: '/analytics/attribution' },
+      { label: 'Geographic Demand', href: '/analytics/geographic' },
+      { label: 'Customer Journey', href: '/analytics/customer-journey' },
+      { label: 'Market Share', href: '/analytics/market-share' },
+    ],
+  },
+  {
+    label: 'Finance',
+    href: '/finance',
+    icon: <Banknote className="w-5 h-5" />,
+    children: [
+      { label: 'Cash Flow Forecast', href: '/finance/cash-flow' },
+      { label: 'P&L Statement', href: '/reports/pnl' },
+      { label: 'Margin Reports', href: '/reports/margins' },
+    ],
+  },
+  {
     label: 'Shipping',
     href: '/shipping',
     icon: <Truck className="w-5 h-5" />,
-  },
-  {
-    label: 'Scheduling',
-    href: '/scheduling',
-    icon: <Calendar className="w-5 h-5" />,
   },
   {
     label: 'Installers',
@@ -90,11 +153,6 @@ const navigation: NavItem[] = [
     label: 'Pricing & Promos',
     href: '/pricing',
     icon: <Tag className="w-5 h-5" />,
-  },
-  {
-    label: 'Support Tickets',
-    href: '/support',
-    icon: <Ticket className="w-5 h-5" />,
   },
   {
     label: 'Warranties',
@@ -137,17 +195,6 @@ const navigation: NavItem[] = [
     icon: <Target className="w-5 h-5" />,
     children: [
       { label: 'Price Comparison', href: '/competitive/pricing' },
-    ],
-  },
-  {
-    label: 'Reports',
-    href: '/reports',
-    icon: <BarChart3 className="w-5 h-5" />,
-    children: [
-      { label: 'Overview', href: '/reports' },
-      { label: 'P&L Statement', href: '/reports/pnl' },
-      { label: 'Margin Reports', href: '/reports/margins' },
-      { label: 'Sales Forecast', href: '/reports/forecast' },
     ],
   },
 ]

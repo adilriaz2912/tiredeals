@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { X, AlertTriangle, Trash2, AlertCircle, Info } from 'lucide-react'
+import { X, AlertTriangle, Trash2, Info } from 'lucide-react'
 import { Button } from './Button'
 import { cn } from '@/lib/utils'
 
@@ -55,15 +55,15 @@ export function ConfirmDialog({
   if (!isOpen) return null
 
   const icons = {
-    danger: <Trash2 className="w-6 h-6 text-danger-600" />,
-    warning: <AlertTriangle className="w-6 h-6 text-warning-600" />,
-    info: <Info className="w-6 h-6 text-info-600" />,
+    danger: <Trash2 className="w-6 h-6 text-rose-400" />,
+    warning: <AlertTriangle className="w-6 h-6 text-amber-400" />,
+    info: <Info className="w-6 h-6 text-cyan-400" />,
   }
 
   const iconBgs = {
-    danger: 'bg-danger-50',
-    warning: 'bg-warning-50',
-    info: 'bg-info-50',
+    danger: 'bg-rose-500/20',
+    warning: 'bg-amber-500/20',
+    info: 'bg-cyan-500/20',
   }
 
   const buttonVariants = {
@@ -76,7 +76,7 @@ export function ConfirmDialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/50 animate-fade-in"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -89,24 +89,24 @@ export function ConfirmDialog({
         aria-labelledby="dialog-title"
         aria-describedby="dialog-description"
         tabIndex={-1}
-        className="relative bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 animate-slide-up focus:outline-none"
+        className="relative bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-800/60 max-w-md w-full mx-4 animate-slide-up focus:outline-none"
       >
         <div className="p-6">
           <div className="flex items-start gap-4">
-            <div className={cn('p-3 rounded-full', iconBgs[variant])}>
+            <div className={cn('p-3 rounded-xl', iconBgs[variant])}>
               {icons[variant]}
             </div>
             <div className="flex-1">
-              <h3 id="dialog-title" className="text-lg font-semibold text-gray-900">
+              <h3 id="dialog-title" className="text-lg font-semibold text-white">
                 {title}
               </h3>
-              <p id="dialog-description" className="mt-2 text-sm text-gray-500">
+              <p id="dialog-description" className="mt-2 text-sm text-slate-400">
                 {message}
               </p>
             </div>
             <button
               onClick={onClose}
-              className="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+              className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
               aria-label="Close"
             >
               <X className="w-5 h-5" />

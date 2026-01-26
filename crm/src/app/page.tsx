@@ -13,7 +13,8 @@ import {
   Shield,
   ShoppingBag,
   ArrowRight,
-  Clock,
+  Zap,
+  Sparkles,
 } from 'lucide-react'
 import Link from 'next/link'
 import { formatCurrency, formatRelativeTime } from '@/lib/utils'
@@ -72,21 +73,21 @@ export default function Dashboard() {
             value={formatCurrency(stats.revenue.value)}
             change={stats.revenue.change}
             icon={<DollarSign className="w-6 h-6" />}
-            color="green"
+            color="emerald"
           />
           <StatCard
             title="Total Orders"
             value={stats.orders.value.toString()}
             change={stats.orders.change}
             icon={<ShoppingCart className="w-6 h-6" />}
-            color="blue"
+            color="cyan"
           />
           <StatCard
             title="Total Customers"
             value={stats.customers.value.toLocaleString()}
             change={stats.customers.change}
             icon={<Users className="w-6 h-6" />}
-            color="purple"
+            color="violet"
           />
           <StatCard
             title="Avg. Order Value"
@@ -104,7 +105,7 @@ export default function Dashboard() {
             value={alerts.openTickets}
             icon={<Ticket className="w-5 h-5" />}
             href="/support?status=OPEN"
-            color="red"
+            color="rose"
           />
           <AlertCard
             title="Abandoned Carts"
@@ -133,9 +134,9 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Recent Orders */}
           <div className="lg:col-span-2 card">
-            <div className="card-header flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Recent Orders</h2>
-              <Link href="/orders" className="text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1">
+            <div className="px-6 py-4 border-b border-slate-800/50 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-white">Recent Orders</h2>
+              <Link href="/orders" className="text-sm text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1 transition-colors">
                 View All <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -154,16 +155,16 @@ export default function Dashboard() {
                   {recentOrders.map((order) => (
                     <tr key={order.id}>
                       <td>
-                        <Link href={`/orders/${order.id}`} className="font-medium text-primary-600 hover:text-primary-700">
+                        <Link href={`/orders/${order.id}`} className="font-medium text-emerald-400 hover:text-emerald-300 transition-colors">
                           {order.id}
                         </Link>
                       </td>
-                      <td>{order.customer}</td>
-                      <td className="font-medium">{formatCurrency(order.total)}</td>
+                      <td className="text-slate-300">{order.customer}</td>
+                      <td className="font-medium text-white">{formatCurrency(order.total)}</td>
                       <td>
                         <OrderStatusBadge status={order.status} />
                       </td>
-                      <td className="text-gray-500" suppressHydrationWarning>{formatRelativeTime(order.date)}</td>
+                      <td className="text-slate-400" suppressHydrationWarning>{formatRelativeTime(order.date)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -173,20 +174,28 @@ export default function Dashboard() {
 
           {/* Top Products */}
           <div className="card">
-            <div className="card-header">
-              <h2 className="text-lg font-semibold text-gray-900">Top Selling Tires</h2>
+            <div className="px-6 py-4 border-b border-slate-800/50">
+              <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-amber-400" />
+                Top Selling Tires
+              </h2>
             </div>
-            <div className="card-body space-y-4">
+            <div className="p-6 space-y-4">
               {topProducts.map((product, index) => (
-                <div key={product.name} className="flex items-center gap-4">
-                  <span className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center text-sm font-medium text-gray-600">
+                <div key={product.name} className="flex items-center gap-4 group">
+                  <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${
+                    index === 0 ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30' :
+                    index === 1 ? 'bg-gradient-to-br from-slate-400 to-slate-500 text-white' :
+                    index === 2 ? 'bg-gradient-to-br from-amber-700 to-amber-800 text-white' :
+                    'bg-slate-800 text-slate-400'
+                  }`}>
                     {index + 1}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{product.name}</p>
-                    <p className="text-xs text-gray-500">{product.sold} sold</p>
+                    <p className="text-sm font-medium text-white truncate group-hover:text-emerald-400 transition-colors">{product.name}</p>
+                    <p className="text-xs text-slate-500">{product.sold} sold</p>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm font-semibold text-emerald-400">
                     {formatCurrency(product.revenue)}
                   </span>
                 </div>
@@ -199,23 +208,23 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Recent Support Tickets */}
           <div className="card">
-            <div className="card-header flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Recent Support Tickets</h2>
-              <Link href="/support" className="text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1">
+            <div className="px-6 py-4 border-b border-slate-800/50 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-white">Recent Support Tickets</h2>
+              <Link href="/support" className="text-sm text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1 transition-colors">
                 View All <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="card-body space-y-3">
+            <div className="p-6 space-y-3">
               {recentTickets.map((ticket) => (
-                <div key={ticket.id} className="flex items-start gap-4 p-3 bg-gray-50 rounded-lg">
+                <div key={ticket.id} className="flex items-start gap-4 p-4 bg-slate-800/40 rounded-xl border border-slate-700/50 hover:border-slate-600/50 transition-colors">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <Link href={`/support/${ticket.id}`} className="text-sm font-medium text-gray-900 hover:text-primary-600">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Link href={`/support/${ticket.id}`} className="text-sm font-medium text-white hover:text-emerald-400 transition-colors">
                         {ticket.subject}
                       </Link>
                       <PriorityBadge priority={ticket.priority} />
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-slate-500 mt-1">
                       {ticket.id} • {ticket.customer}
                     </p>
                   </div>
@@ -227,33 +236,40 @@ export default function Dashboard() {
 
           {/* Quick Actions */}
           <div className="card">
-            <div className="card-header">
-              <h2 className="text-lg font-semibold text-gray-900">Quick Actions</h2>
+            <div className="px-6 py-4 border-b border-slate-800/50">
+              <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                <Zap className="w-5 h-5 text-cyan-400" />
+                Quick Actions
+              </h2>
             </div>
-            <div className="card-body grid grid-cols-2 gap-4">
+            <div className="p-6 grid grid-cols-2 gap-4">
               <QuickActionButton
                 label="New Order"
                 description="Create manual order"
                 icon={<ShoppingCart className="w-6 h-6" />}
                 href="/orders/new"
+                color="emerald"
               />
               <QuickActionButton
                 label="Add Customer"
                 description="Register new customer"
                 icon={<Users className="w-6 h-6" />}
                 href="/customers/new"
+                color="cyan"
               />
               <QuickActionButton
                 label="Update Inventory"
                 description="Adjust stock levels"
                 icon={<Package className="w-6 h-6" />}
                 href="/inventory"
+                color="violet"
               />
               <QuickActionButton
                 label="Send Email Blast"
                 description="Contact installers"
                 icon={<Truck className="w-6 h-6" />}
                 href="/installers/email"
+                color="amber"
               />
             </div>
           </div>
@@ -276,29 +292,52 @@ function StatCard({
   value: string
   change: number
   icon: React.ReactNode
-  color: 'green' | 'blue' | 'purple' | 'amber'
+  color: 'emerald' | 'cyan' | 'violet' | 'amber'
 }) {
-  const colors = {
-    green: 'bg-primary-50 text-primary-600',
-    blue: 'bg-blue-50 text-blue-600',
-    purple: 'bg-purple-50 text-purple-600',
-    amber: 'bg-amber-50 text-amber-600',
+  const gradients = {
+    emerald: 'from-emerald-500 to-cyan-500',
+    cyan: 'from-cyan-500 to-blue-500',
+    violet: 'from-violet-500 to-purple-500',
+    amber: 'from-amber-500 to-orange-500',
+  }
+
+  const glows = {
+    emerald: 'shadow-emerald-500/20',
+    cyan: 'shadow-cyan-500/20',
+    violet: 'shadow-violet-500/20',
+    amber: 'shadow-amber-500/20',
+  }
+
+  const iconBg = {
+    emerald: 'bg-emerald-500/20 text-emerald-400',
+    cyan: 'bg-cyan-500/20 text-cyan-400',
+    violet: 'bg-violet-500/20 text-violet-400',
+    amber: 'bg-amber-500/20 text-amber-400',
   }
 
   return (
-    <div className="card p-6">
-      <div className="flex items-center justify-between">
-        <div className={`p-3 rounded-xl ${colors[color]}`}>
-          {icon}
+    <div className={`relative overflow-hidden rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-slate-800/60 p-6 shadow-2xl ${glows[color]}`}>
+      {/* Gradient accent */}
+      <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${gradients[color]} opacity-10 blur-2xl`} />
+
+      <div className="relative">
+        <div className="flex items-center justify-between">
+          <div className={`p-3 rounded-xl ${iconBg[color]}`}>
+            {icon}
+          </div>
+          <div className={`flex items-center gap-1 text-sm font-medium px-2.5 py-1 rounded-full ${
+            change >= 0
+              ? 'text-emerald-400 bg-emerald-500/10'
+              : 'text-rose-400 bg-rose-500/10'
+          }`}>
+            {change >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+            {Math.abs(change)}%
+          </div>
         </div>
-        <div className={`flex items-center gap-1 text-sm font-medium ${change >= 0 ? 'text-success-600' : 'text-danger-600'}`}>
-          {change >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-          {Math.abs(change)}%
+        <div className="mt-4">
+          <p className="text-3xl font-bold text-white">{value}</p>
+          <p className="text-sm text-slate-400 mt-1">{title}</p>
         </div>
-      </div>
-      <div className="mt-4">
-        <p className="text-2xl font-bold text-gray-900">{value}</p>
-        <p className="text-sm text-gray-500 mt-1">{title}</p>
       </div>
     </div>
   )
@@ -315,28 +354,46 @@ function AlertCard({
   value: number
   icon: React.ReactNode
   href: string
-  color: 'red' | 'amber' | 'orange' | 'purple'
+  color: 'rose' | 'amber' | 'orange' | 'purple'
 }) {
-  const colors = {
-    red: 'border-danger-200 bg-danger-50',
-    amber: 'border-amber-200 bg-amber-50',
-    orange: 'border-orange-200 bg-orange-50',
-    purple: 'border-purple-200 bg-purple-50',
+  const styles = {
+    rose: {
+      bg: 'bg-rose-500/10 hover:bg-rose-500/20',
+      border: 'border-rose-500/20 hover:border-rose-500/40',
+      icon: 'text-rose-400',
+      glow: 'hover:shadow-rose-500/10',
+    },
+    amber: {
+      bg: 'bg-amber-500/10 hover:bg-amber-500/20',
+      border: 'border-amber-500/20 hover:border-amber-500/40',
+      icon: 'text-amber-400',
+      glow: 'hover:shadow-amber-500/10',
+    },
+    orange: {
+      bg: 'bg-orange-500/10 hover:bg-orange-500/20',
+      border: 'border-orange-500/20 hover:border-orange-500/40',
+      icon: 'text-orange-400',
+      glow: 'hover:shadow-orange-500/10',
+    },
+    purple: {
+      bg: 'bg-purple-500/10 hover:bg-purple-500/20',
+      border: 'border-purple-500/20 hover:border-purple-500/40',
+      icon: 'text-purple-400',
+      glow: 'hover:shadow-purple-500/10',
+    },
   }
 
-  const iconColors = {
-    red: 'text-danger-600',
-    amber: 'text-amber-600',
-    orange: 'text-orange-600',
-    purple: 'text-purple-600',
-  }
+  const s = styles[color]
 
   return (
-    <Link href={href} className={`flex items-center gap-4 p-4 rounded-xl border-2 ${colors[color]} hover:shadow-md transition-shadow`}>
-      <div className={iconColors[color]}>{icon}</div>
+    <Link
+      href={href}
+      className={`flex items-center gap-4 p-4 rounded-xl border ${s.bg} ${s.border} transition-all duration-300 hover:shadow-xl ${s.glow}`}
+    >
+      <div className={`p-2.5 rounded-lg bg-slate-800/50 ${s.icon}`}>{icon}</div>
       <div>
-        <p className="text-2xl font-bold text-gray-900">{value}</p>
-        <p className="text-sm text-gray-600">{title}</p>
+        <p className="text-2xl font-bold text-white">{value}</p>
+        <p className="text-sm text-slate-400">{title}</p>
       </div>
     </Link>
   )
@@ -344,20 +401,20 @@ function AlertCard({
 
 function OrderStatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    PENDING: 'badge-warning',
-    CONFIRMED: 'badge-info',
-    PROCESSING: 'badge-info',
-    SHIPPED: 'badge-primary',
-    OUT_FOR_DELIVERY: 'badge-primary',
-    DELIVERED: 'badge-success',
-    INSTALLED: 'badge-success',
-    COMPLETED: 'badge-success',
-    CANCELLED: 'badge-danger',
-    REFUNDED: 'badge-gray',
+    PENDING: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
+    CONFIRMED: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+    PROCESSING: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
+    SHIPPED: 'bg-violet-500/20 text-violet-400 border-violet-500/30',
+    OUT_FOR_DELIVERY: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30',
+    DELIVERED: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+    INSTALLED: 'bg-green-500/20 text-green-400 border-green-500/30',
+    COMPLETED: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+    CANCELLED: 'bg-rose-500/20 text-rose-400 border-rose-500/30',
+    REFUNDED: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
   }
 
   return (
-    <span className={styles[status] || 'badge-gray'}>
+    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${styles[status] || 'bg-slate-500/20 text-slate-400 border-slate-500/30'}`}>
       {status.replace(/_/g, ' ')}
     </span>
   )
@@ -365,16 +422,16 @@ function OrderStatusBadge({ status }: { status: string }) {
 
 function TicketStatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    OPEN: 'badge-warning',
-    IN_PROGRESS: 'badge-info',
-    WAITING_CUSTOMER: 'badge-gray',
-    WAITING_INTERNAL: 'badge-gray',
-    RESOLVED: 'badge-success',
-    CLOSED: 'badge-gray',
+    OPEN: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
+    IN_PROGRESS: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
+    WAITING_CUSTOMER: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
+    WAITING_INTERNAL: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
+    RESOLVED: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+    CLOSED: 'bg-slate-600/20 text-slate-500 border-slate-600/30',
   }
 
   return (
-    <span className={styles[status] || 'badge-gray'}>
+    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${styles[status] || 'bg-slate-500/20 text-slate-400 border-slate-500/30'}`}>
       {status.replace(/_/g, ' ')}
     </span>
   )
@@ -382,14 +439,14 @@ function TicketStatusBadge({ status }: { status: string }) {
 
 function PriorityBadge({ priority }: { priority: string }) {
   const styles: Record<string, string> = {
-    LOW: 'badge-gray',
-    MEDIUM: 'badge-warning',
-    HIGH: 'badge-danger',
-    URGENT: 'badge-danger',
+    LOW: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
+    MEDIUM: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
+    HIGH: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+    URGENT: 'bg-rose-500/20 text-rose-400 border-rose-500/30',
   }
 
   return (
-    <span className={`${styles[priority] || 'badge-gray'} text-xs`}>
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${styles[priority] || 'bg-slate-500/20 text-slate-400 border-slate-500/30'}`}>
       {priority}
     </span>
   )
@@ -400,22 +457,31 @@ function QuickActionButton({
   description,
   icon,
   href,
+  color,
 }: {
   label: string
   description: string
   icon: React.ReactNode
   href: string
+  color: 'emerald' | 'cyan' | 'violet' | 'amber'
 }) {
+  const iconStyles = {
+    emerald: 'bg-emerald-500/20 text-emerald-400 group-hover:bg-emerald-500/30',
+    cyan: 'bg-cyan-500/20 text-cyan-400 group-hover:bg-cyan-500/30',
+    violet: 'bg-violet-500/20 text-violet-400 group-hover:bg-violet-500/30',
+    amber: 'bg-amber-500/20 text-amber-400 group-hover:bg-amber-500/30',
+  }
+
   return (
     <Link
       href={href}
-      className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors text-center"
+      className="group flex flex-col items-center justify-center p-5 bg-slate-800/40 rounded-xl border border-slate-700/50 hover:border-slate-600/50 hover:bg-slate-800/60 transition-all duration-300 text-center"
     >
-      <div className="p-3 bg-white rounded-xl shadow-sm text-gray-600 mb-3">
+      <div className={`p-3.5 rounded-xl transition-colors ${iconStyles[color]} mb-3`}>
         {icon}
       </div>
-      <p className="text-sm font-medium text-gray-900">{label}</p>
-      <p className="text-xs text-gray-500 mt-0.5">{description}</p>
+      <p className="text-sm font-medium text-white group-hover:text-emerald-400 transition-colors">{label}</p>
+      <p className="text-xs text-slate-500 mt-0.5">{description}</p>
     </Link>
   )
 }

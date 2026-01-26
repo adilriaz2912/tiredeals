@@ -58,7 +58,7 @@ export function Modal({
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/50 animate-fade-in"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -71,18 +71,18 @@ export function Modal({
         aria-labelledby="modal-title"
         tabIndex={-1}
         className={cn(
-          'relative bg-white rounded-2xl shadow-xl w-full mx-4 max-h-[90vh] flex flex-col animate-slide-up focus:outline-none',
+          'relative bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-800/60 w-full mx-4 max-h-[90vh] flex flex-col animate-slide-up focus:outline-none',
           sizes[size]
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-          <h2 id="modal-title" className="text-lg font-semibold text-gray-900">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800/50">
+          <h2 id="modal-title" className="text-lg font-semibold text-white">
             {title}
           </h2>
           <button
             onClick={onClose}
-            className="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -94,7 +94,7 @@ export function Modal({
 
         {/* Footer */}
         {footer && (
-          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100">
+          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-800/50">
             {footer}
           </div>
         )}

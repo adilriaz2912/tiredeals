@@ -1,6 +1,6 @@
 'use client'
 
-import { Bell, ChevronDown } from 'lucide-react'
+import { Bell, ChevronDown, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { GlobalSearch } from '@/components/ui/GlobalSearch'
 
@@ -14,13 +14,13 @@ export function Header({ title, subtitle, actions }: HeaderProps) {
   const [showNotifications, setShowNotifications] = useState(false)
 
   return (
-    <header className="sticky top-0 z-30 bg-white border-b border-gray-200">
+    <header className="sticky top-0 z-30 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800/50">
       <div className="flex items-center justify-between px-6 py-4">
         {/* Title */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+          <h1 className="text-2xl font-bold text-white">{title}</h1>
           {subtitle && (
-            <p className="text-sm text-gray-500 mt-0.5">{subtitle}</p>
+            <p className="text-sm text-slate-400 mt-0.5">{subtitle}</p>
           )}
         </div>
 
@@ -33,15 +33,16 @@ export function Header({ title, subtitle, actions }: HeaderProps) {
           <div className="relative">
             <button
               onClick={() => setShowNotifications(!showNotifications)}
-              className="relative p-2.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+              className="relative p-2.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-all duration-200"
             >
               <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-danger-500 rounded-full" />
+              <span className="notification-dot" />
             </button>
             {showNotifications && (
-              <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                <div className="px-4 py-3 border-b border-gray-100">
-                  <h3 className="font-semibold text-gray-900">Notifications</h3>
+              <div className="absolute right-0 top-full mt-2 w-80 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
+                <div className="px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+                  <h3 className="font-semibold text-white">Notifications</h3>
+                  <span className="text-xs text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded-full">4 new</span>
                 </div>
                 <div className="max-h-96 overflow-y-auto">
                   <NotificationItem
@@ -69,8 +70,8 @@ export function Header({ title, subtitle, actions }: HeaderProps) {
                     type="warranty"
                   />
                 </div>
-                <div className="px-4 py-3 border-t border-gray-100">
-                  <button className="text-sm text-primary-600 hover:text-primary-700 font-medium">
+                <div className="px-4 py-3 border-t border-slate-800">
+                  <button className="text-sm text-emerald-400 hover:text-emerald-300 font-medium transition-colors">
                     View all notifications
                   </button>
                 </div>
@@ -81,10 +82,11 @@ export function Header({ title, subtitle, actions }: HeaderProps) {
           {/* Quick Actions */}
           <div className="relative group">
             <button className="btn-primary btn-md">
+              <Sparkles className="w-4 h-4" />
               Quick Actions
               <ChevronDown className="w-4 h-4" />
             </button>
-            <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+            <div className="absolute right-0 top-full mt-2 w-48 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
               <QuickActionItem label="New Customer" href="/customers/new" />
               <QuickActionItem label="New Order" href="/orders/new" />
               <QuickActionItem label="New Ticket" href="/support/new" />
@@ -112,20 +114,20 @@ function NotificationItem({
   type: 'order' | 'inventory' | 'ticket' | 'warranty'
 }) {
   const colors = {
-    order: 'bg-primary-100 text-primary-600',
-    inventory: 'bg-warning-50 text-warning-600',
-    ticket: 'bg-info-50 text-info-600',
-    warranty: 'bg-danger-50 text-danger-600',
+    order: 'from-emerald-500 to-cyan-500',
+    inventory: 'from-amber-500 to-orange-500',
+    ticket: 'from-blue-500 to-indigo-500',
+    warranty: 'from-red-500 to-rose-500',
   }
 
   return (
-    <div className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-0">
+    <div className="px-4 py-3 hover:bg-slate-800/50 cursor-pointer border-b border-slate-800/50 last:border-0 transition-colors">
       <div className="flex gap-3">
-        <div className={`w-2 h-2 rounded-full mt-2 ${colors[type].split(' ')[0]}`} />
+        <div className={`w-2 h-2 rounded-full mt-2 bg-gradient-to-r ${colors[type]}`} />
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-900">{title}</p>
-          <p className="text-sm text-gray-500 truncate">{message}</p>
-          <p className="text-xs text-gray-400 mt-1">{time}</p>
+          <p className="text-sm font-medium text-white">{title}</p>
+          <p className="text-sm text-slate-400 truncate">{message}</p>
+          <p className="text-xs text-slate-500 mt-1">{time}</p>
         </div>
       </div>
     </div>
@@ -136,7 +138,7 @@ function QuickActionItem({ label, href }: { label: string; href: string }) {
   return (
     <a
       href={href}
-      className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+      className="block px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
     >
       {label}
     </a>

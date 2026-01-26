@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from './Button'
 import { cn } from '@/lib/utils'
@@ -18,7 +19,6 @@ export function Pagination({
   currentPage,
   totalPages,
   totalItems,
-  itemsPerPage,
   onPageChange,
   showingFrom,
   showingTo,
@@ -26,11 +26,11 @@ export function Pagination({
   const pages = generatePagination(currentPage, totalPages)
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-gray-100">
-      <p className="text-sm text-gray-500">
-        Showing <span className="font-medium">{showingFrom}</span> to{' '}
-        <span className="font-medium">{showingTo}</span> of{' '}
-        <span className="font-medium">{totalItems}</span> results
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-slate-800/50">
+      <p className="text-sm text-slate-400">
+        Showing <span className="font-medium text-slate-200">{showingFrom}</span> to{' '}
+        <span className="font-medium text-slate-200">{showingTo}</span> of{' '}
+        <span className="font-medium text-slate-200">{totalItems}</span> results
       </p>
       <div className="flex items-center gap-1">
         <Button
@@ -46,7 +46,7 @@ export function Pagination({
         {pages.map((page, index) => {
           if (page === '...') {
             return (
-              <span key={`ellipsis-${index}`} className="px-2 text-gray-400">
+              <span key={`ellipsis-${index}`} className="px-2 text-slate-500">
                 ...
               </span>
             )
@@ -56,10 +56,10 @@ export function Pagination({
               key={page}
               onClick={() => onPageChange(page as number)}
               className={cn(
-                'w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors',
+                'w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-200',
                 currentPage === page
-                  ? 'bg-primary-500 text-white'
-                  : 'text-gray-600 hover:bg-gray-100'
+                  ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-lg shadow-emerald-500/25'
+                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
               )}
               aria-current={currentPage === page ? 'page' : undefined}
             >
@@ -138,5 +138,3 @@ export function usePagination<T>(items: T[], itemsPerPage: number = 10) {
     goToPage,
   }
 }
-
-import { useState, useEffect } from 'react'

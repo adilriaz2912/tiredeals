@@ -97,6 +97,7 @@ const navigation: NavItem[] = [
     href: '/operations',
     icon: <Zap className="w-5 h-5" />,
     children: [
+      { label: 'Fulfillment & Delivery', href: '/operations/fulfillment' },
       { label: 'Smart Scheduling', href: '/operations/smart-scheduling' },
       { label: 'Supplier Scorecard', href: '/operations/supplier-scorecard' },
       { label: 'Fraud Detection', href: '/operations/fraud-detection' },
@@ -117,6 +118,8 @@ const navigation: NavItem[] = [
     href: '/analytics',
     icon: <BarChart3 className="w-5 h-5" />,
     children: [
+      { label: 'E-commerce KPIs', href: '/analytics/ecommerce' },
+      { label: 'Conversion Funnel', href: '/analytics/funnel' },
       { label: 'Cohort Retention', href: '/analytics/cohort-retention' },
       { label: 'Attribution', href: '/analytics/attribution' },
       { label: 'Geographic Demand', href: '/analytics/geographic' },
@@ -148,6 +151,18 @@ const navigation: NavItem[] = [
     label: 'Inventory',
     href: '/inventory',
     icon: <Package className="w-5 h-5" />,
+    children: [
+      { label: 'All Inventory', href: '/inventory' },
+      { label: 'Inventory Analytics', href: '/inventory/analytics' },
+    ],
+  },
+  {
+    label: 'Products',
+    href: '/products',
+    icon: <Activity className="w-5 h-5" />,
+    children: [
+      { label: 'Product Performance', href: '/products/performance' },
+    ],
   },
   {
     label: 'Pricing & Promos',

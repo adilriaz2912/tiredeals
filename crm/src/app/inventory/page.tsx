@@ -154,8 +154,8 @@ export default function InventoryPage() {
     outOfStock: inventory.filter(i => i.quantity === 0).length,
   }
 
-  const brands = [...new Set(inventory.map(i => i.brand))]
-  const categories = [...new Set(inventory.map(i => i.category))]
+  const brands = Array.from(new Set(inventory.map(i => i.brand)))
+  const categories = Array.from(new Set(inventory.map(i => i.category)))
 
   return (
     <div className="min-h-screen">

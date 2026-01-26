@@ -15,24 +15,20 @@ import {
   Shield,
   Gift,
   ShoppingBag,
-  MessageSquare,
   BarChart3,
   Settings,
   LogOut,
   ChevronDown,
-  Bell,
   RotateCcw,
   Tag,
   Calendar,
-  Mail,
-  TrendingUp,
-  DollarSign,
   Megaphone,
   MousePointer,
   Target,
-  Share2,
+  Menu,
+  X,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface NavItem {
   label: string
@@ -158,6 +154,24 @@ const navigation: NavItem[] = [
 export function Sidebar() {
   const pathname = usePathname()
   const [expandedItems, setExpandedItems] = useState<string[]>([])
+  const [isMobileOpen, setIsMobileOpen] = useState(false)
+
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    setIsMobileOpen(false)
+  }, [pathname])
+
+  // Prevent body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (isMobileOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isMobileOpen])
 
   const toggleExpanded = (label: string) => {
     setExpandedItems(prev =>
@@ -172,8 +186,8 @@ export function Sidebar() {
     return pathname.startsWith(href)
   }
 
-  return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-gray-900 text-white flex flex-col">
+  const sidebarContent = (
+    <>
       {/* Logo */}
       <div className="flex items-center gap-3 px-6 py-5 border-b border-gray-800">
         <Image
@@ -187,6 +201,14 @@ export function Sidebar() {
           <h1 className="font-bold text-lg">TireDeals</h1>
           <p className="text-xs text-gray-400">CRM Dashboard</p>
         </div>
+        {/* Mobile close button */}
+        <button
+          className="lg:hidden ml-auto p-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800"
+          onClick={() => setIsMobileOpen(false)}
+          aria-label="Close sidebar"
+        >
+          <X className="w-5 h-5" />
+        </button>
       </div>
 
       {/* Navigation */}
@@ -291,6 +313,43 @@ export function Sidebar() {
           </button>
         </div>
       </div>
-    </aside>
+    </>
+  )
+
+  return (
+    <>
+      {/* Mobile hamburger button */}
+      <button
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-gray-900 text-white rounded-lg shadow-lg"
+        onClick={() => setIsMobileOpen(true)}
+        aria-label="Open sidebar"
+      >
+        <Menu className="w-6 h-6" />
+      </button>
+
+      {/* Mobile backdrop */}
+      {isMobileOpen && (
+        <div
+          className="lg:hidden fixed inset-0 z-40 bg-black/50"
+          onClick={() => setIsMobileOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Mobile sidebar */}
+      <aside
+        className={cn(
+          'lg:hidden fixed left-0 top-0 z-50 h-screen w-72 bg-gray-900 text-white flex flex-col transform transition-transform duration-300 ease-in-out',
+          isMobileOpen ? 'translate-x-0' : '-translate-x-full'
+        )}
+      >
+        {sidebarContent}
+      </aside>
+
+      {/* Desktop sidebar */}
+      <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-64 bg-gray-900 text-white flex-col">
+        {sidebarContent}
+      </aside>
+    </>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import {
@@ -121,9 +122,13 @@ export function Sidebar() {
     <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-gray-900 text-white flex flex-col">
       {/* Logo */}
       <div className="flex items-center gap-3 px-6 py-5 border-b border-gray-800">
-        <div className="w-10 h-10 bg-primary-500 rounded-xl flex items-center justify-center font-bold text-lg">
-          TD
-        </div>
+        <Image
+          src="/logo.png"
+          alt="TireDeals Logo"
+          width={44}
+          height={44}
+          className="rounded-xl"
+        />
         <div>
           <h1 className="font-bold text-lg">TireDeals</h1>
           <p className="text-xs text-gray-400">CRM Dashboard</p>

@@ -4,9 +4,7 @@ import { Header } from '@/components/layout'
 import { useState } from 'react'
 import {
   Search,
-  Filter,
   Plus,
-  Package,
   RotateCcw,
   RefreshCw,
   DollarSign,
@@ -17,6 +15,7 @@ import {
   Truck,
   Eye,
   MoreHorizontal,
+  Package,
 } from 'lucide-react'
 import Link from 'next/link'
 import { cn, formatCurrency, formatDate } from '@/lib/utils'
@@ -132,20 +131,20 @@ const stats = {
 }
 
 const statusConfig: Record<ReturnStatus, { label: string; color: string; icon: React.ReactNode }> = {
-  REQUESTED: { label: 'Requested', color: 'badge-warning', icon: <Clock className="w-3 h-3" /> },
-  APPROVED: { label: 'Approved', color: 'badge-info', icon: <CheckCircle className="w-3 h-3" /> },
-  LABEL_SENT: { label: 'Label Sent', color: 'badge-info', icon: <Package className="w-3 h-3" /> },
-  IN_TRANSIT: { label: 'In Transit', color: 'badge-primary', icon: <Truck className="w-3 h-3" /> },
-  RECEIVED: { label: 'Received', color: 'badge-info', icon: <Package className="w-3 h-3" /> },
-  INSPECTING: { label: 'Inspecting', color: 'badge-warning', icon: <AlertTriangle className="w-3 h-3" /> },
-  COMPLETED: { label: 'Completed', color: 'badge-success', icon: <CheckCircle className="w-3 h-3" /> },
-  DENIED: { label: 'Denied', color: 'badge-danger', icon: <XCircle className="w-3 h-3" /> },
+  REQUESTED: { label: 'Requested', color: 'bg-amber-500/20 text-amber-400 border border-amber-500/30', icon: <Clock className="w-3 h-3" /> },
+  APPROVED: { label: 'Approved', color: 'bg-blue-500/20 text-blue-400 border border-blue-500/30', icon: <CheckCircle className="w-3 h-3" /> },
+  LABEL_SENT: { label: 'Label Sent', color: 'bg-blue-500/20 text-blue-400 border border-blue-500/30', icon: <Package className="w-3 h-3" /> },
+  IN_TRANSIT: { label: 'In Transit', color: 'bg-green-500/20 text-green-400 border border-green-500/30', icon: <Truck className="w-3 h-3" /> },
+  RECEIVED: { label: 'Received', color: 'bg-blue-500/20 text-blue-400 border border-blue-500/30', icon: <Package className="w-3 h-3" /> },
+  INSPECTING: { label: 'Inspecting', color: 'bg-amber-500/20 text-amber-400 border border-amber-500/30', icon: <AlertTriangle className="w-3 h-3" /> },
+  COMPLETED: { label: 'Completed', color: 'bg-green-500/20 text-green-400 border border-green-500/30', icon: <CheckCircle className="w-3 h-3" /> },
+  DENIED: { label: 'Denied', color: 'bg-red-500/20 text-red-400 border border-red-500/30', icon: <XCircle className="w-3 h-3" /> },
 }
 
 const typeLabels: Record<string, { label: string; color: string }> = {
-  RETURN: { label: 'Return', color: 'bg-blue-100 text-blue-700' },
-  EXCHANGE: { label: 'Exchange', color: 'bg-purple-100 text-purple-700' },
-  WARRANTY_CLAIM: { label: 'Warranty', color: 'bg-amber-100 text-amber-700' },
+  RETURN: { label: 'Return', color: 'bg-blue-500/20 text-blue-400 border border-blue-500/30' },
+  EXCHANGE: { label: 'Exchange', color: 'bg-purple-500/20 text-purple-400 border border-purple-500/30' },
+  WARRANTY_CLAIM: { label: 'Warranty', color: 'bg-amber-500/20 text-amber-400 border border-amber-500/30' },
 }
 
 export default function ReturnsPage() {
@@ -163,13 +162,13 @@ export default function ReturnsPage() {
   })
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-black">
       <Header
         title="Returns & Refunds"
         subtitle="Manage product returns, exchanges, and refund requests"
         actions={
-          <button className="btn btn-primary">
-            <Plus className="w-4 h-4 mr-2" />
+          <button className="flex items-center gap-2 px-4 py-2.5 bg-green-500 text-black font-semibold rounded-xl hover:bg-green-400 transition-colors">
+            <Plus className="w-4 h-4" />
             Create Return
           </button>
         }
@@ -178,49 +177,69 @@ export default function ReturnsPage() {
       <div className="p-6 space-y-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <StatCard
-            title="Pending Returns"
-            value={stats.pending}
-            icon={<Clock className="w-5 h-5" />}
-            color="amber"
-          />
-          <StatCard
-            title="In Progress"
-            value={stats.inProgress}
-            icon={<RefreshCw className="w-5 h-5" />}
-            color="blue"
-          />
-          <StatCard
-            title="Completed (30d)"
-            value={stats.completed}
-            icon={<CheckCircle className="w-5 h-5" />}
-            color="green"
-          />
-          <StatCard
-            title="Total Refunded (30d)"
-            value={formatCurrency(stats.totalRefunded)}
-            icon={<DollarSign className="w-5 h-5" />}
-            color="purple"
-          />
+          <div className="bg-neutral-900/80 backdrop-blur rounded-2xl border border-neutral-800 p-5">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-amber-500/20">
+                <Clock className="w-5 h-5 text-amber-400" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-white">{stats.pending}</p>
+                <p className="text-sm text-neutral-400">Pending Returns</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-neutral-900/80 backdrop-blur rounded-2xl border border-neutral-800 p-5">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-blue-500/20">
+                <RefreshCw className="w-5 h-5 text-blue-400" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-white">{stats.inProgress}</p>
+                <p className="text-sm text-neutral-400">In Progress</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-neutral-900/80 backdrop-blur rounded-2xl border border-neutral-800 p-5">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-green-500/20">
+                <CheckCircle className="w-5 h-5 text-green-400" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-white">{stats.completed}</p>
+                <p className="text-sm text-neutral-400">Completed (30d)</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-neutral-900/80 backdrop-blur rounded-2xl border border-neutral-800 p-5">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-green-500/20">
+                <DollarSign className="w-5 h-5 text-green-400" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-green-400">{formatCurrency(stats.totalRefunded)}</p>
+                <p className="text-sm text-neutral-400">Total Refunded (30d)</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Filters */}
-        <div className="card p-4">
+        <div className="bg-neutral-900/80 backdrop-blur rounded-2xl border border-neutral-800 p-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" />
               <input
                 type="text"
                 placeholder="Search by return #, order #, or customer..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="input pl-10"
+                className="w-full pl-10 pr-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-green-500/50"
               />
             </div>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="input w-full md:w-48"
+              className="px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-green-500/50"
             >
               <option value="all">All Statuses</option>
               <option value="REQUESTED">Requested</option>
@@ -235,7 +254,7 @@ export default function ReturnsPage() {
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
-              className="input w-full md:w-40"
+              className="px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-green-500/50"
             >
               <option value="all">All Types</option>
               <option value="RETURN">Return</option>
@@ -246,66 +265,68 @@ export default function ReturnsPage() {
         </div>
 
         {/* Returns Table */}
-        <div className="card">
+        <div className="bg-neutral-900/80 backdrop-blur rounded-2xl border border-neutral-800 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="table">
+            <table className="w-full">
               <thead>
-                <tr>
-                  <th>Return #</th>
-                  <th>Order</th>
-                  <th>Customer</th>
-                  <th>Type</th>
-                  <th>Reason</th>
-                  <th>Value</th>
-                  <th>Status</th>
-                  <th>Date</th>
-                  <th></th>
+                <tr className="bg-neutral-800/50">
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-400 uppercase">Return #</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-400 uppercase">Order</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-400 uppercase">Customer</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-400 uppercase">Type</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-400 uppercase">Reason</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-400 uppercase">Value</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-400 uppercase">Status</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-400 uppercase">Date</th>
+                  <th className="px-6 py-4"></th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-neutral-800">
                 {filteredReturns.map((ret) => (
-                  <tr key={ret.id}>
-                    <td>
-                      <Link href={`/returns/${ret.id}`} className="font-medium text-primary-600 hover:text-primary-700">
+                  <tr key={ret.id} className="hover:bg-neutral-800/30 transition-colors">
+                    <td className="px-6 py-4">
+                      <Link href={`/returns/${ret.id}`} className="font-medium text-green-400 hover:text-green-300">
                         {ret.returnNumber}
                       </Link>
                     </td>
-                    <td>
-                      <Link href={`/orders/${ret.orderId}`} className="text-gray-600 hover:text-primary-600">
+                    <td className="px-6 py-4">
+                      <Link href={`/orders/${ret.orderId}`} className="text-neutral-300 hover:text-green-400">
                         {ret.orderNumber}
                       </Link>
                     </td>
-                    <td>
+                    <td className="px-6 py-4">
                       <div>
-                        <p className="font-medium text-gray-900">{ret.customerName}</p>
-                        <p className="text-sm text-gray-500">{ret.customerEmail}</p>
+                        <p className="font-medium text-white">{ret.customerName}</p>
+                        <p className="text-sm text-neutral-500">{ret.customerEmail}</p>
                       </div>
                     </td>
-                    <td>
-                      <span className={cn('inline-flex px-2 py-1 text-xs font-medium rounded-full', typeLabels[ret.type].color)}>
+                    <td className="px-6 py-4">
+                      <span className={cn('inline-flex px-2.5 py-1 text-xs font-semibold rounded-lg', typeLabels[ret.type].color)}>
                         {typeLabels[ret.type].label}
                       </span>
                     </td>
-                    <td className="max-w-xs truncate" title={ret.reason}>
-                      {ret.reason}
+                    <td className="px-6 py-4 max-w-xs">
+                      <p className="text-neutral-300 truncate" title={ret.reason}>{ret.reason}</p>
                     </td>
-                    <td className="font-medium">{formatCurrency(ret.totalValue)}</td>
-                    <td>
-                      <span className={cn('inline-flex items-center gap-1', statusConfig[ret.status].color)}>
+                    <td className="px-6 py-4">
+                      <p className="font-medium text-white">{formatCurrency(ret.totalValue)}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={cn('inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg', statusConfig[ret.status].color)}>
                         {statusConfig[ret.status].icon}
                         {statusConfig[ret.status].label}
                       </span>
                     </td>
-                    <td className="text-gray-500">{formatDate(ret.createdAt)}</td>
-                    <td>
+                    <td className="px-6 py-4 text-neutral-400">{formatDate(ret.createdAt)}</td>
+                    <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <Link
                           href={`/returns/${ret.id}`}
-                          className="p-2 text-gray-400 hover:text-primary-600 hover:bg-gray-100 rounded-lg"
+                          className="p-2 text-neutral-400 hover:text-green-400 hover:bg-neutral-800 rounded-lg transition-colors"
                         >
                           <Eye className="w-4 h-4" />
                         </Link>
-                        <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg">
+                        <button className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg transition-colors">
                           <MoreHorizontal className="w-4 h-4" />
                         </button>
                       </div>
@@ -319,78 +340,39 @@ export default function ReturnsPage() {
 
         {/* Return Policy Info */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <PolicyCard
-            icon={<RotateCcw className="w-6 h-6" />}
-            title="30-Day Returns"
-            description="Unmounted tires can be returned within 30 days for a full refund."
-          />
-          <PolicyCard
-            icon={<RefreshCw className="w-6 h-6" />}
-            title="Easy Exchanges"
-            description="Exchange for a different size or model at no additional shipping cost."
-          />
-          <PolicyCard
-            icon={<DollarSign className="w-6 h-6" />}
-            title="Restocking Fee"
-            description="10% restocking fee for returns without defects after 14 days."
-          />
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function StatCard({
-  title,
-  value,
-  icon,
-  color,
-}: {
-  title: string
-  value: string | number
-  icon: React.ReactNode
-  color: 'amber' | 'blue' | 'green' | 'purple'
-}) {
-  const colors = {
-    amber: 'bg-amber-50 text-amber-600',
-    blue: 'bg-blue-50 text-blue-600',
-    green: 'bg-green-50 text-green-600',
-    purple: 'bg-purple-50 text-purple-600',
-  }
-
-  return (
-    <div className="card p-4">
-      <div className="flex items-center gap-4">
-        <div className={cn('p-3 rounded-xl', colors[color])}>
-          {icon}
-        </div>
-        <div>
-          <p className="text-2xl font-bold text-gray-900">{value}</p>
-          <p className="text-sm text-gray-500">{title}</p>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function PolicyCard({
-  icon,
-  title,
-  description,
-}: {
-  icon: React.ReactNode
-  title: string
-  description: string
-}) {
-  return (
-    <div className="card p-4">
-      <div className="flex items-start gap-4">
-        <div className="p-3 bg-gray-100 rounded-xl text-gray-600">
-          {icon}
-        </div>
-        <div>
-          <p className="font-medium text-gray-900">{title}</p>
-          <p className="text-sm text-gray-500 mt-1">{description}</p>
+          <div className="bg-neutral-900/80 backdrop-blur rounded-2xl border border-neutral-800 p-5">
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-neutral-800 rounded-xl">
+                <RotateCcw className="w-6 h-6 text-green-400" />
+              </div>
+              <div>
+                <p className="font-medium text-white">30-Day Returns</p>
+                <p className="text-sm text-neutral-400 mt-1">Unmounted tires can be returned within 30 days for a full refund.</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-neutral-900/80 backdrop-blur rounded-2xl border border-neutral-800 p-5">
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-neutral-800 rounded-xl">
+                <RefreshCw className="w-6 h-6 text-green-400" />
+              </div>
+              <div>
+                <p className="font-medium text-white">Easy Exchanges</p>
+                <p className="text-sm text-neutral-400 mt-1">Exchange for a different size or model at no additional shipping cost.</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-neutral-900/80 backdrop-blur rounded-2xl border border-neutral-800 p-5">
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-neutral-800 rounded-xl">
+                <DollarSign className="w-6 h-6 text-green-400" />
+              </div>
+              <div>
+                <p className="font-medium text-white">Restocking Fee</p>
+                <p className="text-sm text-neutral-400 mt-1">10% restocking fee for returns without defects after 14 days.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -12,9 +12,8 @@ import {
   Truck,
   Package,
   Download,
-  MoreHorizontal,
-  Calendar,
   MapPin,
+  TrendingUp,
 } from 'lucide-react'
 import { formatCurrency, formatDate, formatRelativeTime } from '@/lib/utils'
 
@@ -147,7 +146,7 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-black">
       <Header
         title="Orders"
         subtitle={`${orders.length} orders • ${formatCurrency(stats.revenue)} total revenue`}
@@ -156,38 +155,38 @@ export default function OrdersPage() {
       <div className="p-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-          <div className="card p-4">
-            <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
-            <p className="text-sm text-gray-500">Total Orders</p>
+          <div className="bg-neutral-900/80 backdrop-blur rounded-2xl border border-neutral-800 p-4">
+            <p className="text-2xl font-bold text-white">{stats.total}</p>
+            <p className="text-sm text-neutral-400">Total Orders</p>
           </div>
-          <div className="card p-4 border-l-4 border-l-warning-500">
-            <p className="text-2xl font-bold text-warning-600">{stats.pending}</p>
-            <p className="text-sm text-gray-500">Pending</p>
+          <div className="bg-neutral-900/80 backdrop-blur rounded-2xl border border-neutral-800 border-l-4 border-l-amber-500 p-4">
+            <p className="text-2xl font-bold text-amber-400">{stats.pending}</p>
+            <p className="text-sm text-neutral-400">Pending</p>
           </div>
-          <div className="card p-4 border-l-4 border-l-info-500">
-            <p className="text-2xl font-bold text-info-600">{stats.processing}</p>
-            <p className="text-sm text-gray-500">Processing</p>
+          <div className="bg-neutral-900/80 backdrop-blur rounded-2xl border border-neutral-800 border-l-4 border-l-blue-500 p-4">
+            <p className="text-2xl font-bold text-blue-400">{stats.processing}</p>
+            <p className="text-sm text-neutral-400">Processing</p>
           </div>
-          <div className="card p-4 border-l-4 border-l-primary-500">
-            <p className="text-2xl font-bold text-primary-600">{stats.shipped}</p>
-            <p className="text-sm text-gray-500">Shipped</p>
+          <div className="bg-neutral-900/80 backdrop-blur rounded-2xl border border-neutral-800 border-l-4 border-l-green-500 p-4">
+            <p className="text-2xl font-bold text-green-400">{stats.shipped}</p>
+            <p className="text-sm text-neutral-400">Shipped</p>
           </div>
-          <div className="card p-4 border-l-4 border-l-success-500">
-            <p className="text-2xl font-bold text-success-600">{formatCurrency(stats.revenue)}</p>
-            <p className="text-sm text-gray-500">Revenue</p>
+          <div className="bg-neutral-900/80 backdrop-blur rounded-2xl border border-neutral-800 border-l-4 border-l-green-500 p-4">
+            <p className="text-2xl font-bold text-green-400">{formatCurrency(stats.revenue)}</p>
+            <p className="text-sm text-neutral-400">Revenue</p>
           </div>
         </div>
 
         {/* Actions Bar */}
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" />
             <input
               type="text"
               placeholder="Search by order #, customer name, or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="input pl-10"
+              className="w-full pl-10 pr-4 py-3 bg-neutral-900/80 border border-neutral-800 rounded-xl text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500"
             />
           </div>
 
@@ -195,7 +194,7 @@ export default function OrdersPage() {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="select w-40"
+              className="px-4 py-3 bg-neutral-900/80 border border-neutral-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-green-500/50"
             >
               {statusOptions.map(opt => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -203,16 +202,16 @@ export default function OrdersPage() {
             </select>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`btn-outline btn-md ${showFilters ? 'bg-gray-100' : ''}`}
+              className={`flex items-center gap-2 px-4 py-3 border border-neutral-700 rounded-xl text-neutral-300 hover:bg-neutral-800 transition-colors ${showFilters ? 'bg-neutral-800' : ''}`}
             >
               <Filter className="w-4 h-4" />
               More Filters
             </button>
-            <button className="btn-outline btn-md">
+            <button className="flex items-center gap-2 px-4 py-3 border border-neutral-700 rounded-xl text-neutral-300 hover:bg-neutral-800 transition-colors">
               <Download className="w-4 h-4" />
               Export
             </button>
-            <Link href="/orders/new" className="btn-primary btn-md">
+            <Link href="/orders/new" className="flex items-center gap-2 px-4 py-3 bg-green-500 text-black font-semibold rounded-xl hover:bg-green-400 transition-colors">
               <Plus className="w-4 h-4" />
               New Order
             </Link>
@@ -221,11 +220,11 @@ export default function OrdersPage() {
 
         {/* Filter Panel */}
         {showFilters && (
-          <div className="card p-4 mb-6">
+          <div className="bg-neutral-900/80 backdrop-blur rounded-2xl border border-neutral-800 p-4 mb-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
-                <label className="label">Date Range</label>
-                <select className="select">
+                <label className="block text-sm font-medium text-neutral-300 mb-2">Date Range</label>
+                <select className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white">
                   <option value="">All Time</option>
                   <option value="today">Today</option>
                   <option value="week">This Week</option>
@@ -234,8 +233,8 @@ export default function OrdersPage() {
                 </select>
               </div>
               <div>
-                <label className="label">Payment Status</label>
-                <select className="select">
+                <label className="block text-sm font-medium text-neutral-300 mb-2">Payment Status</label>
+                <select className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white">
                   <option value="">All</option>
                   <option value="PENDING">Pending</option>
                   <option value="PAID">Paid</option>
@@ -243,16 +242,16 @@ export default function OrdersPage() {
                 </select>
               </div>
               <div>
-                <label className="label">Has Installer</label>
-                <select className="select">
+                <label className="block text-sm font-medium text-neutral-300 mb-2">Has Installer</label>
+                <select className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white">
                   <option value="">All</option>
                   <option value="yes">With Installer</option>
                   <option value="no">Ship to Customer</option>
                 </select>
               </div>
               <div>
-                <label className="label">Order Total</label>
-                <select className="select">
+                <label className="block text-sm font-medium text-neutral-300 mb-2">Order Total</label>
+                <select className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white">
                   <option value="">Any Amount</option>
                   <option value="0-500">Under $500</option>
                   <option value="500-1000">$500 - $1,000</option>
@@ -264,107 +263,80 @@ export default function OrdersPage() {
         )}
 
         {/* Orders Table */}
-        <div className="card overflow-hidden">
+        <div className="bg-neutral-900/80 backdrop-blur rounded-2xl border border-neutral-800 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="table">
+            <table className="w-full">
               <thead>
-                <tr>
-                  <th>Order</th>
-                  <th>Customer</th>
-                  <th>Items</th>
-                  <th>Total</th>
-                  <th>Status</th>
-                  <th>Destination</th>
-                  <th>Date</th>
-                  <th>Actions</th>
+                <tr className="bg-neutral-800/50">
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-400 uppercase">Order</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-400 uppercase">Customer</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-400 uppercase">Items</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-400 uppercase">Total</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-400 uppercase">Status</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-400 uppercase">Destination</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-400 uppercase">Date</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-neutral-800">
                 {filteredOrders.map((order) => (
-                  <tr key={order.id}>
-                    <td>
+                  <tr key={order.id} className="hover:bg-neutral-800/30 transition-colors">
+                    <td className="px-6 py-4">
                       <Link
                         href={`/orders/${order.id}`}
-                        className="font-medium text-primary-600 hover:text-primary-700"
+                        className="font-medium text-green-400 hover:text-green-300"
                       >
                         {order.orderNumber}
                       </Link>
                       {order.trackingNumber && (
-                        <p className="text-xs text-gray-500 flex items-center gap-1 mt-1">
+                        <p className="text-xs text-neutral-500 flex items-center gap-1 mt-1">
                           <Truck className="w-3 h-3" />
                           {order.trackingNumber}
                         </p>
                       )}
                     </td>
-                    <td>
+                    <td className="px-6 py-4">
                       <Link
                         href={`/customers/${order.customer.id}`}
-                        className="text-gray-900 hover:text-primary-600"
+                        className="text-white hover:text-green-400"
                       >
                         {order.customer.firstName} {order.customer.lastName}
                       </Link>
-                      <p className="text-xs text-gray-500">{order.customer.email}</p>
+                      <p className="text-xs text-neutral-500">{order.customer.email}</p>
                     </td>
-                    <td>
+                    <td className="px-6 py-4">
                       <div className="max-w-xs">
                         {order.items.map((item, i) => (
-                          <p key={i} className="text-sm truncate">
+                          <p key={i} className="text-sm text-neutral-300 truncate">
                             {item.quantity}x {item.name}
                           </p>
                         ))}
                       </div>
                     </td>
-                    <td>
-                      <p className="font-medium">{formatCurrency(order.total)}</p>
+                    <td className="px-6 py-4">
+                      <p className="font-medium text-white">{formatCurrency(order.total)}</p>
                       <PaymentStatusBadge status={order.paymentStatus} />
                     </td>
-                    <td>
+                    <td className="px-6 py-4">
                       <OrderStatusBadge status={order.status} />
                     </td>
-                    <td>
+                    <td className="px-6 py-4">
                       <div className="flex items-start gap-2">
-                        <MapPin className="w-4 h-4 text-gray-400 mt-0.5" />
+                        <MapPin className="w-4 h-4 text-neutral-500 mt-0.5" />
                         <div>
-                          <p className="text-sm">
+                          <p className="text-sm text-neutral-300">
                             {order.shippingAddress.city}, {order.shippingAddress.state}
                           </p>
                           {order.installer ? (
-                            <p className="text-xs text-primary-600">{order.installer.name}</p>
+                            <p className="text-xs text-green-400">{order.installer.name}</p>
                           ) : (
-                            <p className="text-xs text-gray-500">Direct to customer</p>
+                            <p className="text-xs text-neutral-500">Direct to customer</p>
                           )}
                         </div>
                       </div>
                     </td>
-                    <td>
-                      <p className="text-sm text-gray-900">{formatRelativeTime(order.createdAt)}</p>
-                      <p className="text-xs text-gray-500">{formatDate(order.createdAt)}</p>
-                    </td>
-                    <td>
-                      <div className="flex items-center gap-1">
-                        <Link
-                          href={`/orders/${order.id}`}
-                          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg"
-                          title="View"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Link>
-                        <Link
-                          href={`/orders/${order.id}/edit`}
-                          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg"
-                          title="Edit"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Link>
-                        {(order.status === 'PROCESSING' || order.status === 'CONFIRMED') && (
-                          <button
-                            className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg"
-                            title="Ship Order"
-                          >
-                            <Package className="w-4 h-4" />
-                          </button>
-                        )}
-                      </div>
+                    <td className="px-6 py-4">
+                      <p className="text-sm text-neutral-300">{formatRelativeTime(order.createdAt)}</p>
+                      <p className="text-xs text-neutral-500">{formatDate(order.createdAt)}</p>
                     </td>
                   </tr>
                 ))}
@@ -373,16 +345,16 @@ export default function OrdersPage() {
           </div>
 
           {/* Pagination */}
-          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-            <p className="text-sm text-gray-500">
-              Showing <span className="font-medium">{filteredOrders.length}</span> of{' '}
-              <span className="font-medium">{orders.length}</span> orders
+          <div className="px-6 py-4 border-t border-neutral-800 flex items-center justify-between">
+            <p className="text-sm text-neutral-500">
+              Showing <span className="font-medium text-white">{filteredOrders.length}</span> of{' '}
+              <span className="font-medium text-white">{orders.length}</span> orders
             </p>
             <div className="flex gap-2">
-              <button className="btn-outline btn-sm" disabled>
+              <button className="px-4 py-2 border border-neutral-700 rounded-lg text-neutral-400 hover:bg-neutral-800 disabled:opacity-50" disabled>
                 Previous
               </button>
-              <button className="btn-outline btn-sm">
+              <button className="px-4 py-2 border border-neutral-700 rounded-lg text-neutral-400 hover:bg-neutral-800">
                 Next
               </button>
             </div>
@@ -395,20 +367,20 @@ export default function OrdersPage() {
 
 function OrderStatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    PENDING: 'badge-warning',
-    CONFIRMED: 'badge-info',
-    PROCESSING: 'badge-info',
-    SHIPPED: 'badge-primary',
-    OUT_FOR_DELIVERY: 'badge-primary',
-    DELIVERED: 'badge-success',
-    INSTALLED: 'badge-success',
-    COMPLETED: 'badge-success',
-    CANCELLED: 'badge-danger',
-    REFUNDED: 'badge-gray',
+    PENDING: 'bg-amber-500/20 text-amber-400 border border-amber-500/30',
+    CONFIRMED: 'bg-blue-500/20 text-blue-400 border border-blue-500/30',
+    PROCESSING: 'bg-blue-500/20 text-blue-400 border border-blue-500/30',
+    SHIPPED: 'bg-green-500/20 text-green-400 border border-green-500/30',
+    OUT_FOR_DELIVERY: 'bg-green-500/20 text-green-400 border border-green-500/30',
+    DELIVERED: 'bg-green-500/20 text-green-400 border border-green-500/30',
+    INSTALLED: 'bg-green-500/20 text-green-400 border border-green-500/30',
+    COMPLETED: 'bg-green-500/20 text-green-400 border border-green-500/30',
+    CANCELLED: 'bg-red-500/20 text-red-400 border border-red-500/30',
+    REFUNDED: 'bg-neutral-500/20 text-neutral-400 border border-neutral-500/30',
   }
 
   return (
-    <span className={styles[status] || 'badge-gray'}>
+    <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold ${styles[status] || 'bg-neutral-500/20 text-neutral-400'}`}>
       {status.replace(/_/g, ' ')}
     </span>
   )
@@ -416,16 +388,16 @@ function OrderStatusBadge({ status }: { status: string }) {
 
 function PaymentStatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    PENDING: 'text-warning-600',
-    AUTHORIZED: 'text-info-600',
-    PAID: 'text-success-600',
-    PARTIALLY_REFUNDED: 'text-warning-600',
-    REFUNDED: 'text-gray-600',
-    FAILED: 'text-danger-600',
+    PENDING: 'text-amber-400',
+    AUTHORIZED: 'text-blue-400',
+    PAID: 'text-green-400',
+    PARTIALLY_REFUNDED: 'text-amber-400',
+    REFUNDED: 'text-neutral-400',
+    FAILED: 'text-red-400',
   }
 
   return (
-    <span className={`text-xs ${styles[status] || 'text-gray-500'}`}>
+    <span className={`text-xs ${styles[status] || 'text-neutral-500'}`}>
       {status.replace(/_/g, ' ')}
     </span>
   )
